@@ -29,7 +29,7 @@ const LandingLayout = (props: { children: React.ReactNode }) => {
       <div className="fixed top-0 w-full">
         <GeneralHeader />
       </div>
-      
+
       <main
         ref={containerRef}
         className="flex-1 overflow-x-hidden overflow-y-hidden mt-10"
@@ -37,9 +37,7 @@ const LandingLayout = (props: { children: React.ReactNode }) => {
         {props.children}
       </main>
 
-      <div className="fixed right-0 bottom-7 bg-white z-40">
-        <ScrollGuide containerRef={containerRef} />
-      </div>
+      <ScrollGuide containerRef={containerRef} />
     </div>
   );
 };
