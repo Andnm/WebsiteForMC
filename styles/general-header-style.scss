@@ -1,0 +1,115 @@
+@import "_variables";
+
+.general-header-container {
+  background-color: $black-color;
+
+  .brand-name {
+    color: $orange-color;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 0.05rem;
+  }
+
+  a {
+    color: $white-color;
+    font-size: 16px;
+  }
+
+  .search-container {
+    position: relative;
+    --size-button: 40px;
+    color: white;
+
+    .input {
+      padding-left: var(--size-button);
+      height: var(--size-button);
+      font-size: 13px;
+      border: none;
+      color: #fff;
+      outline: none;
+      width: var(--size-button);
+      -webkit-transition: all ease 0.3s;
+      transition: all ease 0.3s;
+      background-color: #191a1e;
+      border: 1.5px solid $gray-color;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+
+    .input:hover {
+      border-color: $white-color;
+    }
+
+    .input:focus,
+    .input:not(:invalid) {
+      width: 200px;
+      cursor: text;
+    }
+
+    .input:focus + .icon,
+    .input:not(:invalid) + .icon {
+      pointer-events: all;
+      cursor: pointer;
+    }
+
+    .icon {
+      position: absolute;
+      width: var(--size-button);
+      height: var(--size-button);
+      top: 0;
+      left: 0;
+      padding: 8px;
+      pointer-events: none;
+    }
+
+    .icon svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .btn-signup,
+  .btn-login {
+    text-transform: none;
+    font-size: 16px;
+    font-weight: normal;
+    border-radius: 15px;
+  }
+
+  .btn-login {
+    background-color: $orange-color;
+    color: $black-color;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+    padding: 7px 10px;
+  }
+
+  .btn-login:hover {
+    background-color: $white-color;
+  }
+
+  .btn-signup {
+    border: 2px solid $orange-color;
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+    padding: 6px 9px;
+    width: 101.73px;
+  }
+
+  .btn-signup:hover {
+    border: 2px solid $white-color;
+    background-color: $white-color;
+    color: $black-color;
+  }
+
+  .nav-items {
+    a {
+      -webkit-transition: all ease 0.3s;
+      transition: all ease 0.3s;
+    }
+
+    a:hover {
+      color: $orange-color;
+    }
+  }
+}
