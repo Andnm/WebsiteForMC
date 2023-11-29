@@ -1,7 +1,7 @@
 import React from "react";
-import type { RootState } from "@/store/store";
+import type { RootState } from "@/redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { decrement, increment } from "../../store/slice";
+import { decrement, increment } from "../../redux/slice";
 
 const FormRegister = () => {
   const count = useSelector((state: RootState) => state.counter.value);
