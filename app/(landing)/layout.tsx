@@ -25,14 +25,14 @@ const LandingLayout = (props: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <div className="h-screen flex">
+    <div className="h-screen flex" style={{backgroundColor: '#1d1d1d'}}>
       <div className="fixed top-0 w-full">
         <GeneralHeader />
       </div>
 
       <main
         ref={containerRef}
-        className="flex-1 overflow-x-hidden overflow-y-hidden mt-10"
+        className="flex-1 overflow-x-hidden overflow-y-hidden mt-16"    
       >
         {props.children}
       </main>

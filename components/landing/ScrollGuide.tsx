@@ -109,7 +109,7 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
           >
             <path
               d="M8.996-.003l7.001 7.001-.707.707L9 14.001l-.707-.707 5.789-5.797L0 7.498v-1h14.082L8.289.703l.707-.707z"
-              fill-rule="nonzero"
+              fillRule="nonzero"
             ></path>
           </svg>
         </div>
@@ -149,7 +149,7 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
         >
           <path
             d="M8.996-.003l7.001 7.001-.707.707L9 14.001l-.707-.707 5.789-5.797L0 7.498v-1h14.082L8.289.703l.707-.707z"
-            fill-rule="nonzero"
+            fillRule="nonzero"
           ></path>
         </svg>
       </button>

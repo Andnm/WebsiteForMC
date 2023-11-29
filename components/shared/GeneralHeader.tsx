@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import {
-  Navbar,
-  MobileNav,
+  Collapse,
   Typography,
   Button,
   IconButton,
@@ -43,7 +42,7 @@ const GeneralHeader = () => {
   );
 
   return (
-    <Navbar className="general-header-container top-0 z-10 h-max max-w-full border-0 rounded-none px-4 py-2 lg:px-8 lg:py-3">
+    <div className="general-header-container top-0 z-10 h-max max-w-full border-0 rounded-none px-4 py-2 lg:px-8 lg:py-3">
       <div className="flex items-center justify-between text-white">
         <Typography
           as="a"
@@ -74,15 +73,15 @@ const GeneralHeader = () => {
                   d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z"
                   fill="none"
                   stroke="currentColor"
-                  stroke-miterlimit="10"
-                  stroke-width="32"
+                  strokeMiterlimit="10"
+                  strokeWidth="32"
                 ></path>
                 <path
                   fill="none"
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-miterlimit="10"
-                  stroke-width="32"
+                  strokeLinecap="round"
+                  strokeMiterlimit="10"
+                  strokeWidth="32"
                   d="M338.29 338.29L448 448"
                 ></path>
               </svg>
@@ -141,7 +140,7 @@ const GeneralHeader = () => {
         </div>
       </div>
 
-      <MobileNav open={openNav}>
+      <Collapse open={openNav}>
         {navList}
         <div className="flex items-center gap-x-1">
           <Button fullWidth variant="text" size="sm" className="">
@@ -151,8 +150,8 @@ const GeneralHeader = () => {
             <span>Đăng kí</span>
           </Button>
         </div>
-      </MobileNav>
-    </Navbar>
+      </Collapse>
+    </div>
   );
 };
 
