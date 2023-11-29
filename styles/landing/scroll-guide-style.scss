@@ -9,10 +9,15 @@
     align-items: center;
     color: $white-color;
     border-radius: 20px;
+    transition: width 0.4s ease-out;
 
     svg {
       fill: $white-color;
     }
+  }
+
+  .arrow:hover {
+    border-color: $white-color;
   }
 
   .arrow-box {
@@ -20,14 +25,51 @@
   }
 
   .arrow-guide {
-    padding: 0px 15px;
     gap: 10px;
+    width: 100px;
+    transition: width 0.4s ease-out;
+
+    &:hover .hover-text {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .hover-text {
+      position: absolute;
+      top: -60px;
+      left: 180px;
+      transform: translate(-50%, -50%);
+      background-color: #d3d3d3;
+      color: $black-color;
+      padding: 20px 20px;
+      border-radius: 5px;
+      width: 350px;
+      opacity: 0;
+      transition: opacity 0.5s, visibility 0.5s;
+      font-size: 15px;
+      visibility: hidden;
+
+      svg {
+        width: 20px;
+        fill: $black-color
+      }
+    }
+  }
+
+  .rotate {
+    transform: rotate(-180deg);
+    transition: 0.7s;
+  }
+
+  .back-rotate {
+    transform: rotate(0deg);
+    transition: 0.7s;
   }
 
   .loading-bar {
     position: relative;
     height: 2px;
-    width: 200px;
+    width: 230px;
     background-color: $black-color;
 
     .progress-bar {

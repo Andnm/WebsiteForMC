@@ -2,14 +2,13 @@
 
 import React from "react";
 import "../../styles/landing/scroll-guide-style.scss";
-import arrowRight from "../../assets/svg/arrow-right.svg";
+import { FaMouse } from "react-icons/fa";
 
 interface ScrollGuideProps {
   containerRef: React.RefObject<HTMLDivElement>;
 }
 
 const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
-  console.log(containerRef);
   const [scrollPercentage, setScrollPercentage] = React.useState(0);
 
   const handleWheel = (event: WheelEvent) => {
@@ -47,12 +46,41 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
     }
   }, [containerRef]);
 
+  const handleNextArrowClick = () => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      const nextContentPosition = container.scrollLeft + container.clientWidth;
+      container.scrollTo({
+        left: nextContentPosition,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleBackArrowClick = () => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      const previousContentPosition =
+        container.scrollLeft - container.clientWidth;
+      container.scrollTo({
+        left: previousContentPosition,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <div className="scroll-guide-container fixed right-7 bottom-7 flex justify-center items-center flex-nowrap">
-      <button className="arrow arrow-guide">
-        Scroll
+      <button
+        className={`arrow ${scrollPercentage === 0 ? "arrow-guide" : "arrow-box"}`}
+        onClick={
+          scrollPercentage === 0 ? handleNextArrowClick : handleBackArrowClick
+        }
+      >
+        {scrollPercentage === 0 && "Scroll"}
+
         <svg
-          className="svg--icons-arrow_right-small"
+          className={`${scrollPercentage === 0 ? "back-rotate" : "rotate"}`}
           width="16"
           height="14"
           viewBox="0 0 16 14"
@@ -63,6 +91,16 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
             fill-rule="nonzero"
           ></path>
         </svg>
+
+        {scrollPercentage === 0 && (
+          <div className="hover-text flex justify-center text-start">
+            <div className="mt-1">
+              <FaMouse />
+            </div>
+            Cuộn bằng chuột của bạn hoặc bấm vào mũi tên để di chuyển tới trang
+            khác
+          </div>
+        )}
       </button>
 
       <div className="loading-bar">
@@ -71,10 +109,14 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
           style={{ width: `${scrollPercentage}%` }}
         ></div>
       </div>
-
-      <button className="arrow arrow-box">
+      <button
+        className="arrow arrow-box"
+        onClick={
+          scrollPercentage === 100 ? handleBackArrowClick : handleNextArrowClick
+        }
+      >
         <svg
-          className="svg--icons-arrow_right-small"
+          className={`${scrollPercentage === 100 ? "rotate" : "back-rotate"}`}
           width="16"
           height="14"
           viewBox="0 0 16 14"
