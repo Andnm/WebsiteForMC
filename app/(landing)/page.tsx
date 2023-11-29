@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import Home from "@/components/landing/Home";
-import EarliestProjectList from "@/components/landing/EarliestProjectList";
-import ContactUs from "@/components/landing/ContactUs";
-import FormRegister from "@/components/landing/FormRegister";
+import Home from "@/src/components/landing/Home";
+import EarliestProjectList from "@/src/components/landing/EarliestProjectList";
+import ContactUs from "@/src/components/landing/ContactUs";
+import FormRegister from "@/src/components/landing/FormRegister";
 
 const LandingPage = () => {
   return (

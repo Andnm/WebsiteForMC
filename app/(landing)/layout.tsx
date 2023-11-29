@@ -1,6 +1,6 @@
 "use client";
-import GeneralHeader from "@/components/shared/GeneralHeader";
-import ScrollGuide from "@/components/landing/ScrollGuide";
+import GeneralHeader from "@/src/components/shared/GeneralHeader";
+import ScrollGuide from "@/src/components/landing/ScrollGuide";
 import React from "react";
 
 const LandingLayout = (props: { children: React.ReactNode }) => {
