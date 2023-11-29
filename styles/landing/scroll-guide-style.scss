@@ -51,7 +51,7 @@
 
       svg {
         width: 20px;
-        fill: $black-color
+        fill: $black-color;
       }
     }
   }
@@ -78,5 +78,26 @@
       background-color: $orange-color;
       transition: width 0.2s ease-out;
     }
+  }
+
+  //shaking effect
+  @keyframes shaking {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(5px);
+    }
+    50% {
+      transform: translateX(-5px);
+    }
+    75% {
+      transform: translateX(5px);
+    }
+  }
+
+  .effect-shaking {
+    animation: shaking 1.5s ease-in-out;
   }
 }

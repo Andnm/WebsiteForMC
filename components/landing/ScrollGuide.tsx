@@ -10,7 +10,9 @@ interface ScrollGuideProps {
 
 const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
   const [scrollPercentage, setScrollPercentage] = React.useState(0);
+  const [isShaking, setIsShaking] = React.useState(false);
 
+  //handle horizontal scroll
   const handleWheel = (event: WheelEvent) => {
     event.preventDefault();
     const delta = event.deltaY || event.detail || (event as any).wheelDelta;
@@ -46,6 +48,7 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
     }
   }, [containerRef]);
 
+  //handle arrow
   const handleNextArrowClick = () => {
     if (containerRef.current) {
       const container = containerRef.current;
@@ -69,28 +72,47 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
     }
   };
 
+  //shaking effect
+  React.useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (scrollPercentage === 0) {
+        setIsShaking((prevIsShaking) => !prevIsShaking);
+      }
+    }, 2500);
+
+    return () => clearInterval(intervalId);
+  }, [scrollPercentage]);
+
   return (
     <div className="scroll-guide-container fixed right-7 bottom-7 flex justify-center items-center flex-nowrap">
       <button
-        className={`arrow ${scrollPercentage === 0 ? "arrow-guide" : "arrow-box"}`}
+        className={`arrow ${
+          scrollPercentage === 0 ? "arrow-guide" : "arrow-box"
+        }`}
         onClick={
           scrollPercentage === 0 ? handleNextArrowClick : handleBackArrowClick
         }
       >
-        {scrollPercentage === 0 && "Scroll"}
-
-        <svg
-          className={`${scrollPercentage === 0 ? "back-rotate" : "rotate"}`}
-          width="16"
-          height="14"
-          viewBox="0 0 16 14"
-          xmlns="http://www.w3.org/2000/svg"
+        <div
+          className={`flex justify-center items-center gap-2 ${
+            isShaking ? "effect-shaking" : ""
+          }`}
         >
-          <path
-            d="M8.996-.003l7.001 7.001-.707.707L9 14.001l-.707-.707 5.789-5.797L0 7.498v-1h14.082L8.289.703l.707-.707z"
-            fill-rule="nonzero"
-          ></path>
-        </svg>
+          {scrollPercentage === 0 && <p className="">Scroll</p>}
+
+          <svg
+            className={`${scrollPercentage === 0 ? "back-rotate" : "rotate"}`}
+            width="16"
+            height="14"
+            viewBox="0 0 16 14"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8.996-.003l7.001 7.001-.707.707L9 14.001l-.707-.707 5.789-5.797L0 7.498v-1h14.082L8.289.703l.707-.707z"
+              fill-rule="nonzero"
+            ></path>
+          </svg>
+        </div>
 
         {scrollPercentage === 0 && (
           <div className="hover-text flex justify-center text-start">
@@ -109,6 +131,7 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
           style={{ width: `${scrollPercentage}%` }}
         ></div>
       </div>
+
       <button
         className="arrow arrow-box"
         onClick={
@@ -116,7 +139,9 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
         }
       >
         <svg
-          className={`${scrollPercentage === 100 ? "rotate" : "back-rotate"}`}
+          className={`${scrollPercentage === 100 ? "rotate" : "back-rotate"} ${
+            isShaking ? "effect-shaking" : ""
+          }`}
           width="16"
           height="14"
           viewBox="0 0 16 14"
