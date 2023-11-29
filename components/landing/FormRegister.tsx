@@ -1,9 +1,31 @@
-import React from 'react'
+import React from "react";
+import type { RootState } from "@/store/store";
+import { useSelector, useDispatch } from "react-redux";
+import { decrement, increment } from "../../store/slice";
 
 const FormRegister = () => {
-  return (
-    <div>FormRegister</div>
-  )
-}
+  const count = useSelector((state: RootState) => state.counter.value);
+  const dispatch = useDispatch();
 
-export default FormRegister
+  return (
+    <div>
+      <div>
+        <button
+          aria-label="Increment value"
+          onClick={() => dispatch(increment())}
+        >
+          Increment
+        </button>
+        <span>{count}</span>
+        <button
+          aria-label="Decrement value"
+          onClick={() => dispatch(decrement())}
+        >
+          Decrement
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default FormRegister;
