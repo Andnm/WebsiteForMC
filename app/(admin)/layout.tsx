@@ -1,7 +1,18 @@
+"use client";
+
+import SidebarAdmin from "@/src/components/admin/SidebarAdmin";
 import React from "react";
 
-const AdminLayout = (props: { children: React.ReactNode }) => {
-  return <div> {props.children}</div>;
+const AdminLayout: React.FC<{ children: React.ReactNode }> = (props) => {
+  return (
+    <div className="flex layout-admin">
+      <SidebarAdmin />
+
+      <div className="main flex-1" style={{ backgroundColor: "#f8fafc" }}>
+        {props.children}
+      </div>
+    </div>
+  );
 };
 
 export default AdminLayout;
