@@ -113,16 +113,6 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
             ></path>
           </svg>
         </div>
-
-        {scrollPercentage === 0 && (
-          <div className="hover-text flex justify-center text-start">
-            <div className="mt-1">
-              <FaMouse />
-            </div>
-            Cuộn bằng chuột của bạn hoặc bấm vào mũi tên để di chuyển tới trang
-            khác
-          </div>
-        )}
       </button>
 
       <div className="loading-bar">
@@ -153,6 +143,16 @@ const ScrollGuide: React.FC<ScrollGuideProps> = ({ containerRef }) => {
           ></path>
         </svg>
       </button>
+
+      {scrollPercentage === 0 && (
+        <div className="hover-text flex justify-center text-start">
+          <div className="mt-1">
+            <FaMouse />
+          </div>
+          Cuộn bằng chuột của bạn hoặc bấm vào mũi tên để di chuyển tới trang
+          khác
+        </div>
+      )}
     </div>
   );
 };

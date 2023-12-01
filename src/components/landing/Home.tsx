@@ -1,12 +1,14 @@
-import React from 'react'
-import '../../styles/landing/home-style.scss'
+import React from "react";
+import "../../styles/landing/home-style.scss";
 
 const Home = () => {
   return (
-    <div className='home-page'>
-      <img src="https://cdn.popsww.com/blog/sites/2/2021/03/doraemon-tap-97.jpg" style={{height: '100%'}}></img>
+    <div className="home-page">
+      <div className="test" style={{ width: "1000px", color: "white" }}>
+        Home
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

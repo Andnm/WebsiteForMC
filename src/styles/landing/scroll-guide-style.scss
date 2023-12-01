@@ -22,36 +22,36 @@
     width: 40px;
   }
 
+  &:hover .hover-text {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .hover-text {
+    position: absolute;
+    top: -60px;
+    left: 180px;
+    transform: translate(-50%, -50%);
+    background-color: #d3d3d3;
+    color: var(--black-color);
+    padding: 20px 20px;
+    border-radius: 5px;
+    width: 350px;
+    opacity: 0;
+    transition: opacity 0.5s, visibility 0.5s;
+    font-size: 15px;
+    visibility: hidden;
+
+    svg {
+      width: 20px;
+      fill: var(--black-color);
+    }
+  }
+
   .arrow-guide {
     gap: 10px;
     width: 100px;
     transition: width 0.4s ease-out;
-
-    &:hover .hover-text {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .hover-text {
-      position: absolute;
-      top: -60px;
-      left: 180px;
-      transform: translate(-50%, -50%);
-      background-color: #d3d3d3;
-      color: var(--black-color);
-      padding: 20px 20px;
-      border-radius: 5px;
-      width: 350px;
-      opacity: 0;
-      transition: opacity 0.5s, visibility 0.5s;
-      font-size: 15px;
-      visibility: hidden;
-
-      svg {
-        width: 20px;
-        fill: var(--black-color);
-      }
-    }
   }
 
   .rotate {

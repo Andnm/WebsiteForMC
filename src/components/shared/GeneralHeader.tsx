@@ -1,25 +1,29 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import {
-  Collapse,
   Typography,
-  Button,
-  IconButton,
 } from "@material-tailwind/react";
 
 import "../../styles/general-header-style.scss";
 
 const GeneralHeader = () => {
-  const [openNav, setOpenNav] = React.useState(false);
 
-  React.useEffect(() => {
-    window.addEventListener(
-      "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false)
-    );
-  }, []);
+  const navItemsGeneral = [
+    {
+      nameItem: "Danh sách dự án",
+      path: "/project-list",
+    },
+    {
+      nameItem: "Về chúng tôi",
+      path: "/about-us",
+    },
+    {
+      nameItem: "Liên lạc",
+      path: "/contact",
+    },
+  ];
 
-  const navItemsGeneral = ["Danh sách dự án", "Về chúng tôi", "Liên lạc"];
   const navItemsStudent = ["Pages", "Account", "Blocks", "Docs"];
   const navItemsBusiness = ["Pages", "Account", "Blocks", "Docs"];
 
@@ -33,9 +37,9 @@ const GeneralHeader = () => {
           color="white"
           className="p-1 font-normal nav-items"
         >
-          <a href="#" className="flex items-center">
-            {item}
-          </a>
+          <Link href={item.path} className="flex items-center">
+            {item.nameItem}
+          </Link>
         </Typography>
       ))}
     </ul>
@@ -44,13 +48,12 @@ const GeneralHeader = () => {
   return (
     <div className="general-header-container top-0 z-10 h-max max-w-full border-0 rounded-none px-4 py-2 lg:px-8 lg:py-3">
       <div className="flex items-center justify-between text-white">
-        <Typography
-          as="a"
-          href="#"
+        <Link
+          href="/"
           className="mr-4 cursor-pointer py-1.5 font-medium brand-name"
         >
           MC
-        </Typography>
+        </Link>
         <div className="flex items-center gap-4">
           <div className="mr-4 hidden lg:block">{navList}</div>
 
@@ -62,6 +65,7 @@ const GeneralHeader = () => {
               required
               placeholder="Gõ để tìm kiếm ..."
             />
+
             <div className="icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -89,68 +93,20 @@ const GeneralHeader = () => {
           </div>
 
           <div className="flex items-center gap-x-1">
-            <button className="hidden lg:inline-block text-white btn-login">
-              <span>Đăng nhập</span>
+            <button className="hidden lg:inline-block btn-login">
+              <Link href="/login">
+                <span className="text-black">Đăng nhập</span>
+              </Link>
             </button>
 
-            <button
-              className="hidden lg:inline-block btn-signup"
-            >
-              <span>Đăng kí</span>
+            <button className="hidden lg:inline-block btn-signup">
+              <Link href="/register">
+                <span className="text-white hover:text-black">Đăng kí</span>
+              </Link>
             </button>
           </div>
-
-          <IconButton
-            variant="text"
-            className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
-            ripple={false}
-            onClick={() => setOpenNav(!openNav)}
-          >
-            {openNav ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                className="h-6 w-6"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            )}
-          </IconButton>
         </div>
       </div>
-
-      <Collapse open={openNav}>
-        {navList}
-        <div className="flex items-center gap-x-1">
-          <Button fullWidth variant="text" size="sm" className="">
-            <span>Đăng nhập</span>
-          </Button>
-          <Button fullWidth variant="gradient" size="sm" className="">
-            <span>Đăng kí</span>
-          </Button>
-        </div>
-      </Collapse>
     </div>
   );
 };

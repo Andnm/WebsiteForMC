@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 import {
-  Typography,
   List,
   ListItemSuffix,
   Chip,
@@ -97,9 +96,7 @@ const SidebarAdmin = () => {
   return (
     <div className="sidebar-admin h-screen w-full max-w-[15rem] shadow-xl shadow-blue-gray-900/5 relative">
       <div className="mb-2 p-4">
-        <Typography variant="h5" color="orange" className="text-center">
-          MC
-        </Typography>
+        <h5 className="text-center text-orange-500 font-bold">MC</h5>
       </div>
 
       {sections.map((section, index) => (

@@ -14,19 +14,21 @@ const EarliestProjectList = () => {
 
   return (
     <div>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleSubmit}>Đăng nhập</button>
+      <div style={{ width: "1000px", color: "white" }}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button onClick={handleSubmit}>Đăng nhập</button>
+      </div>
     </div>
   );
 };
