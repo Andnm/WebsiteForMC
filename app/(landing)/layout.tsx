@@ -3,6 +3,7 @@ import GeneralHeader from "@/src/components/shared/GeneralHeader";
 import ScrollGuide from "@/src/components/landing/ScrollGuide";
 import React from "react";
 import { usePathname } from "next/navigation";
+import Login from "@/src/components/auth/Login";
 
 const LandingLayout = (props: { children: React.ReactNode }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -39,7 +40,7 @@ const LandingLayout = (props: { children: React.ReactNode }) => {
         {props.children}
       </main>
 
-      {(pathName !== "/login" && pathName !== "/register") && (
+      {pathName !== "/login" && pathName !== "/register" && (
         <ScrollGuide containerRef={containerRef} />
       )}
     </div>

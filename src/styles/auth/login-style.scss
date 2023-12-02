@@ -1,8 +1,48 @@
+.blur-bg-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(5px);
+  transition: 0.1s ease;
+}
+
+.login-container {
+  opacity: 0;
+  transition: opacity 0.3s;
+
+  &.fade-entered {
+    opacity: 1; 
+    transition: opacity 0.3s;
+  }
+
+  &.fade-exited {
+    opacity: 0; 
+    transition: opacity 0.3s;
+  }
+}
+
 .form-login {
+  position: fixed;
+  top: 50%;
+  left: 50%;
   max-width: 720px;
   width: 100%;
   background: #fff;
   border: 2px solid #fff;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+
+  .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    cursor: pointer;
+    height: 25px;
+    width: 25px;
+    fill: #717171;
+  }
 
   .form-box {
     display: flex;
@@ -22,7 +62,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: url("../../../assets/auth/login-img.jpg");
+      background: url("../../assets/auth/login-img.jpg");
       background-size: cover;
       background-position: center;
     }
@@ -30,6 +70,10 @@
     .form-content {
       width: 100%;
       padding: 35px;
+
+      h2 {
+        color: black !important;
+      }
 
       .input-field {
         height: 40px;
@@ -139,6 +183,14 @@
     .bottom-link {
       text-align: center;
       font-size: 0.8rem;
+
+      span {
+        color: black;
+      }
+
+      a {
+        font-size: 0.8rem;
+      }
     }
 
     a {

@@ -5,8 +5,11 @@ import { Typography } from "@material-tailwind/react";
 
 import "../../styles/general-header-style.scss";
 import { usePathname } from "next/navigation";
+import Login from "../auth/Login";
 
 const GeneralHeader = () => {
+  const [isLoginModalOpen, setLoginModalOpen] = React.useState(false);
+
   const navItemsGeneral = [
     {
       nameItem: "Danh sách dự án",
@@ -97,17 +100,24 @@ const GeneralHeader = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-x-1">
-            <button className="hidden lg:inline-block btn-login">
-              <Link href="/login">
-                <span className="text-black">Đăng nhập</span>
-              </Link>
+          <div className="flex items-center w-56 justify-between">
+            <button
+              className="hidden lg:inline-block btn-login"
+              onClick={() => {
+                setLoginModalOpen(true);
+              }}
+            >
+              <span className="text-black">Đăng nhập</span>
             </button>
 
+            {isLoginModalOpen && (
+              <Login
+                actionClose={() => setLoginModalOpen(false)}
+              />
+            )}
+
             <button className="hidden lg:inline-block btn-signup">
-              <Link href="/register">
-                <span className="text-white hover:text-black">Đăng kí</span>
-              </Link>
+              <span className="text-white hover:text-black">Đăng kí</span>
             </button>
           </div>
         </div>
