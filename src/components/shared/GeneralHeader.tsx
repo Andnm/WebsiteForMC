@@ -1,14 +1,12 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import {
-  Typography,
-} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react";
 
 import "../../styles/general-header-style.scss";
+import { usePathname } from "next/navigation";
 
 const GeneralHeader = () => {
-
   const navItemsGeneral = [
     {
       nameItem: "Danh sách dự án",
@@ -24,6 +22,8 @@ const GeneralHeader = () => {
     },
   ];
 
+  const pathName = usePathname();
+
   const navItemsStudent = ["Pages", "Account", "Blocks", "Docs"];
   const navItemsBusiness = ["Pages", "Account", "Blocks", "Docs"];
 
@@ -37,7 +37,12 @@ const GeneralHeader = () => {
           color="white"
           className="p-1 font-normal nav-items"
         >
-          <Link href={item.path} className="flex items-center">
+          <Link
+            href={item.path}
+            className={`flex items-center ${
+              pathName === item.path && "active"
+            }`}
+          >
             {item.nameItem}
           </Link>
         </Typography>
