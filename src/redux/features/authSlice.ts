@@ -2,26 +2,35 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import http from "../utils/https";
 import { ErrorType } from "@/src/types/error.type";
 
+import {
+  saveTokenToSessionStorage,
+  removeTokenFromSessionStorage,
+  decodeTokenToUser,
+} from "../utils/handleToken";
+
+import {
+  saveUserToSessionStorage,
+  removeUserFromSessionStorage,
+} from "../utils/handleUser";
+
 export interface AuthState {
-  user: any;
-  token: string | null;
+  isLogin: boolean;
   loading: boolean;
   error: string;
 }
 
 const initialState: AuthState = {
-  user: null,
-  token: null,
+  isLogin: false,
   loading: false,
   error: "",
 };
 
 interface SignInResponse {
-  user: any;
   accessToken: string;
+  role_name?: string;
 }
 
-export const signIn = createAsyncThunk<
+export const login = createAsyncThunk<
   SignInResponse,
   { email: string; password: string }
 >("auth/signIn", async (data, thunkAPI) => {
@@ -30,7 +39,13 @@ export const signIn = createAsyncThunk<
       email: data.email,
       password: data.password,
     });
-    return response.data;
+
+    saveTokenToSessionStorage(response.data.accessToken);
+
+    const user = decodeTokenToUser(response.data.accessToken);
+    saveUserToSessionStorage(user);
+
+    return user;
   } catch (error) {
     return thunkAPI.rejectWithValue(
       (error as ErrorType)?.response?.data?.message
@@ -41,21 +56,27 @@ export const signIn = createAsyncThunk<
 export const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      removeTokenFromSessionStorage();
+      removeUserFromSessionStorage();
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(signIn.pending, (state) => {
+    builder.addCase(login.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(signIn.fulfilled, (state, action) => {
+    builder.addCase(login.fulfilled, (state, action) => {
       state.loading = false;
-      state.user = action.payload.user;
-      state.token = action.payload.accessToken;
+      state.isLogin = true;
     });
-    builder.addCase(signIn.rejected, (state, action) => {
+    builder.addCase(login.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });
   },
 });
+
+export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;

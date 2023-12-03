@@ -1,14 +1,12 @@
 "use client";
 
 import React from "react";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useSelector, useDispatch } from 'react-redux'
 
-import {
-  List,
-  ListItemSuffix,
-  Chip,
-} from "@material-tailwind/react";
+import { List, ListItemSuffix, Chip } from "@material-tailwind/react";
 
 import { SiSimpleanalytics } from "react-icons/si";
 import { MdOutlineAccountCircle } from "react-icons/md";
@@ -17,6 +15,8 @@ import { GoProjectRoadmap } from "react-icons/go";
 import { GoReport } from "react-icons/go";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { IoNotificationsOutline } from "react-icons/io5";
+
+import { logout } from "@/src/redux/features/authSlice";
 
 interface NavLinkProps {
   href: string;
@@ -75,7 +75,6 @@ const sections = [
 
 const NavLink: React.FC<NavLinkProps> = ({ href, icon, label, suffix }) => {
   const pathName = usePathname();
-
   const activeNavLink = pathName === href;
 
   return (
@@ -93,6 +92,19 @@ const NavLink: React.FC<NavLinkProps> = ({ href, icon, label, suffix }) => {
 };
 
 const SidebarAdmin = () => {
+
+  const router = useRouter()
+  const dispatch = useDispatch()
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logout());
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <div className="sidebar-admin h-screen w-full max-w-[15rem] shadow-xl shadow-blue-gray-900/5 relative">
       <div className="mb-2 p-4">
@@ -114,15 +126,19 @@ const SidebarAdmin = () => {
         </div>
       ))}
 
-      <List className="px-4 py-4 absolute bottom-0">
+      <div
+        className="px-4 py-4 absolute bottom-0"
+        style={{ color: "#455A64", width: "100%" }}
+      >
         <Link
           href="#"
           className={`flex items-center px-4 py-2 gap-3 rounded-lg hover:bg-gray-200`}
+          onClick={handleLogout}
         >
-          <RiLogoutBoxRLine />
+          <RiLogoutBoxRLine style={{ fill: "#455A64" }} />
           <p>Đăng xuất</p>
         </Link>
-      </List>
+      </div>
     </div>
   );
 };
