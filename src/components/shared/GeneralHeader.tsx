@@ -6,10 +6,15 @@ import { Typography } from "@material-tailwind/react";
 import "../../styles/general-header-style.scss";
 import { usePathname } from "next/navigation";
 import Login from "../auth/Login";
+import Register from "../auth/Register";
 
 const GeneralHeader = () => {
   const [isLoginModalOpen, setLoginModalOpen] = React.useState(false);
+  const [isRegisterModalOpen, setRegisterModalOpen] = React.useState(false);
 
+  const pathName = usePathname();
+
+  //show header
   const navItemsGeneral = [
     {
       nameItem: "Danh sách dự án",
@@ -24,9 +29,6 @@ const GeneralHeader = () => {
       path: "/contact",
     },
   ];
-
-  const pathName = usePathname();
-
   const navItemsStudent = ["Pages", "Account", "Blocks", "Docs"];
   const navItemsBusiness = ["Pages", "Account", "Blocks", "Docs"];
 
@@ -111,14 +113,21 @@ const GeneralHeader = () => {
             </button>
 
             {isLoginModalOpen && (
-              <Login
-                actionClose={() => setLoginModalOpen(false)}
-              />
+              <Login actionClose={() => setLoginModalOpen(false)} />
             )}
 
-            <button className="hidden lg:inline-block btn-signup">
+            <button
+              className="hidden lg:inline-block btn-signup"
+              onClick={() => {
+                setRegisterModalOpen(true);
+              }}
+            >
               <span className="text-white hover:text-black">Đăng kí</span>
             </button>
+
+            {isRegisterModalOpen && (
+              <Register actionClose={() => setRegisterModalOpen(false)} />
+            )}
           </div>
         </div>
       </div>

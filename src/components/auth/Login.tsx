@@ -7,27 +7,20 @@ import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { useAppDispatch } from "@/src/redux/store";
 import { login } from "@/src/redux/features/authSlice";
-import "@/src/styles/auth/login-style.scss";
+import "@/src/styles/auth/auth-style.scss";
+import { useInputChange } from "@/src/hook/useInputChange";
 
 interface LoginProps {
   actionClose: () => void;
 }
 
 const Login: React.FC<LoginProps> = ({ actionClose }) => {
-  const [formData, setFormData] = React.useState({ email: "", password: "" });
-
+  const [formData, handleInputChange] = useInputChange({
+    email: "",
+    password: "",
+  });
   const dispatch = useAppDispatch();
   const router = useRouter();
-
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    field: string
-  ) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [field]: event.target.value,
-    }));
-  };
 
   const handleLogin = () => {
     dispatch(login(formData)).then((result) => {
@@ -36,7 +29,6 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
         console.log(result.payload);
 
       } else if (login.fulfilled.match(result)) {
-        // Access the payload from action.payload
         const user = result.payload;
         switch (user?.role_name) {
           case "Admin":
@@ -61,7 +53,7 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
       <div className="blur-bg-overlay"></div>
 
       <div className="flex justify-center items-center h-5/6">
-        <div className={`form-login`}>
+        <div className={`form-container`}>
           <IoIosCloseCircleOutline
             className="close-btn"
             onClick={actionClose}
@@ -127,7 +119,7 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
 
               <div className="bottom-link">
                 <span> Bạn chưa có tài khoản? </span>
-                <Link href="/register">Đăng kí</Link>
+                <p>Đăng kí</p>
               </div>
             </div>
           </div>

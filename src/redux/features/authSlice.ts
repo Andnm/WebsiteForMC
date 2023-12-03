@@ -53,6 +53,30 @@ export const login = createAsyncThunk<
   }
 });
 
+export const loginGoogle = () => {
+  
+}
+
+export const register = createAsyncThunk<
+any,
+{ email: string; password: string }
+>("auth/register", async (data, thunkAPI) => {
+try {
+  const response = await http.post<any>("/auth/signup", {
+    email: data.email,
+    password: data.password,
+  });
+
+  console.log(response)
+
+  return response;
+} catch (error) {
+  return thunkAPI.rejectWithValue(
+    (error as ErrorType)?.response?.data?.message
+  );
+}
+});
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -63,6 +87,7 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    //login
     builder.addCase(login.pending, (state) => {
       state.loading = true;
     });
@@ -71,6 +96,17 @@ export const authSlice = createSlice({
       state.isLogin = true;
     });
     builder.addCase(login.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+    //register
+    builder.addCase(register.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(register.fulfilled, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(register.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });
