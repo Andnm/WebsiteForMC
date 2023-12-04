@@ -5,10 +5,13 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { useAppDispatch } from "@/src/redux/store";
+import { RootState, useAppDispatch } from "@/src/redux/store";
 import { login } from "@/src/redux/features/authSlice";
-import "@/src/styles/auth/auth-style.scss";
 import { useInputChange } from "@/src/hook/useInputChange";
+import { useSelector } from "react-redux";
+
+import "@/src/styles/auth/auth-style.scss";
+import SpinnerLoading from "../loading/SpinnerLoading";
 
 interface LoginProps {
   actionClose: () => void;
@@ -19,15 +22,16 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
     email: "",
     password: "",
   });
+
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
 
   const handleLogin = () => {
     dispatch(login(formData)).then((result) => {
       if (login.rejected.match(result)) {
         //do something
         console.log(result.payload);
-
       } else if (login.fulfilled.match(result)) {
         const user = result.payload;
         switch (user?.role_name) {
@@ -45,6 +49,8 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
             break;
         }
       }
+
+      actionClose();
     });
   };
 
@@ -114,6 +120,8 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
                   Quên mật khẩu?
                 </Link>
 
+                {error && <span className="text-red-500">{error}</span>}
+
                 <button onClick={handleLogin}>Đăng nhập</button>
               </div>
 
@@ -125,6 +133,8 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
           </div>
         </div>
       </div>
+
+      {loading && <SpinnerLoading />}
     </>
   );
 };

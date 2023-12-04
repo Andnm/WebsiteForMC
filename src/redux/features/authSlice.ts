@@ -12,6 +12,12 @@ import {
   saveUserToSessionStorage,
   removeUserFromSessionStorage,
 } from "../utils/handleUser";
+import { OtpType } from "@/src/types/otp.type";
+import {
+  getOtpFromSessionStorage,
+  removeOtpFromSessionStorage,
+  saveOtpToSessionStorage,
+} from "../utils/handleOtp";
 
 export interface AuthState {
   isLogin: boolean;
@@ -53,29 +59,68 @@ export const login = createAsyncThunk<
   }
 });
 
-export const loginGoogle = () => {
-  
-}
+export const loginGoogle = () => {};
 
-export const register = createAsyncThunk<
-any,
-{ email: string; password: string }
->("auth/register", async (data, thunkAPI) => {
-try {
-  const response = await http.post<any>("/auth/signup", {
-    email: data.email,
-    password: data.password,
-  });
+export const register = createAsyncThunk<any, any>(
+  "auth/register",
+  async (data, thunkAPI) => {
+    try {
+      const response = await http.post<any>("/auth/signup", {
+        email: data.email,
+        password: data.password,
+      });
 
-  console.log(response)
+      console.log(response);
 
-  return response;
-} catch (error) {
-  return thunkAPI.rejectWithValue(
-    (error as ErrorType)?.response?.data?.message
-  );
-}
-});
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
+export const sendOtpRegister = createAsyncThunk<OtpType, any>(
+  "auth/sendOtpRegister",
+  async (data, thunkAPI) => {
+    try {
+      const response = await http.post<OtpType>("/email/sendOtpRegister", {
+        email: data.email,
+      });
+
+      saveOtpToSessionStorage(response.data);
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
+export const verifyOtp = createAsyncThunk<any, any>(
+  "auth/verifyOtp",
+  async (data, thunkAPI) => {
+    try {
+      const otp = getOtpFromSessionStorage();
+
+      const response = await http.post<any>("/email/verifyOtp", {
+        ...data,
+        ...otp,
+      });
+
+      removeOtpFromSessionStorage()
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
 
 export const authSlice = createSlice({
   name: "auth",
@@ -90,10 +135,12 @@ export const authSlice = createSlice({
     //login
     builder.addCase(login.pending, (state) => {
       state.loading = true;
+      state.error = "";
     });
     builder.addCase(login.fulfilled, (state, action) => {
       state.loading = false;
       state.isLogin = true;
+      state.error = "";
     });
     builder.addCase(login.rejected, (state, action) => {
       state.loading = false;
@@ -102,11 +149,41 @@ export const authSlice = createSlice({
     //register
     builder.addCase(register.pending, (state) => {
       state.loading = true;
+      state.error = "";
     });
     builder.addCase(register.fulfilled, (state, action) => {
       state.loading = false;
+      state.error = "";
     });
     builder.addCase(register.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
+    //send Otp Register
+    builder.addCase(sendOtpRegister.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(sendOtpRegister.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(sendOtpRegister.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
+    //verify Otp
+    builder.addCase(verifyOtp.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(verifyOtp.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(verifyOtp.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });

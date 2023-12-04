@@ -7,11 +7,14 @@ import "../../styles/general-header-style.scss";
 import { usePathname } from "next/navigation";
 import Login from "../auth/Login";
 import Register from "../auth/Register";
+import { useUserData } from "@/src/hook/useUserData";
+import DropDownUser from "./DropDownUser";
 
 const GeneralHeader = () => {
   const [isLoginModalOpen, setLoginModalOpen] = React.useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = React.useState(false);
 
+  const userData = useUserData();
   const pathName = usePathname();
 
   //show header
@@ -25,16 +28,47 @@ const GeneralHeader = () => {
       path: "/about-us",
     },
     {
+      nameItem: "Bạn cần hỗ trợ?",
+      path: "/support",
+    },
+    {
       nameItem: "Liên lạc",
       path: "/contact",
     },
   ];
-  const navItemsStudent = ["Pages", "Account", "Blocks", "Docs"];
-  const navItemsBusiness = ["Pages", "Account", "Blocks", "Docs"];
+
+  const navItemsStudent = [
+    {
+      nameItem: "Gửi hỗ trợ",
+      path: "/support",
+    },
+  ];
+
+  const navItemsBusiness = [
+    {
+      nameItem: "Gửi hỗ trợ",
+      path: "/support",
+    },
+  ];
+
+  const getNavItems = () => {
+    if (userData && userData.role_name) {
+      switch (userData.role_name) {
+        case "Student":
+          return navItemsStudent;
+        case "Business":
+          return navItemsBusiness;
+        default:
+          return navItemsGeneral;
+      }
+    } else {
+      return navItemsGeneral;
+    }
+  };
 
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      {navItemsGeneral.map((item, index) => (
+      {getNavItems().map((item, index) => (
         <Typography
           key={index}
           as="li"
@@ -43,12 +77,12 @@ const GeneralHeader = () => {
           className="p-1 font-normal nav-items"
         >
           <Link
-            href={item.path}
+            href={item?.path}
             className={`flex items-center ${
-              pathName === item.path && "active"
+              pathName === item?.path && "active"
             }`}
           >
-            {item.nameItem}
+            {item?.nameItem}
           </Link>
         </Typography>
       ))}
@@ -103,30 +137,36 @@ const GeneralHeader = () => {
           </div>
 
           <div className="flex items-center w-56 justify-between">
-            <button
-              className="hidden lg:inline-block btn-login"
-              onClick={() => {
-                setLoginModalOpen(true);
-              }}
-            >
-              <span className="text-black">Đăng nhập</span>
-            </button>
+            {userData ? (
+              <DropDownUser />
+            ) : (
+              <>  
+                <button
+                  className="hidden lg:inline-block btn-login"
+                  onClick={() => {
+                    setLoginModalOpen(true);
+                  }}
+                >
+                  <span className="text-black">Đăng nhập</span>
+                </button>
 
-            {isLoginModalOpen && (
-              <Login actionClose={() => setLoginModalOpen(false)} />
-            )}
+                {isLoginModalOpen && (
+                  <Login actionClose={() => setLoginModalOpen(false)} />
+                )}
 
-            <button
-              className="hidden lg:inline-block btn-signup"
-              onClick={() => {
-                setRegisterModalOpen(true);
-              }}
-            >
-              <span className="text-white hover:text-black">Đăng kí</span>
-            </button>
+                <button
+                  className="hidden lg:inline-block btn-signup"
+                  onClick={() => {
+                    setRegisterModalOpen(true);
+                  }}
+                >
+                  <span className="text-white hover:text-black">Đăng kí</span>
+                </button>
 
-            {isRegisterModalOpen && (
-              <Register actionClose={() => setRegisterModalOpen(false)} />
+                {isRegisterModalOpen && (
+                  <Register actionClose={() => setRegisterModalOpen(false)} />
+                )}
+              </>
             )}
           </div>
         </div>
