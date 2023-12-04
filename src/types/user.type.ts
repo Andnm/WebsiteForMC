@@ -1,6 +1,6 @@
 export interface UserType {
     email: string,
-    avatar_utl?: string,
+    avatar_url?: string,
     fullname?: string,
     dob?: Date,
     gender?: string,
