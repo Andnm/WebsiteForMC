@@ -155,7 +155,7 @@ const OtpRegister: FC<OtpRegisterProps> = ({
             onKeyPress={handleKeyPress}
           />
         </div>
-        {error && <Message text_color={"text-red-500"} children={error} />}
+        {error && <Message text_color={"text-red-500"} text={error} />}
         <button
           className={`verifyButton ${
             isButtonDisabled ? "button-none-event" : ""
