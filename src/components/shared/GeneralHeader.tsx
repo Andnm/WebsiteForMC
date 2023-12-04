@@ -39,12 +39,24 @@ const GeneralHeader = () => {
 
   const navItemsStudent = [
     {
+      nameItem: "Bảng làm việc",
+      path: "/student-board",
+    },
+    {
+      nameItem: "Danh sách dự án",
+      path: "/project-list",
+    },
+    {
       nameItem: "Gửi hỗ trợ",
       path: "/support",
     },
   ];
 
   const navItemsBusiness = [
+    {
+      nameItem: "Bảng làm việc",
+      path: "/business-board",
+    },
     {
       nameItem: "Gửi hỗ trợ",
       path: "/support",
@@ -104,7 +116,8 @@ const GeneralHeader = () => {
         <div className="flex items-center gap-4">
           <div className="mr-4 hidden lg:block">{navList}</div>
 
-          <div className="search-container">
+          {/* TẠM THỜI ẨN SEARCH */}
+          {/* <div className="search-container">
             <input
               type="text"
               name="text"
@@ -137,7 +150,7 @@ const GeneralHeader = () => {
                 ></path>
               </svg>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex items-center justify-between gap-2">
             {userData ? (

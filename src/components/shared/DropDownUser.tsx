@@ -26,13 +26,13 @@ const DefaultAvatarURL =
 const roleSpecificMenuItems: Record<string, { path: string; name: string }[]> =
   {
     Student: [
-      { path: "/#", name: "Trang cá nhân" },
+      { path: "/student-profile", name: "Trang cá nhân" },
       { path: "/student-board", name: "Bảng làm việc" },
       { path: "/#", name: "Lịch sử hoạt động" },
       { path: "/#", name: "Trợ giúp" },
     ],
     Business: [
-      { path: "/#", name: "Trang cá nhân" },
+      { path: "/business-profile", name: "Trang cá nhân" },
       { path: "/business-board", name: "Quản lý dự án" },
       { path: "/#", name: "Hoạt động gần đây" },
       { path: "/#", name: "Trợ giúp" },
