@@ -29,7 +29,8 @@ const Register: React.FC<RegisterProps> = ({ actionClose }) => {
   });
 
   const [errorOtp, setErrorOtp] = React.useState("");
-  const inputsOtpRef = React.useRef<HTMLInputElement[]>([]);
+
+  const inputsOtpRef: React.RefObject<HTMLInputElement[]> = React.useRef([]);
 
   const [openOtpForm, setOpenOtpForm] = React.useState(false);
 
@@ -55,9 +56,11 @@ const Register: React.FC<RegisterProps> = ({ actionClose }) => {
   };
 
   const confirmOTP = async () => {
+
+    
     const otp = [
-      inputsOtpRef.current[0].value,
-      ...inputsOtpRef.current.slice(1).map((input) => input.value),
+      inputsOtpRef.current![0].value,
+      ...inputsOtpRef.current!.slice(1).map((input) => input.value),
     ].join("");
 
     const data = {
@@ -67,7 +70,7 @@ const Register: React.FC<RegisterProps> = ({ actionClose }) => {
 
     dispatch(verifyOtp(data)).then((result) => {
       if (verifyOtp.rejected.match(result)) {
-        setErrorOtp(result.payload);
+        setErrorOtp(result.payload as string);
       } else if (verifyOtp.fulfilled.match(result)) {
         setOpenOtpForm(false);
 

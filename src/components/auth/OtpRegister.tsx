@@ -4,7 +4,7 @@ import Message from "../shared/Message";
 
 interface OtpRegisterProps {
   verifyAction: () => void;
-  inputsRef: React.RefObject<HTMLInputElement>[];
+  inputsRef: any;
   error: string;
   setError: () => void;
 }
@@ -13,7 +13,7 @@ const OtpRegister: FC<OtpRegisterProps> = ({
   verifyAction,
   inputsRef,
   error,
-  setError
+  setError,
 }) => {
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
 
@@ -28,7 +28,9 @@ const OtpRegister: FC<OtpRegisterProps> = ({
       }
     });
 
-    const emptyInput = inputsRef.current.find((input) => input.value === "");
+    const emptyInput = inputsRef.current.find(
+      (input: HTMLInputElement) => input.value === ""
+    );
     if (emptyInput) {
       emptyInput.focus();
     } else {
@@ -36,15 +38,30 @@ const OtpRegister: FC<OtpRegisterProps> = ({
     }
   };
 
-  const handleInput = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleInput = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
     if (setError) {
       setError();
     }
 
-    const inputLength = e.target.value.length;
-    const maxLength = e.target.maxLength ? parseInt(e.target.maxLength) : 0;
+    const inputLength = (e as React.ChangeEvent<HTMLInputElement>).target.value
+      .length;
+    const maxLength =
+      (e as React.ChangeEvent<HTMLInputElement>).target.maxLength || 0;
 
-    if (e.key === "Backspace" && inputLength === 0 && index > 0) {
+    const isKeyboardEvent =
+      (e as React.KeyboardEvent<HTMLInputElement>).key !== undefined;
+
+    if (
+      isKeyboardEvent &&
+      (e as React.KeyboardEvent<HTMLInputElement>).key === "Backspace" &&
+      inputLength === 0 &&
+      index > 0
+    ) {
       inputsRef.current[index - 1].value = "";
       inputsRef.current[index - 1].focus();
     } else if (
@@ -68,7 +85,9 @@ const OtpRegister: FC<OtpRegisterProps> = ({
   const checkButtonDisabled = () => {
     setIsButtonDisabled(
       (prev) =>
-        inputsRef.current.filter((input) => input.value !== "").length !== 6
+        inputsRef.current.filter(
+          (input: HTMLInputElement | null) => input?.value !== ""
+        ).length !== 6
     );
   };
 

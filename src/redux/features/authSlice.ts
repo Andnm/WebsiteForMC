@@ -100,7 +100,7 @@ export const sendOtpRegister = createAsyncThunk<OtpType, any>(
   }
 );
 
-export const verifyOtp = createAsyncThunk<any, any>(
+export const verifyOtp = createAsyncThunk<string, any>(
   "auth/verifyOtp",
   async (data, thunkAPI) => {
     try {
