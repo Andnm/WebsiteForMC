@@ -5,9 +5,11 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import Login from "@/src/components/auth/Login";
 
-const LandingLayout = (props: { children: React.ReactNode }) => {
+const HomeLayout = (props: { children: React.ReactNode }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const pathName = usePathname();
+
+  const appearScroll = pathName === "/";
 
   React.useEffect(() => {
     const container = containerRef.current;
@@ -27,24 +29,27 @@ const LandingLayout = (props: { children: React.ReactNode }) => {
     }
   }, []);
 
-  return (
+  return appearScroll ? (
     <div className="h-screen flex" style={{ backgroundColor: "#1d1d1d" }}>
       <div className="fixed top-0 w-full">
         <GeneralHeader />
       </div>
 
       <main
-        ref={containerRef}
         className="flex-1 overflow-x-hidden overflow-y-hidden mt-16"
+        ref={containerRef}
       >
         {props.children}
       </main>
 
-      {pathName !== "/login" && pathName !== "/register" && (
-        <ScrollGuide containerRef={containerRef} />
-      )}
+      <ScrollGuide containerRef={containerRef} />
+    </div>
+  ) : (
+    <div className="">
+      <GeneralHeader />
+      <div>{props.children}</div>
     </div>
   );
 };
 
-export default LandingLayout;
+export default HomeLayout;

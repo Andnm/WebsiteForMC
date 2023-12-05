@@ -24,11 +24,11 @@ const GeneralHeader = () => {
       path: "/project-list",
     },
     {
-      nameItem: "Về chúng tôi",
+      nameItem: "Thông tin kho dự án",
       path: "/about-us",
     },
     {
-      nameItem: "Bạn cần hỗ trợ?",
+      nameItem: "Bạn cần hỗ trợ ?",
       path: "/support",
     },
     {
@@ -111,7 +111,7 @@ const GeneralHeader = () => {
           href="/"
           className="mr-4 cursor-pointer py-1.5 font-medium brand-name"
         >
-          MC
+          Kho dự án
         </Link>
         <div className="flex items-center gap-4">
           <div className="mr-4 hidden lg:block">{navList}</div>
