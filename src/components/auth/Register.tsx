@@ -5,7 +5,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { RootState, useAppDispatch } from "@/src/redux/store";
+import { useAppDispatch, useAppSelector } from "@/src/redux/store";
 import { useInputChange } from "@/src/hook/useInputChange";
 import "@/src/styles/auth/auth-style.scss";
 import {
@@ -15,7 +15,6 @@ import {
   verifyOtp,
 } from "@/src/redux/features/authSlice";
 import SpinnerLoading from "../loading/SpinnerLoading";
-import { useSelector } from "react-redux";
 import OtpRegister from "./OtpRegister";
 
 interface RegisterProps {
@@ -37,7 +36,7 @@ const Register: React.FC<RegisterProps> = ({ actionClose }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { loading, error } = useAppSelector((state) => state.auth);
 
   const handleRegister = () => {
     dispatch(register(formData)).then((result) => {
@@ -56,8 +55,6 @@ const Register: React.FC<RegisterProps> = ({ actionClose }) => {
   };
 
   const confirmOTP = async () => {
-
-    
     const otp = [
       inputsOtpRef.current![0].value,
       ...inputsOtpRef.current!.slice(1).map((input) => input.value),

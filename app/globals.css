@@ -13,3 +13,7 @@
   --gray-color: #454545;
   --light-gray-color: #cccccc;
 }
+
+.text-destructive {
+  color:red;
+}

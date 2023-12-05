@@ -5,10 +5,9 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { RootState, useAppDispatch } from "@/src/redux/store";
+import { RootState, useAppDispatch, useAppSelector } from "@/src/redux/store";
 import { login } from "@/src/redux/features/authSlice";
 import { useInputChange } from "@/src/hook/useInputChange";
-import { useSelector } from "react-redux";
 
 import "@/src/styles/auth/auth-style.scss";
 import SpinnerLoading from "../loading/SpinnerLoading";
@@ -25,7 +24,7 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
 
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { loading, error } = useAppSelector((state: RootState) => state.auth);
 
   const handleLogin = () => {
     dispatch(login(formData)).then((result) => {

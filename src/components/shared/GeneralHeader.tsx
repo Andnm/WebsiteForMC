@@ -83,7 +83,7 @@ const GeneralHeader = () => {
           <Link
             href={item?.path}
             className={`flex items-center ${
-              pathName === item?.path && "active"
+              pathName.includes(item?.path) && "active"
             }`}
           >
             {item?.nameItem}
@@ -95,7 +95,9 @@ const GeneralHeader = () => {
 
   return (
     <div
-      className={`general-header-container  ${userData && "header-white shadow-sm border-b-2"}
+      className={`general-header-container  ${
+        userData && "header-white shadow-sm border-b-2"
+      }
       top-0 z-10 h-max max-w-full border-0 rounded-none px-4 py-2 lg:px-8 lg:py-3`}
     >
       <div className="flex items-center justify-between text-white">
