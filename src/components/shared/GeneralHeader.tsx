@@ -46,20 +46,12 @@ const GeneralHeader = () => {
       nameItem: "Danh sách dự án",
       path: "/project-list",
     },
-    {
-      nameItem: "Gửi hỗ trợ",
-      path: "/support",
-    },
   ];
 
   const navItemsBusiness = [
     {
       nameItem: "Bảng làm việc",
       path: "/business-board",
-    },
-    {
-      nameItem: "Gửi hỗ trợ",
-      path: "/support",
     },
   ];
 

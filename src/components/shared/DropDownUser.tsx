@@ -29,13 +29,13 @@ const roleSpecificMenuItems: Record<string, { path: string; name: string }[]> =
       { path: "/student-profile", name: "Trang cá nhân" },
       { path: "/student-board", name: "Bảng làm việc" },
       { path: "/#", name: "Lịch sử hoạt động" },
-      { path: "/#", name: "Trợ giúp" },
+      { path: "/support", name: "Trợ giúp" },
     ],
     Business: [
       { path: "/business-profile", name: "Trang cá nhân" },
       { path: "/business-board", name: "Quản lý dự án" },
       { path: "/#", name: "Hoạt động gần đây" },
-      { path: "/#", name: "Trợ giúp" },
+      { path: "/support", name: "Trợ giúp" },
     ],
   };
 
