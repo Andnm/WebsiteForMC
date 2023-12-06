@@ -45,6 +45,21 @@ export const getAllProjectByBusiness = createAsyncThunk(
   }
 );
 
+export const getAllProjectByEveryOne = createAsyncThunk(
+  "listProject/getAllProjectByEveryOne",
+  async (_, thunkAPI) => {
+    try {
+      const response = await http.get<any>("/projects");
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
 export const projectSlice = createSlice({
   name: "listProject",
   initialState,
@@ -72,10 +87,25 @@ export const projectSlice = createSlice({
     });
     builder.addCase(getAllProjectByBusiness.fulfilled, (state, action) => {
       state.loading = false;
-      state.data = [action.payload];
+      state.data = action.payload;
       state.error = "";
     });
     builder.addCase(getAllProjectByBusiness.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
+    //get All Project By EveryOne
+    builder.addCase(getAllProjectByEveryOne.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(getAllProjectByEveryOne.fulfilled, (state, action) => {
+      state.loading = false;
+      state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getAllProjectByEveryOne.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });

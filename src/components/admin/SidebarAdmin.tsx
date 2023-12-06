@@ -83,6 +83,7 @@ const NavLink: React.FC<NavLinkProps> = ({ href, icon, label, suffix }) => {
       className={`flex items-center px-4 py-2 gap-3 rounded-lg ${
         activeNavLink ? "bg-blue-100" : "hover:bg-gray-200"
       }`}
+      style={{borderRadius: '5px'}}
     >
       {icon}
       <p>{label}</p>
@@ -106,7 +107,7 @@ const SidebarAdmin = () => {
   };
 
   return (
-    <div className="sidebar-admin h-screen w-full max-w-[15rem] shadow-xl shadow-blue-gray-900/5 relative">
+    <div className="sidebar-admin w-full max-w-[15rem] shadow-xl shadow-blue-gray-900/5 relative">
       <div className="mb-2 p-4">
         <h5 className="text-center text-orange-500 font-bold">Kho dự án</h5>
       </div>
@@ -132,8 +133,9 @@ const SidebarAdmin = () => {
       >
         <Link
           href="#"
-          className={`flex items-center px-4 py-2 gap-3 rounded-lg hover:bg-gray-200`}
+          className={`flex items-center px-4 py-2 gap-3 border-2 hover:bg-gray-200`}
           onClick={handleLogout}
+          style={{borderRadius: '5px'}}
         >
           <RiLogoutBoxRLine style={{ fill: "#455A64" }} />
           <p>Đăng xuất</p>

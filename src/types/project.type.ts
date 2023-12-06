@@ -1,4 +1,10 @@
 export interface ProjectType {
+  business?:
+    | {
+        avatar_url?: string;
+        fullname?: string;
+      }
+    | undefined;
   fullname: string;
   position: string;
   email_responsible_person: string;
@@ -14,4 +20,6 @@ export interface ProjectType {
   project_registration_expired_date: string;
   project_start_date: string;
   project_expected_end_date: string;
+  project_status?: string;
+  createdAt?: string | undefined;
 }
