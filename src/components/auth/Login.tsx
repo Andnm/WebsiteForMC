@@ -26,7 +26,9 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
   const router = useRouter();
   const { loading, error } = useAppSelector((state: RootState) => state.auth);
 
-  const handleLogin = () => {
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     dispatch(login(formData)).then((result) => {
       if (login.rejected.match(result)) {
         //do something
@@ -73,7 +75,7 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
               </p>
             </div>
 
-            <div className="form-content">
+            <form className="form-content"  onSubmit={handleLogin}>
               <h2>ĐĂNG NHẬP</h2>
               <div className="form">
                 <div className="">
@@ -121,14 +123,16 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
 
                 {error && <span className="text-red-500">{error}</span>}
 
-                <button onClick={handleLogin}>Đăng nhập</button>
+                <button type="submit">
+                  Đăng nhập
+                </button>
               </div>
 
               <div className="bottom-link">
                 <span> Bạn chưa có tài khoản? </span>
                 <p>Đăng kí</p>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

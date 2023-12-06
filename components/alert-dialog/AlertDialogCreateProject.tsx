@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 import "./style.scss";
 import { ProjectType } from "@/src/types/project.type";
@@ -144,7 +144,6 @@ export const AlertDialogCreateProject = ({ children }: DialogProps) => {
           </Button>
         </div>
       </AlertDialogContent>
-      <Toaster position="top-right" />
       {loading && <SpinnerLoading />}
     </AlertDialog>
   );
