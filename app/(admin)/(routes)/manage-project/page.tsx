@@ -19,7 +19,6 @@ const ManageProject = () => {
         //do something
         console.log(result.payload);
       } else if (getAllProjectByEveryOne.fulfilled.match(result)) {
-        //do something
         const reversedData = [...result.payload].reverse();
         setDataTable(reversedData);
       }

@@ -100,7 +100,7 @@ export const AlertDialogCreateProject = ({ children }: DialogProps) => {
           type={field.name.includes("date") ? "date" : "text"}
           id={field.name}
           name={field.name}
-          value={formData[field.name]}
+          value={formData[field.name] as string}
           onChange={(e) => handleInputChange(field.name, e.target.value)}
           className="mt-1 p-2 border rounded-md w-full"
         />
@@ -133,12 +133,12 @@ export const AlertDialogCreateProject = ({ children }: DialogProps) => {
         {error && <Message text_color={"text-red-500"} text={error} />}
 
         <div className="flex gap-4 justify-end">
-          <AlertDialogCancel className="rounded rounded-sm bg-orange-200 border-orange-200 border-2">
+          <AlertDialogCancel className="rounded-sm bg-orange-200 border-orange-200 border-2">
             Hủy
           </AlertDialogCancel>
           <Button
             onClick={handleCreate}
-            className="rounded rounded-sm bg-blue-200 border-blue-200 border-2"
+            className="rounded-sm bg-blue-200 border-blue-200 border-2"
           >
             Tạo Project
           </Button>
