@@ -165,9 +165,9 @@ const ProjectTable: React.FC<ProjectTableProps> = ({ dataTable }) => {
                         <>
                           <Popover.Button
                             className={`
-                ${open ? "text-white" : "text-white/90"}
-                group inline-flex items-cente bg-orange-700 
-                px-3 py-2 text-base font-medium hover:text-white focus:outline-none 
+                ${open ? "text-red" : "text-black"}
+                group inline-flex items-cente
+                px-3 py-2 text-base font-medium hover:text-red focus:outline-none 
                 focus-visible:ring-2 focus-visible:ring-white/75`}
                           >
                             <BiDotsHorizontalRounded />
