@@ -10,11 +10,11 @@ export const formatDate = (inputDate: string) => {
 export const getColorByProjectStatus = (status: string): string => {
   switch (status) {
     case "Pending":
-      return "bg-yellow-200 text-yellow-900";
+      return "bg-blue-200 text-blue-900";
     case "Public":
       return "bg-violet-200 text-violet-900";
     case "Processing":
-      return "bg-blue-200 text-blue-900";
+      return "bg-yellow-200 text-yellow-900";
     case "Done":
       return "bg-green-200 text-green-900";
     case "Expired":

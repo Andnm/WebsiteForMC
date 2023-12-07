@@ -11,13 +11,9 @@ export const removeTokenFromSessionStorage = (): void => {
 };
 
 export const getTokenFromSessionStorage = (): string | null => {
-  if (typeof window !== "undefined") {
-    const tokenString = sessionStorage?.getItem("token");
-    const token = tokenString ? JSON.parse(tokenString) : null;
-    return token;
-  } else {
-    return null
-  }
+  const tokenString = sessionStorage?.getItem("token");
+  const token = tokenString ? JSON.parse(tokenString) : null;
+  return token;
 };
 
 //decode token to user info

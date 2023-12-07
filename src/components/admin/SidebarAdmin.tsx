@@ -45,6 +45,7 @@ const sections = [
             variant="ghost"
             color="indigo"
             className="rounded-full"
+            style={{backgroundColor: "#cccccc"}}
           />
         ),
       },

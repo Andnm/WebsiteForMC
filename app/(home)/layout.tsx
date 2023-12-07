@@ -3,7 +3,6 @@ import GeneralHeader from "@/src/components/shared/GeneralHeader";
 import ScrollGuide from "@/src/components/landing/ScrollGuide";
 import React from "react";
 import { usePathname } from "next/navigation";
-import Login from "@/src/components/auth/Login";
 
 const HomeLayout = (props: { children: React.ReactNode }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
