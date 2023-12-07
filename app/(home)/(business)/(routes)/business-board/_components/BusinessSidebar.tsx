@@ -24,9 +24,19 @@ import { MdOutlineAnalytics } from "react-icons/md";
 import { LuHistory } from "react-icons/lu";
 import { GoProjectRoadmap } from "react-icons/go";
 
-interface SidebarProps {}
+interface SidebarProps {
+  dataProjects: any[];
+  setDataProjects: React.Dispatch<React.SetStateAction<any[]>>;
+  loadingProject?: boolean;
+  loadingProjectList?: boolean;
+}
 
-const BusinessSidebar = () => {
+const BusinessSidebar: React.FC<SidebarProps> = ({
+  dataProjects,
+  setDataProjects,
+  loadingProject,
+  loadingProjectList,
+}) => {
   const router = useRouter();
   const pathName = usePathname();
 
@@ -52,22 +62,22 @@ const BusinessSidebar = () => {
     {
       label: "View",
       icon: <MdOutlineGridView className="w-5 h-5" />,
-      href: "/business-board/view",
+      href: "/view",
     },
     {
       label: "Group",
       icon: <HiOutlineUserGroup className="w-5 h-5" />,
-      href: "/business-board/group",
+      href: "/group",
     },
     {
       label: "Chat",
       icon: <IoChatboxEllipsesOutline className="w-5 h-5" />,
-      href: "/business-board/chat",
+      href: "/chat",
     },
     {
       label: "Setting",
       icon: <IoSettingsOutline className="w-5 h-5" />,
-      href: "/business-board/setting",
+      href: "/setting",
     },
   ];
 
@@ -78,7 +88,7 @@ const BusinessSidebar = () => {
   const DefaultAvatarURL =
     "https://cdn.popsww.com/blog/sites/2/2021/03/doraemon-tap-97.jpg";
 
-  if (!true) {
+  if (loadingProjectList) {
     return (
       <>
         <div className="flex items-center justify-between mb-2">

@@ -25,6 +25,8 @@ import Message from "@/src/components/shared/Message";
 
 interface DialogProps {
   children: React.ReactNode;
+  dataProjects: any[];
+  setDataProjects: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const fields: { name: keyof ProjectType; label: string }[] = [
@@ -67,26 +69,18 @@ export const AlertDialogCreateProject = ({ children }: DialogProps) => {
     project_expected_end_date: "",
   });
 
-  const { loadingData, error } = useAppSelector((state) => state.project);
+  const { loadingProject, loadingProjectList, error } = useAppSelector((state) => state.project);
   const dispatch = useAppDispatch();
 
   const [open, setOpen] = React.useState(false);
 
   const handleInputChange = (name: keyof ProjectType, value: string | Date) => {
-    let formattedValue;
-
-    if (name.includes("date")) {
-      formattedValue = format(new Date(value), "yyyy-MM-dd");
-    } else {
-      formattedValue = value;
-    }
-
-    setFormData({
-      ...formData,
-      [name]: formattedValue,
-    });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name.includes("date") ? format(new Date(value), "yyyy-MM-dd") : value,
+    }));
   };
-
+  
   const renderFormFields = () => {
     return fields.map((field) => (
       <div key={field.name} className="mb-4">
@@ -144,7 +138,7 @@ export const AlertDialogCreateProject = ({ children }: DialogProps) => {
           </Button>
         </div>
       </AlertDialogContent>
-      {loadingData && <SpinnerLoading />}
+      {loadingProject && <SpinnerLoading />}
     </AlertDialog>
   );
 };

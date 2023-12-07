@@ -6,15 +6,15 @@ import { getTokenFromSessionStorage } from "../utils/handleToken";
 
 export interface ListProjectState {
   data: ProjectType[];
-  loadingData: boolean;
-  loadingRow: boolean;
+  loadingProjectList: boolean;
+  loadingProject: boolean;
   error: string;
 }
 
 const initialState: ListProjectState = {
   data: [],
-  loadingData: false,
-  loadingRow: false,
+  loadingProjectList: false,
+  loadingProject: false,
   error: "",
 };
 
@@ -46,9 +46,24 @@ export const createNewProject = createAsyncThunk(
   }
 );
 
+export const getProjectById = createAsyncThunk(
+  "listProject/getProjectById",
+  async (id: number, thunkAPI) => {
+    try {
+      const response = await http.get<any>(`/projects/${id}`);
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
 export const getAllProjectByBusiness = createAsyncThunk(
   "listProject/getAllProjectByBusiness",
-  async (formData: ProjectType, thunkAPI) => {
+  async (_, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -134,7 +149,7 @@ export const updateProjectByAdmin = createAsyncThunk(
         data,
         configHeader
       );
-      console.log('response')
+      console.log("response");
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -151,75 +166,90 @@ export const projectSlice = createSlice({
   extraReducers: (builder) => {
     //create New Project
     builder.addCase(createNewProject.pending, (state) => {
-      state.loadingData = true;
+      state.loadingProject = true;
       state.error = "";
     });
     builder.addCase(createNewProject.fulfilled, (state, action) => {
-      state.loadingData = false;
+      state.loadingProject = false;
       state.data = [action.payload];
       state.error = "";
     });
     builder.addCase(createNewProject.rejected, (state, action) => {
-      state.loadingData = false;
+      state.loadingProject = false;
+      state.error = action.payload as string;
+    });
+
+    //get Project By Id
+    builder.addCase(getProjectById.pending, (state) => {
+      state.loadingProject = true;
+      state.error = "";
+    });
+    builder.addCase(getProjectById.fulfilled, (state, action) => {
+      state.loadingProject = false;
+      // state.data = [action.payload];
+      state.error = "";
+    });
+    builder.addCase(getProjectById.rejected, (state, action) => {
+      state.loadingProject = false;
       state.error = action.payload as string;
     });
 
     //get all project by business
     builder.addCase(getAllProjectByBusiness.pending, (state) => {
-      state.loadingData = true;
+      state.loadingProjectList = true;
       state.error = "";
     });
     builder.addCase(getAllProjectByBusiness.fulfilled, (state, action) => {
-      state.loadingData = false;
-      state.data = action.payload;
+      state.loadingProjectList = false;
+      // state.data = action.payload;
       state.error = "";
     });
     builder.addCase(getAllProjectByBusiness.rejected, (state, action) => {
-      state.loadingData = false;
+      state.loadingProjectList = false;
       state.error = action.payload as string;
     });
 
     //get All Project By EveryOne
     builder.addCase(getAllProjectByEveryOne.pending, (state) => {
-      state.loadingData = true;
+      state.loadingProjectList = true;
       state.error = "";
     });
     builder.addCase(getAllProjectByEveryOne.fulfilled, (state, action) => {
-      state.loadingData = false;
-      state.data = action.payload;
+      state.loadingProjectList = false;
+      // state.data = action.payload;
       state.error = "";
     });
     builder.addCase(getAllProjectByEveryOne.rejected, (state, action) => {
-      state.loadingData = false;
+      state.loadingProjectList = false;
       state.error = action.payload as string;
     });
 
     //confirm project by admin
     builder.addCase(confirmProjectByAdmin.pending, (state) => {
-      state.loadingRow = true;
+      state.loadingProject = true;
       state.error = "";
     });
     builder.addCase(confirmProjectByAdmin.fulfilled, (state, action) => {
-      state.loadingRow = false;
+      state.loadingProject = false;
       state.error = "";
     });
     builder.addCase(confirmProjectByAdmin.rejected, (state, action) => {
-      state.loadingRow = false;
+      state.loadingProject = false;
       state.error = action.payload as string;
     });
 
     //update and confirm project by admin
     builder.addCase(updateProjectByAdmin.pending, (state) => {
-      state.loadingRow = true;
+      state.loadingProject = true;
       state.error = "";
     });
     builder.addCase(updateProjectByAdmin.fulfilled, (state, action) => {
-      state.loadingRow = false;
+      state.loadingProject = false;
       // state.data = action.payload;
       state.error = "";
     });
     builder.addCase(updateProjectByAdmin.rejected, (state, action) => {
-      state.loadingRow = false;
+      state.loadingProject = false;
       state.error = action.payload as string;
     });
   },

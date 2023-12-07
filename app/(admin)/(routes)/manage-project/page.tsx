@@ -11,7 +11,7 @@ import ProjectTable from "./_components/table";
 const ManageProject = () => {
   const dispatch = useAppDispatch();
   const [dataTable, setDataTable] = React.useState<any[]>([]);
-  const { data, loadingData, loadingRow, error } = useAppSelector((state) => state.project);
+  const { data, loadingProjectList, loadingProject, error } = useAppSelector((state) => state.project);
 
   React.useEffect(() => {
     dispatch(getAllProjectByEveryOne()).then((result) => {
@@ -29,11 +29,11 @@ const ManageProject = () => {
     <Card className="p-4 manager-project">
       <ManageProjectHeader />
 
-      {loadingData ? (
+      {loadingProjectList ? (
         <AdminSpinnerLoading />
       ) : (
         <>
-          <ProjectTable dataTable={dataTable} setDataTable={setDataTable} loadingRow={loadingRow}/>
+          <ProjectTable dataTable={dataTable} setDataTable={setDataTable} loadingProject={loadingProject}/>
         </>
       )}
     </Card>

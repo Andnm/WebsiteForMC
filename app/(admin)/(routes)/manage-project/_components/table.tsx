@@ -31,7 +31,7 @@ import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
 interface ProjectTableProps {
   dataTable: any[];
   setDataTable: React.Dispatch<React.SetStateAction<any[]>>;
-  loadingRow: boolean;
+  loadingProject: boolean;
 }
 
 const TABLE_HEAD = [
@@ -46,7 +46,7 @@ const TABLE_HEAD = [
 const ProjectTable: React.FC<ProjectTableProps> = ({
   dataTable,
   setDataTable,
-  loadingRow,
+  loadingProject,
 }) => {
   const dispatch = useAppDispatch();
   const [isOpenModalDetail, setIsOpenModalDetail] = React.useState(false);
@@ -588,7 +588,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
         </div>
       </CardFooter>
 
-      {loadingRow && <SpinnerLoading />}
+      {loadingProject && <SpinnerLoading />}
     </>
   );
 };

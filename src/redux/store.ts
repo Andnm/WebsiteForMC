@@ -4,12 +4,14 @@ import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 import authReducer from './features/authSlice'
 import userReducer from './features/userSlice'
 import projectReducer from './features/projectSlice'
+import phaseReducer from './features/phaseSlice'
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
-    project: projectReducer
+    project: projectReducer,
+    phase: phaseReducer
   },
 });
 

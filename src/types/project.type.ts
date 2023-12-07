@@ -1,4 +1,5 @@
 export interface ProjectType {
+  id?:number;
   business?:
     | {
         avatar_url?: string;
@@ -21,5 +22,5 @@ export interface ProjectType {
   project_start_date: string;
   project_expected_end_date: string;
   project_status?: string;
-  createdAt?: string | undefined;
+  createdAt?: string;
 }
