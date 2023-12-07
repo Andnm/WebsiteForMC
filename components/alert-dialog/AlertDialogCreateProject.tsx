@@ -67,7 +67,7 @@ export const AlertDialogCreateProject = ({ children }: DialogProps) => {
     project_expected_end_date: "",
   });
 
-  const { loading, error } = useAppSelector((state) => state.project);
+  const { loadingData, error } = useAppSelector((state) => state.project);
   const dispatch = useAppDispatch();
 
   const [open, setOpen] = React.useState(false);
@@ -144,7 +144,7 @@ export const AlertDialogCreateProject = ({ children }: DialogProps) => {
           </Button>
         </div>
       </AlertDialogContent>
-      {loading && <SpinnerLoading />}
+      {loadingData && <SpinnerLoading />}
     </AlertDialog>
   );
 };
