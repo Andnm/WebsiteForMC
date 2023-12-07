@@ -392,7 +392,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
   };
 
   const handleChangeConfirmIntoUpdate = () => {
-    setIsEditMode(true);
+    setIsEditMode(!isEditMode);
   };
 
   const body = isEditMode ? bodyUpdate : bodyContent;
@@ -554,7 +554,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
                     open={isOpenModalDetail}
                     title={
                       <div className="flex items-center gap-2">
-                        Thông tin dự án
+                        {isEditMode ? 'Sửa dự án' : 'Thông tin dự án'}
                         <CiEdit
                           className="cursor-pointer"
                           onClick={handleChangeConfirmIntoUpdate}
