@@ -5,12 +5,14 @@ import authReducer from './features/authSlice'
 import userReducer from './features/userSlice'
 import projectReducer from './features/projectSlice'
 import phaseReducer from './features/phaseSlice'
+import groupReducer from './features/groupSlice'
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
     project: projectReducer,
+    group: groupReducer,
     phase: phaseReducer
   },
 });
