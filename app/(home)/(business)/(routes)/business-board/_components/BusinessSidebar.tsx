@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { MdOutlineAnalytics } from "react-icons/md";
 import { LuHistory } from "react-icons/lu";
 import { GoProjectRoadmap } from "react-icons/go";
+import { useAppDispatch } from "@/src/redux/store";
 
 interface SidebarProps {
   dataProjects: any[];
@@ -39,6 +40,7 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
 }) => {
   const router = useRouter();
   const pathName = usePathname();
+  const dispatch = useAppDispatch();
 
   const navItem = [
     {
@@ -81,14 +83,18 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
     },
   ];
 
-  const handleNavigate = (href: string) => {
-    router.push(href);
+  const handleNavigate = (href: string, id?: number) => {
+    if (id) {
+      router.push(`/project/${id}/${href}`);
+    } else {
+      router.push(href);
+    }
   };
 
   const DefaultAvatarURL =
     "https://cdn.popsww.com/blog/sites/2/2021/03/doraemon-tap-97.jpg";
 
-  if (loadingProjectList) {
+  if (loadingProjectList || loadingProject) {
     return (
       <>
         <div className="flex items-center justify-between mb-2">
@@ -150,44 +156,50 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
         </Button>
       </div>
 
-      <Accordion type="multiple">
-        <AccordionItem value="item-1" className="border-none">
-          <AccordionTrigger
-            className="flex items-center gap-x-2 p-1.5 text-neutral-700 rounded-md hover:bg-neutral-500/10 
+      {dataProjects.map(
+        (project, index) =>
+          project.project_status === "Processing" && (
+            <Accordion type="multiple" key={index}>
+              <AccordionItem value={`item-${index}`} className="border-none">
+                <AccordionTrigger
+                  className="flex items-center gap-x-2 p-1.5 text-neutral-700 rounded-md hover:bg-neutral-500/10 
           transition text-start no-underline hover:no-underline"
-            //   bg-sky-500/10 text-sky-700
-            style={{ borderRadius: "6px" }}
-          >
-            <div className="flex items-center gap-x-2">
-              <div className="w-7 h-7 relative flex">
-                <img
-                  src={DefaultAvatarURL}
-                  alt="img"
-                  className="rounded-sm object-cover"
-                />
-              </div>
-              <span className="font-medium text-sm">Friendly Project</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="pt-1 text-neutral-700">
-            {routesInProject.map((route, index) => (
-              <Button
-                size="sm"
-                onClick={() => handleNavigate(route.href)}
-                className={cn(
-                  "w-full font-normal justify-start pl-10 mb-1 hover:bg-neutral-500/10 gap-2 rounded-md",
-                  pathName === route.href && "bg-sky-500/10 text-sky-700"
-                )}
-                variant="ghost"
-                key={index}
-              >
-                {route.icon}
-                {route.label}
-              </Button>
-            ))}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+                  style={{ borderRadius: "6px" }}
+                >
+                  <div className="flex items-center gap-x-2">
+                    {/* <div className="w-7 h-7 relative flex">
+                      <img
+                        src={DefaultAvatarURL}
+                        alt="img"
+                        className="rounded-sm object-cover"
+                      />
+                    </div> */}
+                    <span className="font-medium text-sm">
+                      {project.name_project}
+                    </span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-1 text-neutral-700">
+                  {routesInProject.map((route, index) => (
+                    <Button
+                      size="sm"
+                      onClick={() => handleNavigate(route.href, project.id)}
+                      className={cn(
+                        "w-full font-normal justify-start pl-10 mb-1 hover:bg-neutral-500/10 gap-2 rounded-md",
+                        pathName === route.href && "bg-sky-500/10 text-sky-700"
+                      )}
+                      variant="ghost"
+                      key={index}
+                    >
+                      {route.icon}
+                      {route.label}
+                    </Button>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )
+      )}
     </>
   );
 };

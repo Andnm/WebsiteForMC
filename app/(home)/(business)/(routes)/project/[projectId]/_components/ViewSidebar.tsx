@@ -54,7 +54,7 @@ const ViewSidebar = ({ dataProject }: BoardTitleFormProps) => {
 
   return (
     <div className="flex flex-col ">
-      <p className="w-64 h-14 bg-black/50 top-17 flex items-center justify-center font-bold text-lg text-white overflow-hidden">
+      <p className="w-64 h-14 bg-black/50 top-17 flex items-center justify-start font-bold text-lg text-white overflow-hidden">
         <span className="inline-block px-10 max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
           {dataProject?.name_project}
         </span>

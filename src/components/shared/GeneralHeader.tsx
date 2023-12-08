@@ -20,12 +20,12 @@ const GeneralHeader = () => {
   //show header
   const navItemsGeneral = [
     {
-      nameItem: "Danh sách dự án",
-      path: "/project-list",
-    },
-    {
       nameItem: "Thông tin kho dự án",
       path: "/about-us",
+    },
+    {
+      nameItem: "Danh sách dự án",
+      path: "/project-list",
     },
     {
       nameItem: "Bạn cần hỗ trợ ?",

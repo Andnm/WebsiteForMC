@@ -1,7 +1,9 @@
 export interface ProjectType {
-  id?:number;
+  id?: number;
   business?:
     | {
+        address?: string;
+        email?: string;
         avatar_url?: string;
         fullname?: string;
       }
@@ -19,8 +21,8 @@ export interface ProjectType {
   note: string;
   document_related_link: string;
   project_registration_expired_date: string;
-  project_start_date: string;
-  project_expected_end_date: string;
+  project_start_date?: string;
+  project_expected_end_date?: string | undefined;
   project_status?: string;
   createdAt?: string;
 }

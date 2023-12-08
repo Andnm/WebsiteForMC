@@ -15,7 +15,7 @@ const ListPhaseContainer = ({
   return (
     <div>
       {Array.isArray(phaseData) && phaseData.length > 0 ? (
-        <div>{/* do something */}</div>
+        <div>có data</div>
       ) : (
         <div>Chưa có giai đoạn nào được khởi tạo.</div>
       )}

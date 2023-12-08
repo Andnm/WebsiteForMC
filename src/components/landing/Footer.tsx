@@ -1,13 +1,13 @@
 import React from "react";
 
-const FormRegister = () => {
+const Footer = () => {
   return (
     <div>
       <div className="test" style={{ width: "1000px", color: "white" }}>
-        form send email
+        Footer
       </div>
     </div>
   );
 };
 
-export default FormRegister;
+export default Footer;
