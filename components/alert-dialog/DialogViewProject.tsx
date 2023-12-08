@@ -13,7 +13,7 @@ import {
 import "./style.scss";
 import { ProjectType } from "@/src/types/project.type";
 import { useAppDispatch, useAppSelector } from "@/src/redux/store";
-import { format } from "date-fns";
+import { formatDate } from "@/src/utils/handleFunction";
 
 interface DialogViewProjectProps {
   children: React.ReactNode;
@@ -71,7 +71,7 @@ export const DialogViewProject: React.FC<DialogViewProjectProps> = ({
           <div className="mb-4">
             <p className="text-gray-600 font-semibold">Ngày bắt đầu:</p>
             <p className="text-black">
-              {format(new Date(project.project_start_date), "dd/MM/yyyy")}
+              {formatDate(project.project_start_date)}
             </p>
           </div>
           <div className="mb-4">
@@ -79,21 +79,13 @@ export const DialogViewProject: React.FC<DialogViewProjectProps> = ({
               Ngày kết thúc dự kiến:
             </p>
             <p className="text-black">
-              {format(
-                new Date(project.project_expected_end_date),
-                "dd/MM/yyyy"
-              )}
+              {formatDate(project.project_expected_end_date)}
             </p>
           </div>
           <div className="mb-4">
-            <p className="text-gray-600 font-semibold">
-              Ngày hết hạn đăng kí:
-            </p>
+            <p className="text-gray-600 font-semibold">Ngày hết hạn đăng kí:</p>
             <p className="text-black">
-              {format(
-                new Date(project.project_registration_expired_date),
-                "dd/MM/yyyy"
-              )}
+              {formatDate(project.project_registration_expired_date)}
             </p>
           </div>
         </div>
