@@ -1,8 +1,11 @@
 "use client";
 
+import { AlertDialogConfirmPitching } from "@/components/alert-dialog/AlertDialogConfirmPitching";
+import { getAllGroupAreMembers } from "@/src/redux/features/groupSlice";
 import { getProjectById } from "@/src/redux/features/projectSlice";
 import { useAppDispatch } from "@/src/redux/store";
 import { ProjectType } from "@/src/types/project.type";
+import { UserGroupType } from "@/src/types/user-group.type";
 import { formatDate } from "@/src/utils/handleFunction";
 import { useParams } from "next/navigation";
 import React from "react";
@@ -13,6 +16,8 @@ const ProjectDetail = () => {
   const [dataProject, setDataProject] = React.useState<ProjectType | undefined>(
     undefined
   );
+  const [groupList, setGroupList] = React.useState<UserGroupType[]>([]);
+
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -20,6 +25,12 @@ const ProjectDetail = () => {
     dispatch(getProjectById(projectId)).then((result) => {
       if (getProjectById.fulfilled.match(result)) {
         setDataProject(result.payload);
+      }
+    });
+
+    dispatch(getAllGroupAreMembers()).then((result) => {
+      if (getAllGroupAreMembers.fulfilled.match(result)) {
+        setGroupList(result.payload);
       }
     });
   }, [params.detailId]);
@@ -166,9 +177,14 @@ const ProjectDetail = () => {
             <div className="bg-white shadow rounded-lg p-6">
               <h2 className="text-xl font-bold mb-4">Tên dự án</h2>
               <p className="text-gray-700">{dataProject?.name_project}</p>
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">
-                Ứng tuyển ngay
-              </button>
+              <AlertDialogConfirmPitching
+                projectId={parseInt(params.detailId, 10)}
+                groupList={groupList}
+              >
+                <div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">
+                  Ứng tuyển ngay
+                </div>
+              </AlertDialogConfirmPitching>
 
               <h2 className="text-xl font-bold mt-6 mb-4">
                 Lĩnh vực chuyên môn
@@ -181,9 +197,7 @@ const ProjectDetail = () => {
               </p>
 
               <h2 className="text-xl font-bold mt-6 mb-4">Người phụ trách</h2>
-              <p className="text-gray-700">
-                Hiện thông tin ....
-              </p>
+              <p className="text-gray-700">Hiện thông tin ....</p>
 
               <h2 className="text-xl font-bold mt-6 mb-4">
                 Tài liệu liên quan

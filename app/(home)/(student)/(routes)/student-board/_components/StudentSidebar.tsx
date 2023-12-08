@@ -1,62 +1,52 @@
 "use client";
-
-import React, { useEffect } from "react";
-import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { useRouter, usePathname } from "next/navigation";
+import React from "react";
 import { FiPlus } from "react-icons/fi";
-import { HiOutlineUserGroup } from "react-icons/hi2";
-import { IoSettingsOutline } from "react-icons/io5";
-import { MdOutlineGridView } from "react-icons/md";
-import { IoChatboxEllipsesOutline } from "react-icons/io5";
-import { MdOutlineAnalytics } from "react-icons/md";
-import { LuHistory } from "react-icons/lu";
 import { GoProjectRoadmap } from "react-icons/go";
-import { useAppDispatch } from "@/src/redux/store";
+import { HiOutlineUserGroup } from "react-icons/hi2";
+import { IoChatboxEllipsesOutline, IoSettingsOutline } from "react-icons/io5";
+import { LuHistory } from "react-icons/lu";
+import { MdOutlineAnalytics, MdOutlineGridView } from "react-icons/md";
 
 interface SidebarProps {
-  dataProjects: any[];
-  setDataProjects: React.Dispatch<React.SetStateAction<any[]>>;
-  loadingProject?: boolean;
-  loadingProjectList?: boolean;
+  dataPitching: any[];
+  setDataPitching: React.Dispatch<React.SetStateAction<any[]>>;
+  loadingPitching?: boolean;
 }
 
-const BusinessSidebar: React.FC<SidebarProps> = ({
-  dataProjects,
-  setDataProjects,
-  loadingProject,
-  loadingProjectList,
+const StudentSidebar: React.FC<SidebarProps> = ({
+  dataPitching,
+  setDataPitching,
+  loadingPitching,
 }) => {
   const router = useRouter();
   const pathName = usePathname();
-  const dispatch = useAppDispatch();
 
   const navItem = [
     {
       label: "Quản lý dự án",
       icon: <MdOutlineAnalytics className="w-5 h-5" />,
-      href: "/business-board",
+      href: "/student-board",
     },
     {
       label: "Lịch sử hoạt động",
       icon: <LuHistory className="w-5 h-5" />,
-      href: "/business-board/#",
+      href: "/student-board/#",
     },
     {
       label: "Dự án mẫu",
       icon: <GoProjectRoadmap className="w-5 h-5" />,
-      href: "/business-board/#",
+      href: "/student-board/#",
     },
   ];
 
@@ -91,7 +81,7 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  if (loadingProjectList || loadingProject) {
+  if (loadingPitching) {
     return (
       <>
         <div className="flex items-center justify-between mb-2">
@@ -153,9 +143,9 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
         </Button>
       </div>
 
-      {dataProjects.map(
-        (project, index) =>
-          project.project_status === "Processing" && (
+      {dataPitching.map(
+        (pitching, index) =>
+          pitching.register_pitching_status === "Selected" && (
             <Accordion type="multiple" key={index}>
               <AccordionItem value={`item-${index}`} className="border-none">
                 <AccordionTrigger
@@ -164,15 +154,8 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
                   style={{ borderRadius: "6px" }}
                 >
                   <div className="flex items-center gap-x-2">
-                    {/* <div className="w-7 h-7 relative flex">
-                      <img
-                        src={DefaultAvatarURL}
-                        alt="img"
-                        className="rounded-sm object-cover"
-                      />
-                    </div> */}
                     <span className="font-medium text-sm">
-                      {project.name_project}
+                      {pitching.project.name_project}
                     </span>
                   </div>
                 </AccordionTrigger>
@@ -180,7 +163,7 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
                   {routesInProject.map((route, index) => (
                     <Button
                       size="sm"
-                      onClick={() => handleNavigate(route.href, project.id)}
+                      onClick={() => handleNavigate(route.href, pitching.project.id)}
                       className={cn(
                         "w-full font-normal justify-start pl-10 mb-1 hover:bg-neutral-500/10 gap-2 rounded-md",
                         pathName === route.href && "bg-sky-500/10 text-sky-700"
@@ -201,4 +184,4 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
   );
 };
 
-export default BusinessSidebar;
+export default StudentSidebar;
