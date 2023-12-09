@@ -132,6 +132,7 @@ export const replyInviteToJoinGroup = createAsyncThunk(
 
       const response = await http.patch<any>(
         `/groups/reply-invite/${userGroupId}/${relationshipStatus}`,
+        [],
         configHeader
       );
 
