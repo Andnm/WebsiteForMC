@@ -18,6 +18,7 @@ import InfoText from "./InfoText";
 import { useAppDispatch } from "@/src/redux/store";
 import { getAllMemberByGroupId } from "@/src/redux/features/groupSlice";
 import { AlertDialogConfirmChoose } from "@/components/alert-dialog/AlertDialogConfirmChoose";
+import { Hint } from "@/components/hint";
 
 interface TableProps {
   register_pitching_status: string;
@@ -91,21 +92,27 @@ const TableMemberInGroup: React.FC<TableProps> = ({
               <tbody key={index}>
                 <tr>
                   <td className={classes}>
-                    <div className="flex items-center gap-3">
-                      <Avatar
-                        src={member?.user?.avatar_url || DefaultAvatarURL}
-                        alt={member?.user?.fullname}
-                        size="sm"
-                        className="w-10 h-10 object-cover rounded-full"
-                      />
-                      <div className="flex flex-col">
-                        <InfoText>{member?.user?.fullname}</InfoText>
+                    <Hint
+                      sideOffset={10}
+                      description={`Card thông tin detail thành viên`}
+                      side={"top"}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Avatar
+                          src={member?.user?.avatar_url || DefaultAvatarURL}
+                          alt={member?.user?.fullname}
+                          size="sm"
+                          className="w-10 h-10 object-cover rounded-full"
+                        />
+                        <div className="flex flex-col">
+                          <InfoText className="text-start">{member?.user?.fullname}</InfoText>
 
-                        <InfoText className="opacity-70">
-                          {member?.user?.email}
-                        </InfoText>
+                          <InfoText className="opacity-70">
+                            {member?.user?.email}
+                          </InfoText>
+                        </div>
                       </div>
-                    </div>
+                    </Hint>
                   </td>
 
                   <StatusCell

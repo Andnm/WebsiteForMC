@@ -117,6 +117,7 @@ export const confirmProjectByAdmin = createAsyncThunk(
 
       const response = await http.patch<any>(
         `/projects/confirm-project/${id}`,
+        [],
         configHeader
       );
 
@@ -178,12 +179,13 @@ export const changeStatusProjectByAdmin = createAsyncThunk(
 
     try {
       const response = await http.patch<any>(
-        `/projects/changeStatus/${projectId}/${projectStatus}`, [], 
+        `/projects/changeStatus/${projectId}/${projectStatus}`,
+        [],
         configHeader
       );
       return response.data;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );
