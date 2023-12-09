@@ -1,9 +1,15 @@
-import React from 'react'
+"use client";
+
+import React from "react";
+import BusinessGroupPage from "./_components/BusinessGroupPage";
+import { useParams } from "next/navigation";
 
 const GroupPage = () => {
-  return (
-    <div>GroupPage</div>
-  )
-}
+  const { projectId } = useParams<{ projectId: string }>();
 
-export default GroupPage
+  return (
+    <BusinessGroupPage projectId={parseInt(projectId, 10)}></BusinessGroupPage>
+  );
+};
+
+export default GroupPage;

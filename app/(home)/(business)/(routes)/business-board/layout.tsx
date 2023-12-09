@@ -16,6 +16,7 @@ const BusinessBoardLayout = (props: { children: React.ReactNode }) => {
   React.useEffect(() => {
     dispatch(getAllProjectByBusiness()).then((result) => {
       if (getAllProjectByBusiness.fulfilled.match(result)) {
+        console.log(result.payload)
         setDataProjects(result.payload);
       }
     });

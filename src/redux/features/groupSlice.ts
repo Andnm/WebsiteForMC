@@ -106,6 +106,45 @@ export const inviteMemberByLeader = createAsyncThunk<any, InviteMemberParams>(
   }
 );
 
+interface ReplyInviteToJoinGroupParams {
+  userGroupId: number;
+  relationshipStatus: string;
+}
+
+export const replyInviteToJoinGroup = createAsyncThunk(
+  "group/replyInviteToJoinGroup",
+  async (
+    { userGroupId, relationshipStatus }: ReplyInviteToJoinGroupParams,
+    thunkAPI
+  ) => {
+    try {
+      const token = getTokenFromSessionStorage();
+
+      console.log(token)
+
+      const configHeader = {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await http.patch<any>(
+        `/groups/reply-invite/${userGroupId}/${relationshipStatus}`,
+        configHeader
+      );
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
 export const getAllMemberByGroupId = createAsyncThunk<any, number>(
   "group/getAllMemberByGroupId",
   async (id: number, thunkAPI) => {
@@ -193,6 +232,20 @@ export const groupSlice = createSlice({
     });
     builder.addCase(inviteMemberByLeader.rejected, (state, action) => {
       state.loadingListGroup = false;
+      state.error = action.payload as string;
+    });
+
+    //reply Invite To Join Group
+    builder.addCase(replyInviteToJoinGroup.pending, (state) => {
+      state.loadingGroup = true;
+      state.error = "";
+    });
+    builder.addCase(replyInviteToJoinGroup.fulfilled, (state, action) => {
+      state.loadingGroup = false;
+      state.error = "";
+    });
+    builder.addCase(replyInviteToJoinGroup.rejected, (state, action) => {
+      state.loadingGroup = false;
       state.error = action.payload as string;
     });
   },

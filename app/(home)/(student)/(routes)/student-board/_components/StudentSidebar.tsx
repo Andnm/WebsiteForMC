@@ -74,6 +74,7 @@ const StudentSidebar: React.FC<SidebarProps> = ({
   ];
 
   const handleNavigate = (href: string, id?: number) => {
+    console.log('id', id)
     if (id) {
       router.push(`/project/${id}/${href}`);
     } else {

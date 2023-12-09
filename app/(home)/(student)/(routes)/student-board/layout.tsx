@@ -3,7 +3,7 @@
 import React from "react";
 import StudentSidebar from "./_components/StudentSidebar";
 import { useAppDispatch, useAppSelector } from "@/src/redux/store";
-import { getAllRegisterPitching } from "@/src/redux/features/pitchingSlice";
+import { getAllRegisterPitchingByStudent } from "@/src/redux/features/pitchingSlice";
 
 const StudentBoardLayout = (props: { children: React.ReactNode }) => {
   const [dataPitching, setDataPitching] = React.useState<any[]>([]);
@@ -12,8 +12,8 @@ const StudentBoardLayout = (props: { children: React.ReactNode }) => {
   const { loadingPitching } = useAppSelector((state) => state.pitching);
 
   React.useEffect(() => {
-    dispatch(getAllRegisterPitching()).then((result) => {
-      if (getAllRegisterPitching.fulfilled.match(result)) {
+    dispatch(getAllRegisterPitchingByStudent()).then((result) => {
+      if (getAllRegisterPitchingByStudent.fulfilled.match(result)) {
         setDataPitching(result.payload);
       }
     });

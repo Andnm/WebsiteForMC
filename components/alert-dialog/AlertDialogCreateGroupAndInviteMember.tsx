@@ -95,6 +95,7 @@ export const AlertDialogCreateGroupAndInviteMember: React.FC<
             }
           }
           toast.success("Tạo nhóm thành công!");
+          setOpen(false)
           setLoadingHandleInviteAndCreateGroup(false);
         } else if (createGroup.rejected.match(result)) {
           console.log(result.payload);

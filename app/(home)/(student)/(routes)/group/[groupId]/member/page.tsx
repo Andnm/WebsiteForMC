@@ -1,19 +1,61 @@
 "use client";
 
-import { AlertDialogInviteOneMember } from "@/components/alert-dialog/AlertDialogInviteOneMember";
-import { getAllMemberByGroupId } from "@/src/redux/features/groupSlice";
+import { AlertDialogOnlyInviteMember } from "@/components/alert-dialog/AlertDialogOnlyInviteMember";
+import { Hint } from "@/components/hint";
+import {
+  getAllMemberByGroupId,
+  replyInviteToJoinGroup,
+} from "@/src/redux/features/groupSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/store";
+import { getUserFromSessionStorage } from "@/src/redux/utils/handleUser";
 import { UserGroupType } from "@/src/types/user-group.type";
 import { formatDate } from "@/src/utils/handleFunction";
 import Link from "next/link";
 import React from "react";
 
+import "../../style.scss";
+
+import { FaRegCheckCircle } from "react-icons/fa";
+import { MdOutlineCancel } from "react-icons/md";
+import toast from "react-hot-toast";
+
 const MemberGroup = ({ params }: { params: { groupId: number } }) => {
   const [dataGroup, setDataGroup] = React.useState<UserGroupType[]>([]);
+  const [userLogin, setUserLogin] = React.useState<any>();
 
   const dispatch = useAppDispatch();
 
   const { loadingGroup } = useAppSelector((state) => state.group);
+
+  const handleReplyInviteMember = (
+    userGroupId: number,
+    relationshipStatus: string
+  ) => {
+    console.log(dataGroup);
+    dispatch(replyInviteToJoinGroup({ userGroupId, relationshipStatus })).then(
+      (result) => {
+        if (replyInviteToJoinGroup.fulfilled.match(result)) {
+          console.log(result.payload);
+
+          const updatedIndex = dataGroup.findIndex(
+            (item) => item.id === result.payload.id
+          );
+
+          if (updatedIndex !== -1) {
+            setDataGroup((prevDataGroup) => {
+              const newDataGroup = [...prevDataGroup];
+              newDataGroup[updatedIndex] = result.payload;
+              return newDataGroup;
+            });
+          }
+
+          toast.success("Chấp thuận thành công!");
+        } else {
+          toast.error("Đã có lỗi xảy ra vui lòng thử lại sau!");
+        }
+      }
+    );
+  };
 
   React.useEffect(() => {
     dispatch(getAllMemberByGroupId(params.groupId)).then((result) => {
@@ -22,6 +64,9 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
         console.log(result.payload);
       }
     });
+
+    setUserLogin(getUserFromSessionStorage());
+    console.log(getUserFromSessionStorage());
   }, []);
 
   return (
@@ -131,9 +176,7 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
               </div>
               <div className="mt-5 flex xl:mt-0 xl:ml-4">
                 <span className="hidden sm:block">
-                  <div
-                    className="cursor-pointer inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-                  >
+                  <div className="cursor-pointer inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-50">
                     <svg
                       className="-ml-1 mr-2 h-5 w-5 text-gray-400"
                       x-description="Heroicon name: mini/pencil"
@@ -149,10 +192,8 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
                 </span>
 
                 <span className="ml-3 hidden sm:block">
-                  <AlertDialogInviteOneMember groupId={params.groupId}>
-                    <div
-                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-                    >
+                  <AlertDialogOnlyInviteMember groupId={params.groupId}>
+                    <div className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-50">
                       <svg
                         className="-ml-1 mr-2 h-5 w-5 text-gray-400"
                         x-description="Heroicon name: mini/link"
@@ -166,7 +207,7 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
                       </svg>
                       Mời
                     </div>
-                  </AlertDialogInviteOneMember>
+                  </AlertDialogOnlyInviteMember>
                 </span>
               </div>
             </div>
@@ -191,7 +232,7 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
               >
                 {dataGroup.map((member, index) => (
                   <li key={index}>
-                    <a href="#" className="group block">
+                    <div className="group block">
                       <div className="flex items-center py-5 px-4 sm:py-6 sm:px-0">
                         <div className="flex min-w-0 flex-1 items-center">
                           <div className="flex-shrink-0">
@@ -204,7 +245,9 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
                               alt=""
                             />
                           </div>
-                          <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
+
+                          <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-3 md:gap-4">
+                            {/* fullname + email */}
                             <div>
                               <p className="truncate text-sm font-medium text-purple-600">
                                 {member?.user?.fullname}
@@ -226,6 +269,8 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
                                 </span>
                               </p>
                             </div>
+
+                            {/* Role in group */}
                             <div className="hidden md:block">
                               <div>
                                 <p className="text-sm text-gray-900">
@@ -258,8 +303,56 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
                                 </p>
                               </div>
                             </div>
+
+                            {/* xử lý chấp thuận join group */}
+                            {member.relationship_status === "Pending" &&
+                            member.user?.email === userLogin.email ? (
+                              <div className="flex items-center gap-4">
+                                <Hint
+                                  sideOffset={10}
+                                  description={`Đồng ý vào nhóm`}
+                                  side={"top"}
+                                >
+                                  <div
+                                    onClick={() =>
+                                      handleReplyInviteMember(
+                                        member?.id,
+                                        "Joined"
+                                      )
+                                    }
+                                    className="flex agree-invite items-center gap-1 text-sm text-gray-500 cursor-pointer transition ease-in-out "
+                                  >
+                                    <FaRegCheckCircle className="w-5 h-5 text-green-300 transition ease-in-out" />
+                                    Chấp thuận
+                                  </div>
+                                </Hint>
+
+                                <Hint
+                                  sideOffset={10}
+                                  description={`Từ chối vào nhóm`}
+                                  side={"top"}
+                                >
+                                  <div
+                                    onClick={() =>
+                                      handleReplyInviteMember(
+                                        member.id,
+                                        "Từ chối"
+                                      )
+                                    }
+                                    className="flex disagree-invite items-center gap-1 text-sm text-gray-500 cursor-pointer transition ease-in-out"
+                                  >
+                                    <MdOutlineCancel className="w-6 h-6 text-red-300 transition ease-in-out" />
+                                    Từ chối
+                                  </div>
+                                </Hint>
+                              </div>
+                            ) : (
+                              <></>
+                            )}
                           </div>
                         </div>
+
+                        {/* arrow */}
                         <div>
                           <svg
                             className="h-5 w-5 text-gray-400 group-hover:text-gray-700"
@@ -277,7 +370,7 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
                           </svg>
                         </div>
                       </div>
-                    </a>
+                    </div>
                   </li>
                 ))}
               </ul>

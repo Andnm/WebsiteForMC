@@ -21,7 +21,7 @@ const ProjectListStudent: React.FC<PitchingProjectListProps> = ({
       case "Selected":
         return "Dự án đã được chọn";
       case "Rejected":
-        return "Dự án đang bị từ chối";
+        return "Dự án đã bị từ chối";
       default:
         return "Tên dự án không xác định";
     }
@@ -55,7 +55,7 @@ const ProjectListStudent: React.FC<PitchingProjectListProps> = ({
             pitching.register_pitching_status === "Selected" ? (
               <Link
                 key={pitching.id}
-                href={`/project/${pitching.id}/view`}
+                href={`/project/${pitching.project.id}/view`}
                 className="group relative aspect-video bg-no-repeat bg-center bg-cover bg-sky-700 rounded-sm h-full w-full p-2 overflow-hidden"
                 style={{
                   backgroundImage: `url('https://inkythuatso.com/uploads/thumbnails/800/2022/07/1-tranh-phong-canh-hoang-hon-inkythuatso-21-11-19-46.jpg')`,

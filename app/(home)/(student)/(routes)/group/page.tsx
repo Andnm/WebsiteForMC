@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { GroupType } from "@/src/types/group.type";
 import { UserGroupType } from "@/src/types/user-group.type";
 import { formatDate } from "@/src/utils/handleFunction";
-import { AlertDialogCreateGroupAndInviteMember } from "@/components/alert-dialog/AlertDialogInviteMember";
+import { AlertDialogCreateGroupAndInviteMember } from "@/components/alert-dialog/AlertDialogCreateGroupAndInviteMember";
 
 interface StatusInfo {
   color: string;
@@ -41,7 +41,7 @@ const GroupPage = () => {
   const getGroupStatusInfo = (status: string): StatusInfo => {
     switch (status) {
       case "Active":
-        return { color: "yellow", text: "Nhóm đang hoạt động" };
+        return { color: "orange", text: "Nhóm đang hoạt động" };
       case "Free":
         return { color: "green", text: "Nhóm đang rãnh" };
       case "Inactive":

@@ -3,7 +3,7 @@
 import React from "react";
 import ProjectListStudent from "./_components/ProjectListStudent";
 import { useAppDispatch, useAppSelector } from "@/src/redux/store";
-import { getAllRegisterPitching } from "@/src/redux/features/pitchingSlice";
+import { getAllRegisterPitchingByStudent } from "@/src/redux/features/pitchingSlice";
 
 const StudentBoard = () => {
   const [dataPitching, setDataPitching] = React.useState<any[]>([]);
@@ -14,8 +14,8 @@ const StudentBoard = () => {
   );
 
   React.useEffect(() => {
-    dispatch(getAllRegisterPitching()).then((result) => {
-      if (getAllRegisterPitching.fulfilled.match(result)) {
+    dispatch(getAllRegisterPitchingByStudent()).then((result) => {
+      if (getAllRegisterPitchingByStudent.fulfilled.match(result)) {
         console.log(result.payload)
         setDataPitching(result.payload);
       }

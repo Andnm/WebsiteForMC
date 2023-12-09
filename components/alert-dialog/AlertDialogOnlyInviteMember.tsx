@@ -31,7 +31,7 @@ interface DialogViewProjectProps {
   groupId: number;
 }
 
-export const AlertDialogInviteOneMember: React.FC<DialogViewProjectProps> = ({
+export const AlertDialogOnlyInviteMember: React.FC<DialogViewProjectProps> = ({
   children,
   groupId,
 }) => {
@@ -40,18 +40,10 @@ export const AlertDialogInviteOneMember: React.FC<DialogViewProjectProps> = ({
   const [groupName, setGroupName] = React.useState<string>("");
   const [newMember, setNewMember] = React.useState<string>("");
   const [memberList, setMemberList] = React.useState<any[]>([]);
-  const [
-    loadingHandleInviteAndCreateGroup,
-    setLoadingHandleInviteAndCreateGroup,
-  ] = React.useState(false);
+  const [loadingHandleInviteMember, setLoadingHandleInviteMember] =
+    React.useState(false);
   const dispatch = useAppDispatch();
-  const { loadingGroup, error } = useAppSelector((state) => state.group);
-
-  const handleGroupNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setGroupName(event.target.value);
-  };
+  const { loadingListGroup, error } = useAppSelector((state) => state.group);
 
   const handleNewMemberChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -68,8 +60,8 @@ export const AlertDialogInviteOneMember: React.FC<DialogViewProjectProps> = ({
     }
   };
 
-  const handleCreateNewGroupAndInviteMember = () => {
-    setLoadingHandleInviteAndCreateGroup(true);
+  const handleInviteMember = () => {
+    setLoadingHandleInviteMember(true);
     if (memberList.length !== 0) {
       for (const userEmail of memberList) {
         dispatch(inviteMemberByLeader({ groupId, userEmail })).then((res) => {
@@ -77,13 +69,14 @@ export const AlertDialogInviteOneMember: React.FC<DialogViewProjectProps> = ({
             toast.error(`Mời ${userEmail} thất bại!`);
             console.log(res.payload);
           } else {
+            toast.success(`Mời ${userEmail} thành công!`);
             console.log(res.payload);
           }
         });
       }
+      setOpen(false)
     }
-    toast.success("Tạo nhóm thành công!");
-    setLoadingHandleInviteAndCreateGroup(false);
+    setLoadingHandleInviteMember(false);
   };
 
   return (
@@ -91,7 +84,7 @@ export const AlertDialogInviteOneMember: React.FC<DialogViewProjectProps> = ({
       <AlertDialogTrigger>{children}</AlertDialogTrigger>
       <AlertDialogContent className="opacity-100 max-w-lg bg-white">
         <AlertDialogHeader>
-          <AlertDialogTitle>Tạo nhóm mới</AlertDialogTitle>
+          <AlertDialogTitle>Mời thành viên</AlertDialogTitle>
         </AlertDialogHeader>
 
         <div className="mb-4">
@@ -158,15 +151,15 @@ export const AlertDialogInviteOneMember: React.FC<DialogViewProjectProps> = ({
             </AlertDialogCancel>
             <Button
               className="rounded-sm bg-blue-200 border-blue-200 border-2"
-              onClick={handleCreateNewGroupAndInviteMember}
+              onClick={handleInviteMember}
             >
-              Tạo nhóm
+              Mời
             </Button>
           </div>
         </div>
       </AlertDialogContent>
 
-      {loadingHandleInviteAndCreateGroup && <SpinnerLoading />}
+      {loadingListGroup && <SpinnerLoading />}
     </AlertDialog>
   );
 };

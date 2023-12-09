@@ -22,7 +22,6 @@
   text-transform: uppercase;
 }
 
-
 .booking-item .card-booking .body .content p:last-child {
   font-weight: bold;
 }
@@ -42,4 +41,17 @@
   width: 15px;
   height: 15px;
   border-radius: 50px;
+}
+
+.agree-invite:hover,
+.disagree-invite:hover {
+  color: rgb(55 65 81);
+}
+
+.agree-invite:hover svg {
+  color: rgb(34 197 94);
+}
+
+.disagree-invite:hover svg {
+  color: rgb(239 68 68);
 }

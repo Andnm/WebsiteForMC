@@ -16,9 +16,10 @@ const initialState: PitchingState = {
   error: "",
 };
 
-//get all register pitching
-export const getAllRegisterPitching = createAsyncThunk(
-  "pitching/getAllGroupAreMembers",
+//get all register pitching by student 
+// cái này là sẽ show ra danh sách những DỰ ÁN mà nhóm của student này đã đăng kí
+export const getAllRegisterPitchingByStudent = createAsyncThunk(
+  "pitching/getAllRegisterPitching",
   async (_, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
@@ -40,6 +41,34 @@ export const getAllRegisterPitching = createAsyncThunk(
     }
   }
 );
+
+//get all register pictching by business (truyền vào project id)
+// cái này thì lại sẽ show ra những group đăng kí pitching của dự án nào đó của DN nào đó
+
+export const getAllRegisterPitchingByBusiness = createAsyncThunk(
+  "pitching/getAllRegisterPitchingByBusiness",
+  async (projectId: number, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.get<any>(`/register-pitching/${projectId}`, configHeader);
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
 
 //register pitching
 interface RegisterPitchingBody {
@@ -75,21 +104,63 @@ export const registerPitching = createAsyncThunk(
   }
 );
 
+//business choose group
+export const chooseGroupByBusiness = createAsyncThunk(
+  "pitching/chooseGroupByBusiness",
+  async ({ groupId, projectId }: RegisterPitchingBody, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.patch<any>(
+        `/register-pitching/chooseGroup/${groupId}/${projectId}`,
+        configHeader
+      );
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
 export const pitchingSlice = createSlice({
   name: "pitching",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    //get all register pitching
-    builder.addCase(getAllRegisterPitching.pending, (state) => {
+    //get all register pitching by student
+    builder.addCase(getAllRegisterPitchingByStudent.pending, (state) => {
       state.loadingPitching = true;
       state.error = "";
     });
-    builder.addCase(getAllRegisterPitching.fulfilled, (state, action) => {
+    builder.addCase(getAllRegisterPitchingByStudent.fulfilled, (state, action) => {
       state.loadingPitching = false;
       state.error = "";
     });
-    builder.addCase(getAllRegisterPitching.rejected, (state, action) => {
+    builder.addCase(getAllRegisterPitchingByStudent.rejected, (state, action) => {
+      state.loadingPitching = false;
+      state.error = action.payload as string;
+    });
+
+    //get all register pitching by business
+    builder.addCase(getAllRegisterPitchingByBusiness.pending, (state) => {
+      state.loadingPitching = true;
+      state.error = "";
+    });
+    builder.addCase(getAllRegisterPitchingByBusiness.fulfilled, (state, action) => {
+      state.loadingPitching = false;
+      state.error = "";
+    });
+    builder.addCase(getAllRegisterPitchingByBusiness.rejected, (state, action) => {
       state.loadingPitching = false;
       state.error = action.payload as string;
     });
@@ -104,6 +175,20 @@ export const pitchingSlice = createSlice({
       state.error = "";
     });
     builder.addCase(registerPitching.rejected, (state, action) => {
+      state.loadingPitching = false;
+      state.error = action.payload as string;
+    });
+
+    //choose group by business
+    builder.addCase(chooseGroupByBusiness.pending, (state) => {
+      state.loadingPitching = true;
+      state.error = "";
+    });
+    builder.addCase(chooseGroupByBusiness.fulfilled, (state, action) => {
+      state.loadingPitching = false;
+      state.error = "";
+    });
+    builder.addCase(chooseGroupByBusiness.rejected, (state, action) => {
       state.loadingPitching = false;
       state.error = action.payload as string;
     });

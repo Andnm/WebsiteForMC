@@ -49,9 +49,11 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
             router.push("/");
             break;
         }
+
+        actionClose();
+
       }
 
-      actionClose();
     });
   };
 
@@ -75,7 +77,7 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
               </p>
             </div>
 
-            <form className="form-content"  onSubmit={handleLogin}>
+            <form className="form-content" onSubmit={handleLogin}>
               <h2>ĐĂNG NHẬP</h2>
               <div className="form">
                 <div className="">
@@ -123,9 +125,7 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
 
                 {error && <span className="text-red-500">{error}</span>}
 
-                <button type="submit">
-                  Đăng nhập
-                </button>
+                <button type="submit">Đăng nhập</button>
               </div>
 
               <div className="bottom-link">

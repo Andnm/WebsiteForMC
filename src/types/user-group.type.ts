@@ -1,5 +1,5 @@
 export interface UserGroupType {
-  id?: number;
+  id: number;
   createdAt: string;
   is_leader?: boolean;
   relationship_status: string;

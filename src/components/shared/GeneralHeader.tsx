@@ -39,12 +39,12 @@ const GeneralHeader = () => {
 
   const navItemsStudent = [
     {
-      nameItem: "Bảng làm việc",
-      path: "/student-board",
-    },
-    {
       nameItem: "Danh sách dự án",
       path: "/project-list",
+    },
+    {
+      nameItem: "Bảng làm việc",
+      path: "/student-board",
     },
   ];
 

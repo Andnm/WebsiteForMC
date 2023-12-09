@@ -22,6 +22,6 @@ export const getColorByProjectStatus = (status: string): string => {
     case "End":
       return "bg-gray-200 text-gray-900";
     default:
-      return "";
+      return "bg-green-200 text-green-900";
   }
 };
