@@ -159,6 +159,38 @@ export const updateProjectByAdmin = createAsyncThunk(
   }
 );
 
+interface ChangeStatusParams {
+  projectId: number;
+  projectStatus: string;
+}
+
+export const changeStatusProjectByAdmin = createAsyncThunk(
+  "listProject/changeStatusProjectByAdmin",
+  async ({ projectId, projectStatus }: ChangeStatusParams, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.patch<any>(
+        `/projects/changeStatus/${projectId}/${projectStatus}`, [], 
+        configHeader
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error)
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
 export const projectSlice = createSlice({
   name: "listProject",
   initialState,
@@ -249,6 +281,21 @@ export const projectSlice = createSlice({
       state.error = "";
     });
     builder.addCase(updateProjectByAdmin.rejected, (state, action) => {
+      state.loadingProject = false;
+      state.error = action.payload as string;
+    });
+
+    //change Status Project By Admin
+    builder.addCase(changeStatusProjectByAdmin.pending, (state) => {
+      state.loadingProject = true;
+      state.error = "";
+    });
+    builder.addCase(changeStatusProjectByAdmin.fulfilled, (state, action) => {
+      state.loadingProject = false;
+      // state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(changeStatusProjectByAdmin.rejected, (state, action) => {
       state.loadingProject = false;
       state.error = action.payload as string;
     });

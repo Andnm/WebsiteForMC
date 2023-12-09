@@ -16,7 +16,7 @@ const initialState: PitchingState = {
   error: "",
 };
 
-//get all register pitching by student 
+//get all register pitching by student
 // cái này là sẽ show ra danh sách những DỰ ÁN mà nhóm của student này đã đăng kí
 export const getAllRegisterPitchingByStudent = createAsyncThunk(
   "pitching/getAllRegisterPitching",
@@ -58,7 +58,10 @@ export const getAllRegisterPitchingByBusiness = createAsyncThunk(
     };
 
     try {
-      const response = await http.get<any>(`/register-pitching/${projectId}`, configHeader);
+      const response = await http.get<any>(
+        `/register-pitching/${projectId}`,
+        configHeader
+      );
 
       return response.data;
     } catch (error) {
@@ -68,7 +71,6 @@ export const getAllRegisterPitchingByBusiness = createAsyncThunk(
     }
   }
 );
-
 
 //register pitching
 interface RegisterPitchingBody {
@@ -120,11 +122,13 @@ export const chooseGroupByBusiness = createAsyncThunk(
     try {
       const response = await http.patch<any>(
         `/register-pitching/chooseGroup/${groupId}/${projectId}`,
+        [],
         configHeader
       );
 
       return response.data;
     } catch (error) {
+      console.log(error)
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );
@@ -142,28 +146,40 @@ export const pitchingSlice = createSlice({
       state.loadingPitching = true;
       state.error = "";
     });
-    builder.addCase(getAllRegisterPitchingByStudent.fulfilled, (state, action) => {
-      state.loadingPitching = false;
-      state.error = "";
-    });
-    builder.addCase(getAllRegisterPitchingByStudent.rejected, (state, action) => {
-      state.loadingPitching = false;
-      state.error = action.payload as string;
-    });
+    builder.addCase(
+      getAllRegisterPitchingByStudent.fulfilled,
+      (state, action) => {
+        state.loadingPitching = false;
+        state.error = "";
+      }
+    );
+    builder.addCase(
+      getAllRegisterPitchingByStudent.rejected,
+      (state, action) => {
+        state.loadingPitching = false;
+        state.error = action.payload as string;
+      }
+    );
 
     //get all register pitching by business
     builder.addCase(getAllRegisterPitchingByBusiness.pending, (state) => {
       state.loadingPitching = true;
       state.error = "";
     });
-    builder.addCase(getAllRegisterPitchingByBusiness.fulfilled, (state, action) => {
-      state.loadingPitching = false;
-      state.error = "";
-    });
-    builder.addCase(getAllRegisterPitchingByBusiness.rejected, (state, action) => {
-      state.loadingPitching = false;
-      state.error = action.payload as string;
-    });
+    builder.addCase(
+      getAllRegisterPitchingByBusiness.fulfilled,
+      (state, action) => {
+        state.loadingPitching = false;
+        state.error = "";
+      }
+    );
+    builder.addCase(
+      getAllRegisterPitchingByBusiness.rejected,
+      (state, action) => {
+        state.loadingPitching = false;
+        state.error = action.payload as string;
+      }
+    );
 
     //create register pitching
     builder.addCase(registerPitching.pending, (state) => {

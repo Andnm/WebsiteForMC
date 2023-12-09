@@ -23,6 +23,7 @@ import {
   chooseGroupByBusiness,
   registerPitching,
 } from "@/src/redux/features/pitchingSlice";
+import { changeStatusProjectByAdmin } from "@/src/redux/features/projectSlice";
 
 interface AlertDialogConfirmChooseProps {
   children: React.ReactNode;
@@ -41,14 +42,22 @@ export const AlertDialogConfirmChoose: React.FC<
 
   const handleChooseGroup = () => {
     dispatch(chooseGroupByBusiness({ groupId, projectId })).then((result) => {
-      if (chooseGroupByBusiness.fulfilled.match(result)) {
-        toast.success("Chọn nhóm thành công!");
-      } else {
-        console.log(result.payload);
-        toast.error("Đã có lỗi xảy ra vui lòng thử lại sau!");
-      }
+
+      const projectStatus = 'Processing'
+
+      dispatch(changeStatusProjectByAdmin({projectId, projectStatus})).then((result) => {
+        console.log(result.payload)
+      })
+
+      // if (chooseGroupByBusiness.fulfilled.match(result)) {
+      
+      //   toast.success("Chọn nhóm thành công!");
+      // } else {
+      //   console.log(result.payload);
+      //   toast.error("Đã có lỗi xảy ra vui lòng thử lại sau!");
+      // }
     });
-    setOpen(false);
+    // setOpen(false);
   };
 
   return (
