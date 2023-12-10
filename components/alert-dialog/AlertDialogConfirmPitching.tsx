@@ -50,9 +50,10 @@ export const AlertDialogConfirmPitching: React.FC<
         toast.success("Đăng kí thành công!");
       } else {
         console.log(result.payload)
-        toast.error("Đã có lỗi xảy ra vui lòng thử lại sau!");
+        toast.error(`${result.payload}`);
       }
     });
+    setOpen(false)
   };
 
   return (

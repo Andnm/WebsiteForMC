@@ -99,7 +99,7 @@ export const AlertDialogCreateGroupAndInviteMember: React.FC<
           setLoadingHandleInviteAndCreateGroup(false);
         } else if (createGroup.rejected.match(result)) {
           console.log(result.payload);
-          toast.error("Đã có lỗi xảy ra! Vui lòng thử lại sau");
+          toast.error(`${result.payload}`);
           setLoadingHandleInviteAndCreateGroup(false);
         }
       })

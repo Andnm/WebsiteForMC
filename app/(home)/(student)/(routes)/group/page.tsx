@@ -118,7 +118,7 @@ const GroupPage = () => {
               </div>
             </div>
 
-            <div className="card-footer flex items-center gap-10">
+            <div className="card-footer flex items-center gap-2">
               <div className="flex items-center gap-2">
                 <div
                   className="circle"

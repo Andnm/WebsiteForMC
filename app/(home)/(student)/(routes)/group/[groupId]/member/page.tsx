@@ -49,9 +49,9 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
             });
           }
 
-          toast.success("Chấp thuận thành công!");
+          toast.success(`${relationshipStatus} thành công!`);
         } else {
-          toast.error("Đã có lỗi xảy ra vui lòng thử lại sau!");
+          toast.error(`${result.payload}`);
         }
       }
     );
@@ -230,149 +230,153 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
                 role="list"
                 className="mt-5 divide-y divide-gray-200 border-t border-gray-200 sm:mt-0 sm:border-t-0"
               >
-                {dataGroup.map((member, index) => (
-                  <li key={index}>
-                    <div className="group block">
-                      <div className="flex items-center py-5 px-4 sm:py-6 sm:px-0">
-                        <div className="flex min-w-0 flex-1 items-center">
-                          <div className="flex-shrink-0">
-                            <img
-                              className="h-12 w-12 rounded-full group-hover:opacity-75 object-cover object-center"
-                              src={
-                                member?.user?.avatar_url ||
-                                "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                              }
-                              alt=""
-                            />
-                          </div>
-
-                          <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-3 md:gap-4">
-                            {/* fullname + email */}
-                            <div>
-                              <p className="truncate text-sm font-medium text-purple-600">
-                                {member?.user?.fullname}
-                              </p>
-                              <p className="mt-2 flex items-center text-sm text-gray-500">
-                                <svg
-                                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                  x-description="Heroicon name: mini/envelope"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                  aria-hidden="true"
-                                >
-                                  <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z"></path>
-                                  <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z"></path>
-                                </svg>
-                                <span className="truncate">
-                                  {member?.user?.email}
-                                </span>
-                              </p>
+                {dataGroup.map((member, index) =>
+                  member.relationship_status !== "Rejected" ? (
+                    <li key={index}>
+                      <div className="group block">
+                        <div className="flex items-center py-5 px-4 sm:py-6 sm:px-0">
+                          <div className="flex min-w-0 flex-1 items-center">
+                            <div className="flex-shrink-0">
+                              <img
+                                className="h-12 w-12 rounded-full group-hover:opacity-75 object-cover object-center"
+                                src={
+                                  member?.user?.avatar_url ||
+                                  "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                }
+                                alt=""
+                              />
                             </div>
 
-                            {/* Role in group */}
-                            <div className="hidden md:block">
+                            <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-3 md:gap-4">
+                              {/* fullname + email */}
                               <div>
-                                <p className="text-sm text-gray-900">
-                                  {member.is_leader
-                                    ? "Trưởng nhóm"
-                                    : "Thành viên"}
+                                <p className="truncate text-sm font-medium text-purple-600">
+                                  {member?.user?.fullname}
                                 </p>
                                 <p className="mt-2 flex items-center text-sm text-gray-500">
-                                  {member.relationship_status === "Joined" ? (
-                                    <>
-                                      <svg
-                                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-green-400"
-                                        x-description="Heroicon name: mini/check-circle"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                        aria-hidden="true"
-                                      >
-                                        <path
-                                          fillRule="evenodd"
-                                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                          clipRule="evenodd"
-                                        ></path>
-                                      </svg>
-                                      Đã tham gia nhóm
-                                    </>
-                                  ) : (
-                                    <>Đang chờ phê duyệt</>
-                                  )}
+                                  <svg
+                                    className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                    x-description="Heroicon name: mini/envelope"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                  >
+                                    <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z"></path>
+                                    <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z"></path>
+                                  </svg>
+                                  <span className="truncate">
+                                    {member?.user?.email}
+                                  </span>
                                 </p>
                               </div>
-                            </div>
 
-                            {/* xử lý chấp thuận join group */}
-                            {member.relationship_status === "Pending" &&
-                            member.user?.email === userLogin.email ? (
-                              <div className="flex items-center gap-4">
-                                <Hint
-                                  sideOffset={10}
-                                  description={`Đồng ý vào nhóm`}
-                                  side={"top"}
-                                >
-                                  <div
-                                    onClick={() =>
-                                      handleReplyInviteMember(
-                                        member?.id,
-                                        "Joined"
-                                      )
-                                    }
-                                    className="flex agree-invite items-center gap-1 text-sm text-gray-500 cursor-pointer transition ease-in-out "
-                                  >
-                                    <FaRegCheckCircle className="w-5 h-5 text-green-300 transition ease-in-out" />
-                                    Chấp thuận
-                                  </div>
-                                </Hint>
-
-                                <Hint
-                                  sideOffset={10}
-                                  description={`Từ chối vào nhóm`}
-                                  side={"top"}
-                                >
-                                  <div
-                                    onClick={() =>
-                                      handleReplyInviteMember(
-                                        member.id,
-                                        "Từ chối"
-                                      )
-                                    }
-                                    className="flex disagree-invite items-center gap-1 text-sm text-gray-500 cursor-pointer transition ease-in-out"
-                                  >
-                                    <MdOutlineCancel className="w-6 h-6 text-red-300 transition ease-in-out" />
-                                    Từ chối
-                                  </div>
-                                </Hint>
+                              {/* Role in group */}
+                              <div className="hidden md:block">
+                                <div>
+                                  <p className="text-sm text-gray-900">
+                                    {member.is_leader
+                                      ? "Trưởng nhóm"
+                                      : "Thành viên"}
+                                  </p>
+                                  <p className="mt-2 flex items-center text-sm text-gray-500">
+                                    {member.relationship_status === "Joined" ? (
+                                      <>
+                                        <svg
+                                          className="mr-1.5 h-5 w-5 flex-shrink-0 text-green-400"
+                                          x-description="Heroicon name: mini/check-circle"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          viewBox="0 0 20 20"
+                                          fill="currentColor"
+                                          aria-hidden="true"
+                                        >
+                                          <path
+                                            fillRule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                            clipRule="evenodd"
+                                          ></path>
+                                        </svg>
+                                        Đã tham gia nhóm
+                                      </>
+                                    ) : (
+                                      <>Đang chờ phê duyệt</>
+                                    )}
+                                  </p>
+                                </div>
                               </div>
-                            ) : (
-                              <></>
-                            )}
+
+                              {/* xử lý chấp thuận join group */}
+                              {member.relationship_status === "Pending" &&
+                              member.user?.email === userLogin.email ? (
+                                <div className="flex items-center gap-4">
+                                  <Hint
+                                    sideOffset={10}
+                                    description={`Đồng ý vào nhóm`}
+                                    side={"top"}
+                                  >
+                                    <div
+                                      onClick={() =>
+                                        handleReplyInviteMember(
+                                          member?.id,
+                                          "Joined"
+                                        )
+                                      }
+                                      className="flex agree-invite items-center gap-1 text-sm text-gray-500 cursor-pointer transition ease-in-out "
+                                    >
+                                      <FaRegCheckCircle className="w-5 h-5 text-green-300 transition ease-in-out" />
+                                      Chấp thuận
+                                    </div>
+                                  </Hint>
+
+                                  <Hint
+                                    sideOffset={10}
+                                    description={`Từ chối vào nhóm`}
+                                    side={"top"}
+                                  >
+                                    <div
+                                      onClick={() =>
+                                        handleReplyInviteMember(
+                                          member.id,
+                                          "Rejected"
+                                        )
+                                      }
+                                      className="flex disagree-invite items-center gap-1 text-sm text-gray-500 cursor-pointer transition ease-in-out"
+                                    >
+                                      <MdOutlineCancel className="w-6 h-6 text-red-300 transition ease-in-out" />
+                                      Từ chối
+                                    </div>
+                                  </Hint>
+                                </div>
+                              ) : (
+                                <></>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* arrow */}
+                          <div>
+                            <svg
+                              className="h-5 w-5 text-gray-400 group-hover:text-gray-700"
+                              x-description="Heroicon name: mini/chevron-right"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                                clipRule="evenodd"
+                              ></path>
+                            </svg>
                           </div>
                         </div>
-
-                        {/* arrow */}
-                        <div>
-                          <svg
-                            className="h-5 w-5 text-gray-400 group-hover:text-gray-700"
-                            x-description="Heroicon name: mini/chevron-right"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                              clipRule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  ) : (
+                    <></>
+                  )
+                )}
               </ul>
             </div>
           </main>

@@ -366,7 +366,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 
         toast.success("Cập nhập dự án thành công!");
       } else if (updateProjectByAdmin.rejected.match(result)) {
-        toast.error("Đã có lỗi xảy ra! Vui lòng thử lại sau!");
+        toast.error(`${result.payload}`);
         console.log(result.payload);
       }
     });
@@ -383,7 +383,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
         console.log(result.payload);
         toast.success("Phê duyệt thành công!");
       } else if (confirmProjectByAdmin.rejected.match(result)) {
-        toast.error("Đã có lỗi xảy ra! Vui lòng thử lại sau!");
+        toast.error(`${result.payload}`);
         console.log(result.payload);
       }
     });
