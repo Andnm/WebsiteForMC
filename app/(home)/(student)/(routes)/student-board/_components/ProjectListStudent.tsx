@@ -14,6 +14,7 @@ const ProjectListStudent: React.FC<PitchingProjectListProps> = ({
   setDataPitching,
   loadingPitching,
 }) => {
+  console.log(dataPitching)
   const getProjectNameByStatus = (status: string) => {
     switch (status) {
       case "Pending":
@@ -43,6 +44,14 @@ const ProjectListStudent: React.FC<PitchingProjectListProps> = ({
 
   const renderProjectsByStatus = () => {
     const groupedProjects = groupProjectsByStatus();
+
+    if (!dataPitching || dataPitching.length === 0) {
+      return (
+        <div className="text-center text-lg text-neutral-700">
+          Bạn chưa tham gia dự án nào cả.
+        </div>
+      );
+    }
 
     return Object.entries(groupedProjects).map(([status, pitchings]) => (
       <div key={status}>
@@ -122,6 +131,7 @@ const ProjectListStudent: React.FC<PitchingProjectListProps> = ({
       </>
     );
   }
+
   return (
     <div>
       <div className="space-y-4">
