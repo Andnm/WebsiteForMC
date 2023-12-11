@@ -30,10 +30,10 @@ interface DialogProps {
 }
 
 const fields: { name: keyof ProjectType; label: string }[] = [
-  { name: "fullname", label: "Họ và tên" },
+  { name: "fullname", label: "Họ và tên người phụ trách" },
   { name: "position", label: "Vị trí" },
   { name: "email_responsible_person", label: "Email người phụ trách" },
-  { name: "phone_number", label: "Số điện thoại" },
+  { name: "phone_number", label: "Số điện thoại người phụ trách" },
   { name: "name_project", label: "Tên dự án" },
   { name: "business_sector", label: "Lĩnh vực kinh doanh" },
   { name: "specialized_field", label: "Lĩnh vực chuyên môn" },
