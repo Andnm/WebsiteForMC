@@ -10,7 +10,11 @@ import {
   formatDate,
 } from "@/src/utils/handleFunction";
 import { useAppDispatch, useAppSelector } from "@/src/redux/store";
-import { createCost, getCostInCategory } from "@/src/redux/features/costSlice";
+import {
+  changeStatusCost,
+  createCost,
+  getCostInCategory,
+} from "@/src/redux/features/costSlice";
 import AdminSpinnerLoading from "@/src/components/loading/AdminSpinnerLoading";
 import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
 import ImageUpload from "./_components/ImageUpload";
@@ -100,8 +104,25 @@ const DialogViewCategory = ({
   };
 
   const handleChangeStatus = (status: string) => {
-   
-  }
+    let costStatus = "Not Transferred";
+    if (status === "Not Transferred") {
+      costStatus = "Transferred";
+    } else {
+      costStatus = "Received";
+    }
+
+    const id = cost.id;
+    dispatch(changeStatusCost({ id, costStatus })).then((result) => {
+      if (changeStatusCost.fulfilled.match(result)) {
+        console.log(cost);
+        console.log(result.payload);
+        setCost(result.payload);
+        toast.success("Chuyển trạng thái thành công!");
+      } else {
+        toast.error("Đã có lỗi xảy ra!");
+      }
+    });
+  };
 
   React.useEffect(() => {
     setIsLoading(true);
@@ -414,7 +435,7 @@ const DialogViewCategory = ({
                                       Mô tả ảnh:
                                     </span>
                                     <span className="font-semibold flex items-center gap-2">
-                                      {formatCurrency(item.description)}
+                                      {item.description}
                                       <Edit className="cursor-pointer w-4 h-4" />
                                     </span>
                                   </div>

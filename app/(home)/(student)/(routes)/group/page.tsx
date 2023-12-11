@@ -33,6 +33,8 @@ const GroupPage = () => {
         return { color: "green", text: "Đã tham gia" };
       case "Outed":
         return { color: "gray", text: "Đã rời nhóm" };
+      case "Rejected":
+        return { color: "red", text: "Từ chối lời mời" };
       default:
         return { color: "black", text: "Trạng thái không xác định" };
     }
