@@ -128,7 +128,7 @@ export const chooseGroupByBusiness = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );

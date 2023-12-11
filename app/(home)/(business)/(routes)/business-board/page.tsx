@@ -21,7 +21,7 @@ const BusinessBoard = () => {
       if (getAllProjectByBusiness.fulfilled.match(result)) {
         setDataProjects(result.payload);
       }else {
-        console.log(result.payload)
+        // console.log(result.payload)
       }
     });
 

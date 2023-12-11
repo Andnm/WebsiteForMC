@@ -120,7 +120,7 @@ export const replyInviteToJoinGroup = createAsyncThunk(
     try {
       const token = getTokenFromSessionStorage();
 
-      console.log(token)
+      // console.log(token)
 
       const configHeader = {
         headers: {
@@ -138,7 +138,7 @@ export const replyInviteToJoinGroup = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );

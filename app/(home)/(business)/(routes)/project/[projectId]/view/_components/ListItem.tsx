@@ -10,11 +10,14 @@ import ListCategory from "./ListCategory";
 
 interface ListItemProps {
   data: PhaseType;
+  setPhaseData: React.Dispatch<React.SetStateAction<any[]>>;
   index: number;
+  groupId: number;
 }
 
-const ListItem = ({ data, index }: ListItemProps) => {
-  const [dataCategory, setDataCategory] = React.useState<any>([])
+const ListItem = ({ data, groupId, index, setPhaseData}: ListItemProps) => {
+ 
+  const [dataCategory, setDataCategory] = React.useState<any>([]);
   const textareaRef = React.useRef<React.ElementRef<"textarea">>(null);
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -31,12 +34,12 @@ const ListItem = ({ data, index }: ListItemProps) => {
     });
   };
 
-  console.log("phase", data);
+  // console.log("phase", data);
 
   React.useEffect(() => {
     dispatch(getAllCategoryOfPhase(data.id)).then((result) => {
-      setDataCategory(result.payload)
-      console.log("category", result.payload);
+      setDataCategory(result.payload);
+      // console.log("category", result.payload);
     });
   }, []);
 
@@ -46,13 +49,19 @@ const ListItem = ({ data, index }: ListItemProps) => {
         className="w-full rounded-md bg-[#f1f2f4] shadow-md pb-2"
         style={{ borderRadius: "7px" }}
       >
-        <ListHeader onAddCategory={enableEditing} data={data} />
+        <ListHeader onAddCategory={enableEditing} data={data} setPhaseData={setPhaseData}/>
 
-        {data && <ListCategory dataCategory={dataCategory} setDataCategory={setDataCategory}/>}
+        {data && (
+          <ListCategory
+            dataCategory={dataCategory}
+            setDataCategory={setDataCategory}
+          />
+        )}
 
         <CategoryForm
           phaseId={data.id}
-          groupId={2}
+          dataCategory={dataCategory}
+          setDataCategory={setDataCategory}
           ref={textareaRef}
           isEditing={isEditing}
           enableEditing={enableEditing}

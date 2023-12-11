@@ -7,12 +7,15 @@ import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useUserLogin } from "@/src/hook/useUserLogin";
 
 interface BoardTitleFormProps {
   dataProject?: ProjectType;
 }
 
 const ViewSidebar = ({ dataProject }: BoardTitleFormProps) => {
+  const [userLogin, setUserLogin] = useUserLogin();
+
   const router = useRouter();
   const pathName = usePathname();
 
@@ -25,7 +28,9 @@ const ViewSidebar = ({ dataProject }: BoardTitleFormProps) => {
       ? pathName.substring(0, fourthSlashIndex + 1)
       : pathName;
 
-  const routesInProject = [
+  const isStudent = userLogin?.role_name === "Student";
+
+  const initialRoutesInProject = [
     {
       label: "View",
       icon: <MdOutlineGridView className="w-5 h-5" />,
@@ -47,6 +52,10 @@ const ViewSidebar = ({ dataProject }: BoardTitleFormProps) => {
       href: `${currentPath}setting`,
     },
   ];
+
+  const routesInProject = isStudent
+    ? initialRoutesInProject.filter((route) => route.label !== "Group")
+    : initialRoutesInProject;
 
   const handleNavigate = (href: string) => {
     router.push(href);

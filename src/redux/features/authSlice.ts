@@ -70,7 +70,7 @@ export const register = createAsyncThunk<any, any>(
         password: data.password,
       });
 
-      console.log(response);
+      // console.log(response);
 
       return response;
     } catch (error) {

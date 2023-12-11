@@ -43,7 +43,7 @@ const TableMemberInGroup: React.FC<TableProps> = ({
     dispatch(getAllMemberByGroupId(group?.group?.id)).then((result: any) => {
       if (getAllMemberByGroupId.fulfilled.match(result)) {
         setMemberInGroup(result.payload);
-        console.log(result.payload);
+        // console.log(result.payload);
       }
     });
   }, []);

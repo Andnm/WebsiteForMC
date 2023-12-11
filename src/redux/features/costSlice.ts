@@ -4,22 +4,29 @@ import { PhaseType } from "@/src/types/phase.type";
 import { ErrorType } from "@/src/types/error.type";
 import { getTokenFromSessionStorage } from "../utils/handleToken";
 import { CategoryType } from "@/src/types/category.type";
+import { CostType } from "@/src/types/cost.type";
 
-export interface CategoryStatus {
-  data: CategoryType | null;
-  loadingCategory: boolean;
+export interface CostStatus {
+  data: CostType | null;
+  loadingCost: boolean;
   error: string;
 }
 
-const initialState: CategoryStatus = {
+const initialState: CostStatus = {
   data: null,
-  loadingCategory: false,
+  loadingCost: false,
   error: "",
 };
 
-export const createCategory = createAsyncThunk(
-  "category/createCategory",
-  async (dataBody: CategoryType, thunkAPI) => {
+interface CreateCostBody {
+  expected_cost: number;
+  categoryId: number;
+  phaseId: number;
+}
+
+export const createCost = createAsyncThunk(
+  "cost/createCost",
+  async (dataBody: CreateCostBody, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -30,11 +37,7 @@ export const createCategory = createAsyncThunk(
     };
 
     try {
-      const response = await http.post<any>(
-        `/categories`,
-        dataBody,
-        configHeader
-      );
+      const response = await http.post<any>(`/cost`, dataBody, configHeader);
 
       return response.data;
     } catch (error) {
@@ -45,9 +48,9 @@ export const createCategory = createAsyncThunk(
   }
 );
 
-export const getAllCategoryOfPhase = createAsyncThunk(
-  "category/getAllCategoryOfPhase",
-  async (phaseId: number, thunkAPI) => {
+export const getCostInCategory = createAsyncThunk(
+  "cost/getCostInCategory",
+  async (categoryId: number, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -59,7 +62,7 @@ export const getAllCategoryOfPhase = createAsyncThunk(
 
     try {
       const response = await http.get<any>(
-        `/categories/all/${phaseId}`,
+        `/cost/all/${categoryId}`,
         configHeader
       );
 
@@ -72,14 +75,9 @@ export const getAllCategoryOfPhase = createAsyncThunk(
   }
 );
 
-interface UpdateCategoryProps {
-  dataBody: CategoryType;
-  id: number;
-}
-
-export const updateCategoryInformation = createAsyncThunk(
-  "category/updateCategoryInformation",
-  async ({ dataBody, id }: UpdateCategoryProps, thunkAPI) => {
+export const updateCost = createAsyncThunk(
+  "cost/updateCost",
+  async (req: any, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -89,9 +87,11 @@ export const updateCategoryInformation = createAsyncThunk(
       },
     };
 
+    const { id, dataBody } = req;
+
     try {
       const response = await http.patch<any>(
-        `/categories/${id}`,
+        `/cost/${id}`,
         dataBody,
         configHeader
       );
@@ -105,14 +105,14 @@ export const updateCategoryInformation = createAsyncThunk(
   }
 );
 
-interface ChangeStatusProps {
-  categoryId: number;
-  categoryStatus: string;
+interface ChangeStatusCostParams {
+  id: number;
+  costStatus: string;
 }
 
-export const changeStatusCategory = createAsyncThunk(
-  "category/changeStatusCategory",
-  async ({ categoryId, categoryStatus }: ChangeStatusProps, thunkAPI) => {
+export const changeStatusCost = createAsyncThunk(
+  "cost/changeStatusCost",
+  async ({ id, costStatus }: ChangeStatusCostParams, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -124,7 +124,7 @@ export const changeStatusCategory = createAsyncThunk(
 
     try {
       const response = await http.patch<any>(
-        `/categories/changeStatus/${categoryId}/${categoryStatus}`,
+        `/cost/changeStatus/${id}/${costStatus}`,
         [],
         configHeader
       );
@@ -143,48 +143,63 @@ export const categorySlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    //create category
-    builder.addCase(createCategory.pending, (state) => {
-      state.loadingCategory = true;
+    //create cost
+    builder.addCase(createCost.pending, (state) => {
+      state.loadingCost = true;
       state.error = "";
     });
-    builder.addCase(createCategory.fulfilled, (state, action) => {
-      state.loadingCategory = false;
+    builder.addCase(createCost.fulfilled, (state, action) => {
+      state.loadingCost = false;
       //   state.data = action.payload;
       state.error = "";
     });
-    builder.addCase(createCategory.rejected, (state, action) => {
-      state.loadingCategory = false;
+    builder.addCase(createCost.rejected, (state, action) => {
+      state.loadingCost = false;
       state.error = action.payload as string;
     });
 
-    //get phase by project id
-    builder.addCase(getAllCategoryOfPhase.pending, (state) => {
-      state.loadingCategory = true;
+    //get cost in category
+    builder.addCase(getCostInCategory.pending, (state) => {
+      state.loadingCost = true;
       state.error = "";
     });
-    builder.addCase(getAllCategoryOfPhase.fulfilled, (state, action) => {
-      state.loadingCategory = false;
+    builder.addCase(getCostInCategory.fulfilled, (state, action) => {
+      state.loadingCost = false;
       //   state.data = action.payload;
       state.error = "";
     });
-    builder.addCase(getAllCategoryOfPhase.rejected, (state, action) => {
-      state.loadingCategory = false;
+    builder.addCase(getCostInCategory.rejected, (state, action) => {
+      state.loadingCost = false;
       state.error = action.payload as string;
     });
 
-    //updateCategoryInformation
-    builder.addCase(updateCategoryInformation.pending, (state) => {
-      state.loadingCategory = true;
+    //update expected cost
+    builder.addCase(updateCost.pending, (state) => {
+      state.loadingCost = true;
       state.error = "";
     });
-    builder.addCase(updateCategoryInformation.fulfilled, (state, action) => {
-      state.loadingCategory = false;
+    builder.addCase(updateCost.fulfilled, (state, action) => {
+      state.loadingCost = false;
       //   state.data = action.payload;
       state.error = "";
     });
-    builder.addCase(updateCategoryInformation.rejected, (state, action) => {
-      state.loadingCategory = false;
+    builder.addCase(updateCost.rejected, (state, action) => {
+      state.loadingCost = false;
+      state.error = action.payload as string;
+    });
+
+    //change status cost
+    builder.addCase(changeStatusCost.pending, (state) => {
+      state.loadingCost = true;
+      state.error = "";
+    });
+    builder.addCase(changeStatusCost.fulfilled, (state, action) => {
+      state.loadingCost = false;
+      //   state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(changeStatusCost.rejected, (state, action) => {
+      state.loadingCost = false;
       state.error = action.payload as string;
     });
   },

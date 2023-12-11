@@ -296,7 +296,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
   );
 
   const handleOpenModalDetails = (business: any) => {
-    console.log(business);
+    // console.log(business);
     setSelectedProject(business);
     setIsOpenModalDetail(true);
   };
@@ -311,17 +311,17 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
   };
 
   const handleClickOpenInfo = (business: any) => {
-    console.log("Open info", business);
+    // console.log("Open info", business);
   };
 
   const handleClickRemoveProject = (business: any) => {
-    console.log("Remove project", business);
+    // console.log("Remove project", business);
   };
 
   //handle function when open detail project
   //hàm vừa THAY ĐỔI vừa phê duyệt
   const handleUpdateAndConfirmProject = (id: number) => {
-    console.log("update nè");
+    // console.log("update nè");
 
     const newDataArray = {
       fullname: selectedProject?.responsible_person?.fullname,
@@ -367,7 +367,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
         toast.success("Cập nhập dự án thành công!");
       } else if (updateProjectByAdmin.rejected.match(result)) {
         toast.error(`${result.payload}`);
-        console.log(result.payload);
+        // console.log(result.payload);
       }
     });
 
@@ -377,14 +377,14 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 
   // hàm phê duyệt
   const handleConfirmProject = (id: number) => {
-    console.log("confirm nè");
+    // console.log("confirm nè");
     dispatch(confirmProjectByAdmin(id)).then((result) => {
       if (confirmProjectByAdmin.fulfilled.match(result)) {
-        console.log(result.payload);
+        // console.log(result.payload);
         toast.success("Phê duyệt thành công!");
       } else if (confirmProjectByAdmin.rejected.match(result)) {
         toast.error(`${result.payload}`);
-        console.log(result.payload);
+        // console.log(result.payload);
       }
     });
 

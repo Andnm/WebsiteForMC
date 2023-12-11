@@ -32,7 +32,7 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
     dispatch(login(formData)).then((result) => {
       if (login.rejected.match(result)) {
         //do something
-        console.log(result.payload);
+        // console.log(result.payload);
       } else if (login.fulfilled.match(result)) {
         const user = result.payload;
         switch (user?.role_name) {

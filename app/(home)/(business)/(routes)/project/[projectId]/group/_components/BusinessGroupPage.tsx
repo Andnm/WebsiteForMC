@@ -29,7 +29,7 @@ const BusinessGroupPage: React.FC<BusinessGroupPageProps> = ({ projectId }) => {
         console.log(result.payload);
         setDataGroupPitching(result.payload);
       } else {
-        console.log("error", result.payload);
+        // console.log("error", result.payload);
       }
     });
   }, []);

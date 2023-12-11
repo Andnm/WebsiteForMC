@@ -105,7 +105,7 @@ export const confirmProjectByAdmin = createAsyncThunk(
   async (id: number, thunkAPI) => {
     try {
       const token = getTokenFromSessionStorage();
-      console.log("token", token);
+      // console.log("token", token);
 
       const configHeader = {
         headers: {
@@ -123,7 +123,7 @@ export const confirmProjectByAdmin = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );
@@ -150,7 +150,7 @@ export const updateProjectByAdmin = createAsyncThunk(
         data,
         configHeader
       );
-      console.log("response");
+      // console.log("response");
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -185,7 +185,7 @@ export const changeStatusProjectByAdmin = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );

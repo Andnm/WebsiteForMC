@@ -7,6 +7,7 @@ import projectReducer from "./features/projectSlice";
 import groupReducer from "./features/groupSlice";
 import pitchingReducer from "./features/pitchingSlice";
 import phaseReducer from "./features/phaseSlice";
+import categoryReducer from "./features/categorySlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     group: groupReducer,
     pitching: pitchingReducer,
     phase: phaseReducer,
+    category: categoryReducer
   },
 });
 

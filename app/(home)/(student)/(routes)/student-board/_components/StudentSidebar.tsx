@@ -57,11 +57,6 @@ const StudentSidebar: React.FC<SidebarProps> = ({
       href: "/view",
     },
     {
-      label: "Group",
-      icon: <HiOutlineUserGroup className="w-5 h-5" />,
-      href: "/group",
-    },
-    {
       label: "Chat",
       icon: <IoChatboxEllipsesOutline className="w-5 h-5" />,
       href: "/chat",

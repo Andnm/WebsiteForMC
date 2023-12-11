@@ -17,7 +17,7 @@ const ManageProject = () => {
     dispatch(getAllProjectByEveryOne()).then((result) => {
       if (getAllProjectByEveryOne.rejected.match(result)) {
         //do something
-        console.log(result.payload);
+        // console.log(result.payload);
       } else if (getAllProjectByEveryOne.fulfilled.match(result)) {
         const reversedData = [...result.payload].reverse();
         setDataTable(reversedData);
