@@ -7,6 +7,7 @@ import { getPhaseByProjectId } from "@/src/redux/features/phaseSlice";
 import { PhaseType } from "@/src/types/phase.type";
 import { useAppDispatch } from "@/src/redux/store";
 import { getAllRegisterPitchingByBusiness } from "@/src/redux/features/pitchingSlice";
+import ProgressLoading from "@/src/components/loading/ProgressLoading";
 
 const ProjectIdPage = () => {
   const params = useParams<{ projectId: string }>();
@@ -39,6 +40,8 @@ const ProjectIdPage = () => {
 
   return (
     <div className="p-4 h-full overflow-x-auto">
+      <ProgressLoading phaseData={phaseData}/>
+      
       {phaseData !== null && (
         <ListPhaseContainer
           projectId={parseInt(params.projectId, 10)}

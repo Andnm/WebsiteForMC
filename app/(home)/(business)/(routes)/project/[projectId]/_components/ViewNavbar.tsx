@@ -1,5 +1,6 @@
 import { ProjectType } from "@/src/types/project.type";
 import { ViewTitleForm } from "./ViewTitleForm";
+import ProgressLoading from "@/src/components/loading/ProgressLoading";
 
 interface ViewNavbarProps {
 }
