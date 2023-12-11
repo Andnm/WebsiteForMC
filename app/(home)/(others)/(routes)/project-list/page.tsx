@@ -43,7 +43,7 @@ const ProjectList = () => {
   React.useEffect(() => {
     dispatch(getAllProjectByEveryOne()).then((result) => {
       setDataProjectList(result.payload);
-      console.log(result.payload);
+      console.log('all', result.payload);
     });
   }, []);
 

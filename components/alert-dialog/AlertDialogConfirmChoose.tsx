@@ -42,22 +42,22 @@ export const AlertDialogConfirmChoose: React.FC<
 
   const handleChooseGroup = () => {
     dispatch(chooseGroupByBusiness({ groupId, projectId })).then((result) => {
+      const projectStatus = "Processing";
 
-      const projectStatus = 'Processing'
+      // dispatch(changeStatusProjectByAdmin({ projectId, projectStatus })).then(
+      //   (result) => {
+      //     console.log(result.payload);
+      //   }
+      // );
 
-      dispatch(changeStatusProjectByAdmin({projectId, projectStatus})).then((result) => {
-        console.log(result.payload)
-      })
-
-      // if (chooseGroupByBusiness.fulfilled.match(result)) {
-      
-      //   toast.success("Chọn nhóm thành công!");
-      // } else {
-      //   console.log(result.payload);
-      //   toast.error("Đã có lỗi xảy ra vui lòng thử lại sau!");
-      // }
+      if (chooseGroupByBusiness.fulfilled.match(result)) {
+        toast.success("Chọn nhóm thành công!");
+      } else {
+        console.log(result.payload);
+        toast.error("Đã có lỗi xảy ra vui lòng thử lại sau!");
+      }
     });
-    // setOpen(false);
+    setOpen(false);
   };
 
   return (

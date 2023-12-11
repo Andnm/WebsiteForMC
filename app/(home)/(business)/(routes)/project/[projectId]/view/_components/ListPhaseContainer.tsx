@@ -18,21 +18,34 @@ const ListPhaseContainer = ({
   phaseData,
   setPhaseData,
 }: ListPhaseContainerProps) => {
-  console.log('phasedata', phaseData);
+  console.log("phasedata", phaseData);
 
   return (
-
-    // mới sửa khúc này
     <ol className="flex gap-x-3 h-full">
       {Array.isArray(phaseData) &&
         phaseData?.map((phase, index) => {
-          return <ListItem key={index} index={index} data={phase} groupId={groupId} setPhaseData={setPhaseData}></ListItem>;
+          return (
+            <ListItem
+              key={index}
+              index={index}
+              data={phase}
+              groupId={groupId}
+              setPhaseData={setPhaseData}
+            ></ListItem>
+          );
         })}
 
-      <ListForm groupId={groupId} projectId={projectId} phaseData={phaseData} setPhaseData={setPhaseData}/>
+      <ListForm
+        groupId={groupId}
+        projectId={projectId}
+        phaseData={phaseData}
+        setPhaseData={setPhaseData}
+      />
       <div className="flex-shrink-0 w-1"></div>
     </ol>
   );
+
+  // mới sửa khúc này
 };
 
 export default ListPhaseContainer;

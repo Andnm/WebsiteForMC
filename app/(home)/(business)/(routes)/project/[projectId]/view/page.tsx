@@ -18,7 +18,7 @@ const ProjectIdPage = () => {
   React.useEffect(() => {
     const projectId = parseInt(params.projectId, 10);
     dispatch(getPhaseByProjectId(projectId)).then((result) => {
-      console.log('phase', result)
+      console.log("phase", result);
       setPhaseData(result.payload);
     });
 
@@ -40,15 +40,17 @@ const ProjectIdPage = () => {
 
   return (
     <div className="p-4 h-full overflow-x-auto">
-      <ProgressLoading phaseData={phaseData}/>
-      
-      {phaseData !== null && (
+      <ProgressLoading phaseData={phaseData} />
+
+      {phaseData !== null ? (
         <ListPhaseContainer
           projectId={parseInt(params.projectId, 10)}
           groupId={groupId}
           phaseData={phaseData}
           setPhaseData={setPhaseData}
         />
+      ) : (
+        <>Chưa có lịch hoạt động nào cả</>
       )}
     </div>
   );
