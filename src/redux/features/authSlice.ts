@@ -59,7 +59,28 @@ export const login = createAsyncThunk<
   }
 });
 
-export const loginGoogle = () => {};
+export const loginWithGoogle = createAsyncThunk(
+  "auth/loginWithGoogle",
+  async (accessToken: any, thunkAPI) => {
+    try {
+      const response = await http.post<SignInResponse>("/auth/google/login", {
+        token: accessToken,
+      });
+      console.log(response);
+
+      saveTokenToSessionStorage(response.data.accessToken);
+
+      const user = decodeTokenToUser(response.data.accessToken);
+      saveUserToSessionStorage(user);
+
+      return user;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
 
 export const register = createAsyncThunk<any, any>(
   "auth/register",
@@ -111,7 +132,7 @@ export const verifyOtp = createAsyncThunk<string, any>(
         ...otp,
       });
 
-      removeOtpFromSessionStorage()
+      removeOtpFromSessionStorage();
 
       return response.data;
     } catch (error) {
@@ -143,6 +164,20 @@ export const authSlice = createSlice({
       state.error = "";
     });
     builder.addCase(login.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+    //login With Google
+    builder.addCase(loginWithGoogle.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(loginWithGoogle.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isLogin = true;
+      state.error = "";
+    });
+    builder.addCase(loginWithGoogle.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });

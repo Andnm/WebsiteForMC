@@ -3,19 +3,23 @@
 import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "@/src/redux/store";
 import { useInputChange } from "@/src/hook/useInputChange";
 import "@/src/styles/auth/auth-style.scss";
 import {
   login,
+  loginWithGoogle,
   register,
   sendOtpRegister,
   verifyOtp,
 } from "@/src/redux/features/authSlice";
 import SpinnerLoading from "../loading/SpinnerLoading";
 import OtpRegister from "./OtpRegister";
+import { FcGoogle } from "react-icons/fc";
+import { auth, googleAuthProvider } from "@/src/utils/configFirebase";
+import { signInWithPopup, signInWithRedirect } from "firebase/auth";
+import toast from "react-hot-toast";
 
 interface RegisterProps {
   actionClose: () => void;
@@ -84,6 +88,35 @@ const Register: React.FC<RegisterProps> = ({ actionClose }) => {
     });
   };
 
+  const handleLoginWithGoogle = () => {
+    signInWithPopup(auth, googleAuthProvider).then(async (data: any) => {
+      dispatch(loginWithGoogle(data?.user?.accessToken) as any).then(
+        (result: any) => {
+          if (loginWithGoogle.fulfilled.match(result)) {
+            const user = result.payload;
+            switch (user?.role_name) {
+              case "Admin":
+                router.push("/dashboard");
+                break;
+              case "Business":
+                router.push("/business-board");
+                break;
+              case "Student":
+                router.push("/student-board");
+                break;
+              default:
+                router.push("/");
+                break;
+            }
+            actionClose();
+          } else {
+            toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
+          }
+        }
+      );
+    });
+  };
+
   return (
     <>
       <div className="blur-bg-overlay"></div>
@@ -109,16 +142,13 @@ const Register: React.FC<RegisterProps> = ({ actionClose }) => {
                 <>
                   <h2>ĐĂNG KÍ</h2>
                   <div className="form">
-                    <div className="">
-                      <GoogleOAuthProvider
-                        clientId={`${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`}
-                      >
-                        <GoogleLogin
-                          onSuccess={(credentialResponse) =>
-                            console.log(credentialResponse)
-                          }
-                        />
-                      </GoogleOAuthProvider>
+                    <div
+                      onClick={handleLoginWithGoogle}
+                      className="btn-login-gg flex items-center justify-center bg-white cursor-pointer
+                   px-6 py-2 text-sm font-medium hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 gap-2"
+                    >
+                      <FcGoogle className="w-5 h-5" />{" "}
+                      <span>Đăng kí với Google</span>
                     </div>
 
                     <div className="break-line my-6">
@@ -150,7 +180,8 @@ const Register: React.FC<RegisterProps> = ({ actionClose }) => {
                       <label>Tạo password</label>
                     </div>
 
-                    {error && <span className="text-red-500">{error}</span>}
+                    <br />
+                    {error && <span className="text-red-500 text-sm">{error}</span>}
 
                     <button onClick={handleRegister}>Đăng kí</button>
                   </div>

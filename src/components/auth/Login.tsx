@@ -3,14 +3,17 @@
 import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { RootState, useAppDispatch, useAppSelector } from "@/src/redux/store";
-import { login } from "@/src/redux/features/authSlice";
+import { login, loginWithGoogle } from "@/src/redux/features/authSlice";
 import { useInputChange } from "@/src/hook/useInputChange";
 
 import "@/src/styles/auth/auth-style.scss";
 import SpinnerLoading from "../loading/SpinnerLoading";
+import { getRedirectResult, signInWithPopup, signInWithRedirect } from "firebase/auth";
+import { auth, googleAuthProvider } from "@/src/utils/configFirebase";
+import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
 
 interface LoginProps {
   actionClose: () => void;
@@ -51,9 +54,36 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
         }
 
         actionClose();
-
       }
+    });
+  };
 
+  const handleLoginWithGoogle = () => {
+    signInWithRedirect(auth, googleAuthProvider).then(async (data: any) => {
+      dispatch(loginWithGoogle(data?.user?.accessToken) as any).then(
+        (result: any) => {
+          if (loginWithGoogle.fulfilled.match(result)) {
+            const user = result.payload;
+            switch (user?.role_name) {
+              case "Admin":
+                router.push("/dashboard");
+                break;
+              case "Business":
+                router.push("/business-board");
+                break;
+              case "Student":
+                router.push("/student-board");
+                break;
+              default:
+                router.push("/");
+                break;
+            }
+            actionClose();
+          } else {
+            toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
+          }
+        }
+      );
     });
   };
 
@@ -80,16 +110,13 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
             <form className="form-content" onSubmit={handleLogin}>
               <h2>ĐĂNG NHẬP</h2>
               <div className="form">
-                <div className="">
-                  <GoogleOAuthProvider
-                    clientId={`${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`}
-                  >
-                    <GoogleLogin
-                      onSuccess={(credentialResponse) =>
-                        console.log(credentialResponse)
-                      }
-                    />
-                  </GoogleOAuthProvider>
+                <div
+                  onClick={handleLoginWithGoogle}
+                  className="btn-login-gg flex items-center justify-center bg-white cursor-pointer
+                   px-6 py-2 text-sm font-medium hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 gap-2"
+                >
+                  <FcGoogle className="w-5 h-5" />{" "}
+                  <span>Đăng nhập với Google</span>
                 </div>
 
                 <div className="break-line my-6">
@@ -123,7 +150,8 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
                   Quên mật khẩu?
                 </Link>
 
-                {error && <span className="text-red-500">{error}</span>}
+                <br />
+                {error && <span className="text-red-500 text-sm">{error}</span>}
 
                 <button type="submit">Đăng nhập</button>
               </div>
