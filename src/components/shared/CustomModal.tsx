@@ -6,10 +6,11 @@ interface ModalProps {
   open: boolean;
   title: React.ReactNode;
   body: React.ReactNode;
-  actionClose: () => void;
-  actionConfirm: () => void;
-  buttonClose: string;
-  buttonConfirm: string;
+  actionClose?: () => void;
+  actionConfirm?: () => void;
+  buttonClose?: string;
+  buttonConfirm?: string;
+  status?: any;
 }
 
 export default function CustomModal({
@@ -20,16 +21,22 @@ export default function CustomModal({
   buttonClose,
   actionConfirm,
   buttonConfirm,
+  status,
 }: ModalProps) {
-
-  const doNothing = () => {
-    console.log("")
+  const closeByClickBackground = () => {
+    if (actionClose) {
+      actionClose();
+    }
   };
 
   return (
     <>
       <Transition appear show={open} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={doNothing}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={closeByClickBackground}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -62,23 +69,25 @@ export default function CustomModal({
                   </Dialog.Title>
                   <div className="mt-2">{body}</div>
 
-                  <div className="mt-4 flex gap-4 justify-end">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={actionClose}
-                    >
-                      {buttonClose}
-                    </button>
+                  {status === "Pending" && (
+                    <div className="mt-4 flex gap-4 justify-end">
+                      <button
+                        type="button"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={actionClose}
+                      >
+                        {buttonClose}
+                      </button>
 
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={actionConfirm}
-                    >
-                      {buttonConfirm}
-                    </button>
-                  </div>
+                      <button
+                        type="button"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={actionConfirm}
+                      >
+                        {buttonConfirm}
+                      </button>
+                    </div>
+                  )}
                 </Dialog.Panel>
               </Transition.Child>
             </div>

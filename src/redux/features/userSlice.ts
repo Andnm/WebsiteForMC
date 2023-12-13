@@ -1,27 +1,73 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import http from "../utils/https";
-import { UserType } from "@/src/types/user.type"; 
-
+import { UserType } from "@/src/types/user.type";
+import { getTokenFromSessionStorage } from "../utils/handleToken";
+import { ErrorType } from "@/src/types/error.type";
 
 export interface UserState {
   token: string | null;
-  loading: boolean;
+  loadingUser: boolean;
   error: string;
 }
 
 const initialState: UserState = {
   token: null,
-  loading: false,
+  loadingUser: false,
   error: "",
 };
 
+interface SearchUserByEmailParams {
+  roleName: string;
+  searchEmail: string;
+}
+
+export const searchUserByEmail = createAsyncThunk(
+  "user/searchUserByEmail",
+  async ({ roleName, searchEmail }: SearchUserByEmailParams, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    console.log(searchEmail);
+    try {
+      const response = await http.get<any>(
+        `/users/search/${roleName}/${searchEmail}`,
+        configHeader
+      );
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-   
+    //search User By Email
+    builder.addCase(searchUserByEmail.pending, (state) => {
+      state.loadingUser = true;
+      state.error = "";
+    });
+    builder.addCase(searchUserByEmail.fulfilled, (state, action) => {
+      state.loadingUser = false;
+      // state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(searchUserByEmail.rejected, (state, action) => {
+      state.loadingUser = false;
+      state.error = action.payload as string;
+    });
   },
 });
 

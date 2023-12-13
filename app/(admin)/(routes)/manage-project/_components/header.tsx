@@ -50,7 +50,7 @@ const ManageProjectHeader: React.FC = () => {
         <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
           <div
             className="flex items-center justify-center gap-2 cursor-pointer px-4 py-2"
-            style={{ borderRadius: "7px", borderWidth: "2px" }}
+            style={{ borderRadius: "7px", borderWidth: "1px" }}
           >
             <MdPlaylistAdd />
             <p className="text-sm">Thêm dự án</p>
@@ -71,7 +71,7 @@ const ManageProjectHeader: React.FC = () => {
 
         <div
           style={{ borderRadius: "7px" }}
-          className="relative border-2 flex items-center w-5/12 h-10 rounded-lg focus-within:shadow-lg bg-white overflow-hidden"
+          className="relative border flex items-center w-5/12 h-10 rounded-lg focus-within:shadow-lg bg-white overflow-hidden"
         >
           <div className="grid place-items-center h-full w-12 text-gray-300">
             <IoIosSearch />

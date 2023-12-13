@@ -6,6 +6,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UserType } from "@/src/types/user.type";
 import { logout } from "@/src/redux/features/authSlice";
+import {
+  generateFallbackAvatar,
+  truncateString,
+} from "@/src/utils/handleFunction";
 
 interface UserProps {
   userData: UserType;
@@ -107,7 +111,9 @@ const DropDownUser: React.FC<UserProps> = ({ userData }) => {
       <Menu as="div" className="relative inline-block text-left">
         <DropdownButton>
           <img
-            src={userData?.avatar_url || DefaultAvatarURL}
+            src={
+              userData?.avatar_url || generateFallbackAvatar(userData?.fullname)
+            }
             alt="User Avatar"
             className="avatar-user object-cover rounded-3xl"
           />
@@ -115,6 +121,31 @@ const DropDownUser: React.FC<UserProps> = ({ userData }) => {
 
         <Transition as={Fragment} {...commonTransitionProps}>
           <Menu.Items className="menu-item absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+            <div className="px-1 py-1 text-black">
+              <div className="px-2 py-2">
+                <p className="text-xs mb-2">TÀI KHOẢN</p>
+                <div className="flex flex-row flex-wrap gap-2 items-center">
+                  <div className="w-10 h-10">
+                    <img
+                      src={
+                        userData?.avatar_url ||
+                        generateFallbackAvatar(userData?.fullname)
+                      }
+                      alt="User Avatar"
+                      className="avatar-user object-cover rounded-3xl"
+                    />
+                  </div>
+
+                  <div className="w-[38]">
+                    <p className="text-sm">{userData?.fullname}</p>
+                    <p className="text-xs overflow-x-hidden w-full">
+                      {truncateString(userData?.email, 19)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="px-1 py-1">{renderRoleSpecificMenuItems()}</div>
 
             <div className="px-1 py-1 logout-section">

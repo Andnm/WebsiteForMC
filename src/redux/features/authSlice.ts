@@ -63,6 +63,7 @@ export const loginWithGoogle = createAsyncThunk(
   "auth/loginWithGoogle",
   async (accessToken: any, thunkAPI) => {
     try {
+      console.log(accessToken)
       const response = await http.post<SignInResponse>("/auth/google/login", {
         token: accessToken,
       });
@@ -75,6 +76,7 @@ export const loginWithGoogle = createAsyncThunk(
 
       return user;
     } catch (error) {
+      console.log(error)
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );

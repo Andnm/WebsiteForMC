@@ -27,6 +27,7 @@ import {
 } from "@/src/redux/features/projectSlice";
 import toast from "react-hot-toast";
 import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
+import Pagination from "@/src/components/shared/Pagination";
 
 interface ProjectTableProps {
   dataTable: any[];
@@ -50,7 +51,10 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [isOpenModalDetail, setIsOpenModalDetail] = React.useState(false);
-
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const onPageChange = (newPage: any) => {
+    setCurrentPage(newPage);
+  };
   //quản lý thông tin hiện ra
   const [selectedProject, setSelectedProject] = React.useState<any | null>(
     null
@@ -349,7 +353,6 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 
     dispatch(updateProjectByAdmin(dataResponse)).then((result: any) => {
       if (updateProjectByAdmin.fulfilled.match(result)) {
-
         setDataTable((prevDataTable) => {
           const updatedIndex = prevDataTable.findIndex(
             (item) => item.id === result.payload.id
@@ -381,6 +384,19 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
     dispatch(confirmProjectByAdmin(id)).then((result) => {
       if (confirmProjectByAdmin.fulfilled.match(result)) {
         // console.log(result.payload);
+        setDataTable((prevDataTable) => {
+          const updatedIndex = prevDataTable.findIndex(
+            (item) => item.id === result.payload.id
+          );
+
+          if (updatedIndex !== -1) {
+            const newDataTable = [...prevDataTable];
+            newDataTable[updatedIndex] = result.payload;
+            return newDataTable;
+          }
+
+          return prevDataTable;
+        });
         toast.success("Phê duyệt thành công!");
       } else if (confirmProjectByAdmin.rejected.match(result)) {
         toast.error(`${result.payload}`);
@@ -460,133 +476,124 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
             ];
 
             return (
-              <>
-                <tbody key={index}>
-                  <tr>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <Avatar
-                          src={business?.business?.avatar_url}
-                          alt={business?.business?.fullname}
-                          size="sm"
-                        />
-                        <div className="flex flex-col">
-                          <InfoText>{business?.business?.fullname}</InfoText>
-
-                          <InfoText className="opacity-70">
-                            {business?.business?.email}
-                          </InfoText>
-                        </div>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <InfoText>{business?.name_project}</InfoText>
-                    </td>
-                    <td className={classes}>
+              <tbody key={index}>
+                <tr>
+                  <td className={classes}>
+                    <div className="flex items-center gap-3">
+                      <Avatar
+                        src={business?.business?.avatar_url}
+                        alt={business?.business?.fullname}
+                        size="sm"
+                      />
                       <div className="flex flex-col">
-                        <InfoText>
-                          {business?.responsible_person?.fullname}
-                        </InfoText>
+                        <InfoText>{business?.business?.fullname}</InfoText>
 
                         <InfoText className="opacity-70">
-                          {business?.responsible_person?.position}
+                          {business?.business?.email}
                         </InfoText>
                       </div>
-                    </td>
+                    </div>
+                  </td>
+                  <td className={classes}>
+                    <InfoText>{business?.name_project}</InfoText>
+                  </td>
+                  <td className={classes}>
+                    <div className="flex flex-col">
+                      <InfoText>
+                        {business?.responsible_person?.fullname}
+                      </InfoText>
 
-                    <StatusCell
-                      status={business.project_status}
-                      classes={classes}
-                    />
+                      <InfoText className="opacity-70">
+                        {business?.responsible_person?.position}
+                      </InfoText>
+                    </div>
+                  </td>
 
-                    <td className={classes}>
-                      <InfoText>{formatDate(business?.createdAt)}</InfoText>
-                    </td>
+                  <StatusCell
+                    status={business.project_status}
+                    classes={classes}
+                  />
 
-                    <td className={classes}>
-                      <Popover className="relative">
-                        {({ open }) => (
-                          <>
-                            <Popover.Button
-                              className={`
+                  <td className={classes}>
+                    <InfoText>{formatDate(business?.createdAt)}</InfoText>
+                  </td>
+
+                  <td className={classes}>
+                    <Popover className="relative">
+                      {({ open }) => (
+                        <>
+                          <Popover.Button
+                            className={`
                 ${open ? "text-red" : "text-black"}
                 group inline-flex items-cente
                 px-3 py-2 text-base font-medium hover:text-red focus:outline-none 
                 focus-visible:ring-2 focus-visible:ring-white/75`}
-                            >
-                              <BiDotsHorizontalRounded />
-                            </Popover.Button>
-                            <Transition
-                              as={Fragment}
-                              enter="transition ease-out duration-200"
-                              enterFrom="opacity-0 translate-y-1"
-                              enterTo="opacity-100 -translate-y-3"
-                              leave="transition ease-in duration-150"
-                              leaveFrom="opacity-100 translate-y-10"
-                              leaveTo="opacity-0 translate-y-1"
-                            >
-                              <Popover.Panel className="popover absolute left-1/2 z-10 mt-3 w-screen max-w-max -translate-x-full transform px-4 sm:px-0">
-                                <div className="rounded-lg shadow-lg ring-1 ring-black/5">
-                                  <div className="relative grid bg-white">
-                                    {solutions.map((item, index) => (
-                                      <div
-                                        key={index}
-                                        className="flex flex-row gap-2 items-center px-5 py-3 cursor-pointer hover:bg-gray-200"
-                                        onClick={() => item.onClick()}
-                                      >
-                                        {item.icon}
-                                        {item.name}
-                                      </div>
-                                    ))}
-                                  </div>
+                          >
+                            <BiDotsHorizontalRounded />
+                          </Popover.Button>
+                          <Transition
+                            as={Fragment}
+                            enter="transition ease-out duration-200"
+                            enterFrom="opacity-0 translate-y-1"
+                            enterTo="opacity-100 -translate-y-3"
+                            leave="transition ease-in duration-150"
+                            leaveFrom="opacity-100 translate-y-10"
+                            leaveTo="opacity-0 translate-y-1"
+                          >
+                            <Popover.Panel className="popover absolute left-1/2 z-10 mt-3 w-screen max-w-max -translate-x-full transform px-4 sm:px-0">
+                              <div className="rounded-lg shadow-lg ring-1 ring-black/5">
+                                <div className="relative grid bg-white">
+                                  {solutions.map((item, index) => (
+                                    <div
+                                      key={index}
+                                      className="flex flex-row gap-2 items-center px-5 py-3 cursor-pointer hover:bg-gray-200"
+                                      onClick={() => item.onClick()}
+                                    >
+                                      {item.icon}
+                                      {item.name}
+                                    </div>
+                                  ))}
                                 </div>
-                              </Popover.Panel>
-                            </Transition>
-                          </>
-                        )}
-                      </Popover>
-                    </td>
-                  </tr>
-                </tbody>
-
-                {isOpenModalDetail && selectedProject && (
-                  <CustomModal
-                    open={isOpenModalDetail}
-                    title={
-                      <div className="flex items-center gap-2">
-                        {isEditMode ? 'Sửa dự án' : 'Thông tin dự án'}
-                        <CiEdit
-                          className="cursor-pointer"
-                          onClick={handleChangeConfirmIntoUpdate}
-                        />
-                      </div>
-                    }
-                    body={body}
-                    actionClose={actionClose}
-                    buttonClose={"Hủy"}
-                    actionConfirm={actionConfirm}
-                    buttonConfirm={buttonConfirm}
-                  />
-                )}
-              </>
+                              </div>
+                            </Popover.Panel>
+                          </Transition>
+                        </>
+                      )}
+                    </Popover>
+                  </td>
+                </tr>
+              </tbody>
             );
           })}
         </table>
+
+        {isOpenModalDetail && selectedProject && (
+          <CustomModal
+            open={isOpenModalDetail}
+            title={
+              <div className="flex items-center gap-2">
+                {isEditMode ? "Sửa dự án" : "Thông tin dự án"}
+                <CiEdit
+                  className="cursor-pointer"
+                  onClick={handleChangeConfirmIntoUpdate}
+                />
+              </div>
+            }
+            body={body}
+            actionClose={actionClose}
+            buttonClose={"Hủy"}
+            actionConfirm={actionConfirm}
+            buttonConfirm={buttonConfirm}
+            status={selectedProject.project_status}
+          />
+        )}
       </CardBody>
 
-      <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-        <Typography variant="small" color="blue-gray" className="font-normal">
-          Page 1 of 10
-        </Typography>
-        <div className="flex gap-2">
-          <Button variant="outlined" size="sm">
-            Previous
-          </Button>
-          <Button variant="outlined" size="sm">
-            Next
-          </Button>
-        </div>
-      </CardFooter>
+      <Pagination
+        currentPage={currentPage}
+        totalItems={100}
+        onPageChange={onPageChange}
+      />
 
       {loadingProject && <SpinnerLoading />}
     </>

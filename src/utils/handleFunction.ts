@@ -74,3 +74,25 @@ export const generateFileNameImage = () => {
   const fileName = `image_${hours}${minutes}${seconds}_${day}${month}${year}`;
   return fileName;
 };
+
+export const truncateString = (input: string, maxLength: number): string => {
+  if (input.length > maxLength) {
+    return `${input.substring(0, maxLength)}...`;
+  }
+  return input;
+};
+
+export const generateFallbackAvatar = (fullname: string | undefined): string => {
+  const fallbackColor = "#FF9966";
+  const initials = fullname?.charAt(0).toUpperCase() || "";
+  const svgString = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100">
+    <rect width="100%" height="100%" fill="${fallbackColor}" />
+    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-size="50">
+      ${initials}
+    </text>
+  </svg>
+`;
+  const dataUrl = `data:image/svg+xml;base64,${btoa(svgString)}`;
+  return dataUrl;
+};

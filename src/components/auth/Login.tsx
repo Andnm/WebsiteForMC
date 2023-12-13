@@ -59,7 +59,8 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
   };
 
   const handleLoginWithGoogle = () => {
-    signInWithRedirect(auth, googleAuthProvider).then(async (data: any) => {
+    signInWithPopup(auth, googleAuthProvider).then(async (data: any) => {
+      console.log(data)
       dispatch(loginWithGoogle(data?.user?.accessToken) as any).then(
         (result: any) => {
           if (loginWithGoogle.fulfilled.match(result)) {

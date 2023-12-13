@@ -9,7 +9,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/src/redux/store";
 import { getUserFromSessionStorage } from "@/src/redux/utils/handleUser";
 import { UserGroupType } from "@/src/types/user-group.type";
-import { formatDate } from "@/src/utils/handleFunction";
+import { formatDate, generateFallbackAvatar } from "@/src/utils/handleFunction";
 import Link from "next/link";
 import React from "react";
 
@@ -31,11 +31,9 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
     userGroupId: number,
     relationshipStatus: string
   ) => {
-    console.log(dataGroup);
     dispatch(replyInviteToJoinGroup({ userGroupId, relationshipStatus })).then(
       (result) => {
         if (replyInviteToJoinGroup.fulfilled.match(result)) {
-          console.log(result.payload);
 
           const updatedIndex = dataGroup.findIndex(
             (item) => item.id === result.payload.id
@@ -61,21 +59,19 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
     dispatch(getAllMemberByGroupId(params.groupId)).then((result) => {
       if (getAllMemberByGroupId.fulfilled.match(result)) {
         setDataGroup(result.payload);
-        console.log(result.payload);
       }
     });
 
     setUserLogin(getUserFromSessionStorage());
-    console.log(getUserFromSessionStorage());
   }, []);
 
   return (
     <div className="h-full">
-      <div className="min-h-[1024px] bg-white">
+      <div className="bg-white">
         <div className="min-h-full">
           {/* header */}
           <header className="bg-gray-50 py-8">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 xl:flex xl:items-center xl:justify-between">
+            <div className="mx-auto max-w-7xl px-4 lg:px-8 flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <nav className="flex" aria-label="Breadcrumb">
                   <ol role="list" className="flex items-center space-x-4">
@@ -174,7 +170,7 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
                   </div>
                 </div>
               </div>
-              <div className="mt-5 flex xl:mt-0 xl:ml-4">
+              <div className="mt-5 flex">
                 <span className="hidden sm:block">
                   <div className="cursor-pointer inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-50">
                     <svg
@@ -192,7 +188,7 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
                 </span>
 
                 <span className="ml-3 hidden sm:block">
-                  <AlertDialogOnlyInviteMember groupId={params.groupId}>
+                  <AlertDialogOnlyInviteMember groupId={params.groupId} setDataGroup={setDataGroup}>
                     <div className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-50">
                       <svg
                         className="-ml-1 mr-2 h-5 w-5 text-gray-400"
@@ -241,8 +237,8 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
                                 className="h-12 w-12 rounded-full group-hover:opacity-75 object-cover object-center"
                                 src={
                                   member?.user?.avatar_url ||
-                                  "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                }
+                                  generateFallbackAvatar(member?.user?.email)
+                                 }
                                 alt=""
                               />
                             </div>
