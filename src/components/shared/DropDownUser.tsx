@@ -136,8 +136,10 @@ const DropDownUser: React.FC<UserProps> = ({ userData }) => {
                     />
                   </div>
 
-                  <div className="w-[38]">
-                    <p className="text-sm">{userData?.fullname}</p>
+                  <div className="w-[150px]">
+                    <p className="text-sm overflow-x-hidden w-full">
+                      {userData?.fullname}
+                    </p>
                     <p className="text-xs overflow-x-hidden w-full">
                       {truncateString(userData?.email, 19)}
                     </p>
@@ -146,7 +148,12 @@ const DropDownUser: React.FC<UserProps> = ({ userData }) => {
               </div>
             </div>
 
-            <div className="px-1 py-1">{renderRoleSpecificMenuItems()}</div>
+            <div
+              className="px-1 py-1"
+              style={{ borderBottomWidth: "1px", borderTopWidth: "1.5px" }}
+            >
+              {renderRoleSpecificMenuItems()}
+            </div>
 
             <div className="px-1 py-1 logout-section">
               <div
