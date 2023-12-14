@@ -33,7 +33,7 @@ const GroupPage = () => {
       case "Active":
         return { color: "orange", text: "Nhóm đang hoạt động" };
       case "Free":
-        return { color: "green", text: "Nhóm đang rãnh" };
+        return { color: "green", text: "Nhóm đang rảnh" };
       case "Inactive":
         return { color: "gray", text: "Nhóm không còn hoạt động" };
       default:
