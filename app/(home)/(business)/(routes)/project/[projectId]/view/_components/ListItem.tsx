@@ -15,8 +15,7 @@ interface ListItemProps {
   groupId: number;
 }
 
-const ListItem = ({ data, groupId, index, setPhaseData}: ListItemProps) => {
- 
+const ListItem = ({ data, groupId, index, setPhaseData }: ListItemProps) => {
   const [dataCategory, setDataCategory] = React.useState<any>([]);
   const textareaRef = React.useRef<React.ElementRef<"textarea">>(null);
   const [isEditing, setIsEditing] = React.useState(false);
@@ -44,12 +43,16 @@ const ListItem = ({ data, groupId, index, setPhaseData}: ListItemProps) => {
   }, []);
 
   return (
-    <li className="shrink-0 h-full w-[272px] select-none">
+    <li className="shrink-0 h-auto w-[272px] select-none">
       <div
         className="w-full rounded-md bg-[#f1f2f4] shadow-md pb-2"
-        style={{ borderRadius: "7px" }}
+        style={{ borderRadius: "7px", marginBottom: "10px" }}
       >
-        <ListHeader onAddCategory={enableEditing} data={data} setPhaseData={setPhaseData}/>
+        <ListHeader
+          onAddCategory={enableEditing}
+          data={data}
+          setPhaseData={setPhaseData}
+        />
 
         {data && (
           <ListCategory

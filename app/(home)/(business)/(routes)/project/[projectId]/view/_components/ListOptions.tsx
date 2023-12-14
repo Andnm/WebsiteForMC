@@ -18,6 +18,7 @@ import {
 } from "@/src/redux/features/phaseSlice";
 import { useAppDispatch } from "@/src/redux/store";
 import toast from "react-hot-toast";
+import { BiDetail } from "react-icons/bi";
 
 interface ListOptionsProps {
   data: PhaseType;
@@ -62,12 +63,68 @@ const ListOptions = ({
     );
   };
 
+  const startPhase = () => {
+    const phaseId = data.id;
+    const phaseStatus = "Processing";
+    dispatch(changeStatusPhaseByBusiness({ phaseId, phaseStatus })).then(
+      (result) => {
+        if (changeStatusPhaseByBusiness.fulfilled.match(result)) {
+          setPhaseData((prevDataTable) => {
+            const updatedIndex = prevDataTable.findIndex(
+              (item) => item.id === result.payload.id
+            );
+
+            if (updatedIndex !== -1) {
+              const newDataTable = [...prevDataTable];
+              newDataTable[updatedIndex] = result.payload;
+              return newDataTable;
+            }
+
+            return prevDataTable;
+          });
+          toast.success("Bắt đầu giai đoạn thành công");
+        } else {
+          console.log(result.payload)
+          toast.error(`${result.payload}`);
+        }
+      }
+    );
+  };
+
+  const donePhase = () => {
+    const phaseId = data.id;
+    const phaseStatus = "Done";
+    dispatch(changeStatusPhaseByBusiness({ phaseId, phaseStatus })).then(
+      (result) => {
+        if (changeStatusPhaseByBusiness.fulfilled.match(result)) {
+          setPhaseData((prevDataTable) => {
+            const updatedIndex = prevDataTable.findIndex(
+              (item) => item.id === result.payload.id
+            );
+
+            if (updatedIndex !== -1) {
+              const newDataTable = [...prevDataTable];
+              newDataTable[updatedIndex] = result.payload;
+              return newDataTable;
+            }
+
+            return prevDataTable;
+          });
+          toast.success("Hoàn thành giai đoạn thành công");
+        } else {
+          console.log(result.payload)
+          toast.error(`${result.payload}`);
+        }
+      }
+    );
+  };
+
   const handleAddFeedback = () => {
     const dataBody = {
       phaseId: data.id,
       feedback: "hmmm",
     };
-    
+
     dispatch(uploadFeedback(dataBody)).then((result) => {
       if (uploadFeedback.fulfilled.match(result)) {
         toast.success("Tạo feedback thành công!");
@@ -103,13 +160,32 @@ const ListOptions = ({
             >
               Thêm hạng mục
             </Button>
+
+            {data.phase_status === "Pending" ? (
+              <Button
+                onClick={startPhase}
+                className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
+                variant={"ghost"}
+              >
+                Bắt đầu giai đoạn
+              </Button>
+            ) : (
+              <Button
+                onClick={donePhase}
+                className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
+                variant={"ghost"}
+              >
+                Hoàn thành giai đoạn
+              </Button>
+            )}
+
             <Separator className="bg-gray-200/100" />
             <Button
               onClick={onAddCategory}
               className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
               variant={"ghost"}
             >
-              Xóa phases
+              Xóa giai đoạn
             </Button>
           </>
         )}
@@ -117,6 +193,12 @@ const ListOptions = ({
         {(userLogin?.role_name === "Lecturer" ||
           userLogin?.role_name === "Business") && (
           <>
+            <Button
+              className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
+              variant={"ghost"}
+            >
+              <BiDetail className="w-3 h-3 mr-1" /> Chi tiết giai đoạn
+            </Button>
             <Button
               onClick={handleAddFeedback}
               className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"

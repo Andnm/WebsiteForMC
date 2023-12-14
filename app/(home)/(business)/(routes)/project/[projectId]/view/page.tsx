@@ -19,7 +19,9 @@ const ProjectIdPage = () => {
     const projectId = parseInt(params.projectId, 10);
     dispatch(getPhaseByProjectId(projectId)).then((result) => {
       console.log("phase", result);
-      setPhaseData(result.payload);
+      const sortedPhaseData = [...result.payload]?.sort((a, b) => a.id - b.id);
+
+      setPhaseData(sortedPhaseData);
     });
 
     dispatch(getAllRegisterPitchingByBusiness(projectId)).then((result) => {

@@ -67,6 +67,13 @@ const CategoryForm = forwardRef<HTMLTextAreaElement, CategoryFormProps>(
           ]);
           console.log(result.payload);
           toast.success("Tạo hạng mục thành công!");
+          setFormData({
+            category_name: "",
+            detail: "",
+            result_expected: "",
+            phaseId: phaseId,
+            groupId: 0,
+          });
         } else {
           toast.error(`${result.payload}`);
         }

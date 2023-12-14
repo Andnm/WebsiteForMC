@@ -21,8 +21,10 @@ const ListPhaseContainer = ({
   console.log("phasedata", phaseData);
 
   return (
-    <ol className="flex gap-x-3 h-full">
-      {Array.isArray(phaseData) &&
+    <ol className="flex gap-x-3 h-full flex-wrap">
+      {Array.isArray(phaseData) && phaseData.length === 0 ? (
+        <p className="text-white">Sinh viên chưa tạo giai đoạn</p>
+      ) : (
         phaseData?.map((phase, index) => {
           return (
             <ListItem
@@ -33,7 +35,8 @@ const ListPhaseContainer = ({
               setPhaseData={setPhaseData}
             ></ListItem>
           );
-        })}
+        })
+      )}
 
       <ListForm
         groupId={groupId}

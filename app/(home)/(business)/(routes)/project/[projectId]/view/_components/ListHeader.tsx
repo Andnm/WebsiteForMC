@@ -17,6 +17,7 @@ export const ListHeader = ({
   onAddCategory,
   setPhaseData,
 }: ListHeaderProps) => {
+  const [userLogin, setUserLogin] = useUserLogin();
   console.log("data", data);
 
   const getBorderColorClass = () => {
@@ -43,7 +44,9 @@ export const ListHeader = ({
 
       <Hint
         sideOffset={100}
-        description={`Giai đoạn ${changeStatusFromEnToVn(data.phase_status).toLowerCase()}`}
+        description={`Giai đoạn ${changeStatusFromEnToVn(
+          data.phase_status
+        ).toLowerCase()}`}
         side={"left"}
       >
         <div
@@ -51,7 +54,9 @@ export const ListHeader = ({
         ></div>
       </Hint>
 
-      {data.phase_status !== "Done" && (
+      {data.phase_status === "Done" && userLogin?.role_name === "Student" ? (
+        <></>
+      ) : (
         <ListOptions
           onAddCategory={onAddCategory}
           data={data}

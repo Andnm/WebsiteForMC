@@ -29,7 +29,7 @@ const getDaysDifference = (startDate: Date, endDate: Date): number => {
 
 const ProgressLoading = ({ phaseData }: ProgressLoadingProps) => {
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center flex-wrap">
       {phaseData?.map((item, index) => {
         const startDate = new Date(item.phase_start_date);
         const endDate = new Date(item.phase_expected_end_date);
