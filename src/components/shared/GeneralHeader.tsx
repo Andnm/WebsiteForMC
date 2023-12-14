@@ -31,10 +31,6 @@ const GeneralHeader = () => {
       nameItem: "Bạn cần hỗ trợ ?",
       path: "/support",
     },
-    {
-      nameItem: "Liên lạc",
-      path: "/contact",
-    },
   ];
 
   const navItemsStudent = [

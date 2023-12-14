@@ -1,7 +1,7 @@
 import React from "react";
 
 const EarliestProjectList = () => {
-  return <div>EarliestProjectList</div>;
+  return <div></div>;
 };
 
 export default EarliestProjectList;

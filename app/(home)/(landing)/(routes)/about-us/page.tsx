@@ -6,7 +6,7 @@ const AboutUs = () => {
       <div className="sm:flex items-center max-w-screen-xl">
         <div className="sm:w-1/2 p-10">
           <div className="image object-center text-center">
-            <img src="https://i.imgur.com/WbQnbas.png" />
+            <img src="https://ss-images.saostar.vn/2020/02/15/6994345/7campusdhfpttphcm.jpg" />
           </div>
         </div>
         <div className="sm:w-1/2 p-5">

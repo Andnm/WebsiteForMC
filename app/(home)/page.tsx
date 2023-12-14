@@ -13,7 +13,6 @@ const LandingPage = () => {
       <Home />
       <EarliestProjectList />
       <ContactUs />
-      <FormRegister />
       <Footer />
     </div>
   );
