@@ -42,11 +42,11 @@ const ViewIdLayout = ({
       <div
         className="layout-view relative bg-no-repeat bg-cover bg-center"
         style={{
-          backgroundImage: `url('https://inkythuatso.com/uploads/thumbnails/800/2022/07/1-tranh-phong-canh-hoang-hon-inkythuatso-21-11-19-46.jpg')`,
+          backgroundImage: `url('https://ss-images.saostar.vn/2020/02/15/6994345/7campusdhfpttphcm.jpg')`,
         }}
       >
-        <ViewNavbar  />
-        
+        <ViewNavbar />
+
         <div className="absolute inset-0 bg-black/10" />
 
         <main className="relative pt-14 h-full w-full">{children}</main>

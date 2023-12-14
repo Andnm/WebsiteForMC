@@ -66,7 +66,7 @@ const ProjectListStudent: React.FC<PitchingProjectListProps> = ({
                 href={`/project/${pitching.project.id}/view`}
                 className="group relative aspect-video bg-no-repeat bg-center bg-cover bg-sky-700 rounded-sm h-full w-full p-2 overflow-hidden"
                 style={{
-                  backgroundImage: `url('https://inkythuatso.com/uploads/thumbnails/800/2022/07/1-tranh-phong-canh-hoang-hon-inkythuatso-21-11-19-46.jpg')`,
+                  backgroundImage: `url('https://ss-images.saostar.vn/2020/02/15/6994345/7campusdhfpttphcm.jpg')`,
                 }}
               >
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
