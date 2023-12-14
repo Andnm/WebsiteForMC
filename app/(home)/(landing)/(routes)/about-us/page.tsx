@@ -23,7 +23,7 @@ const AboutUs = () => {
               obcaecati placeat quia, repellat tempore voluptatum.
             </p>
 
-            <button className="cursor-pointer mt-4 group relative flex gap-1.5 px-8 py-4 bg-black bg-opacity-80 text-[#f1f1f1] rounded-3xl hover:bg-opacity-70 transition font-semibold shadow-md">
+            <button className="cursor-pointer mt-4 group  flex gap-1.5 px-8 py-4 bg-black bg-opacity-80 text-[#f1f1f1] rounded-3xl hover:bg-opacity-70 transition font-semibold shadow-md">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
