@@ -43,12 +43,13 @@ export const AlertDialogCreateGroupAndInviteMember: React.FC<
   const [loadingSearchResult, setLoadingSearchResult] = React.useState(false);
   const [memberResultSearch, setMemberResultSearch] = React.useState<any[]>([]);
   const [memberList, setMemberList] = React.useState<any[]>([]);
+  
   const [
     loadingHandleInviteAndCreateGroup,
     setLoadingHandleInviteAndCreateGroup,
   ] = React.useState(false);
   const dispatch = useAppDispatch();
-  const { loadingGroup, error } = useAppSelector((state) => state.group);
+  const { loadingGroup, error }: any = useAppSelector((state) => state.group);
 
   const handleGroupNameChange = (
     event: React.ChangeEvent<HTMLInputElement>

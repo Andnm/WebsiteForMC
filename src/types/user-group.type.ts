@@ -2,6 +2,7 @@ export interface UserGroupType {
   id: number;
   createdAt: string;
   is_leader?: boolean;
+  role_in_group: string;
   relationship_status: string;
   group: {
     id?: number;

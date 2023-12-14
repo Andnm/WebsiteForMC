@@ -104,6 +104,9 @@ const Register: React.FC<RegisterProps> = ({ actionClose }) => {
               case "Student":
                 router.push("/student-board");
                 break;
+              case "Lecturer":
+                router.push("/lecturer-board");
+                break;
               default:
                 router.push("/");
                 break;
@@ -181,7 +184,9 @@ const Register: React.FC<RegisterProps> = ({ actionClose }) => {
                     </div>
 
                     <br />
-                    {error && <span className="text-red-500 text-sm">{error}</span>}
+                    {error && (
+                      <span className="text-red-500 text-sm">{error}</span>
+                    )}
 
                     <button onClick={handleRegister}>Đăng kí</button>
                   </div>

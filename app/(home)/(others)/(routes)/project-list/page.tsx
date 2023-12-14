@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/src/redux/store";
 import { getAllProjectByEveryOne } from "@/src/redux/features/projectSlice";
 import { formatDate } from "@/src/utils/handleFunction";
 import { Skeleton } from "@/components/ui/skeleton";
+import toast from "react-hot-toast";
 
 //có 2 trang là ProjectList lận
 //trang này là show all project list ở ngoài landing page
@@ -42,8 +43,11 @@ const ProjectList = () => {
 
   React.useEffect(() => {
     dispatch(getAllProjectByEveryOne()).then((result) => {
-      setDataProjectList(result.payload);
-      console.log('all', result.payload);
+      if (getAllProjectByEveryOne.fulfilled.match(result)) {
+        setDataProjectList(result.payload[1]);
+      }else {
+        toast.error('Có lỗi xảy ra khi tải danh sách dự án!')
+      } 
     });
   }, []);
 
@@ -112,45 +116,42 @@ const ProjectList = () => {
                 </div>
               </>
             ) : (
-              dataProjectList
-                .filter((project) => project.project_status === "Public")
-                .map((project, index) => (
-                  <Link
-                    href={`/project-list/detail/${project.id}`}
-                    className="flex flex-row py-4 px-4 mb-4 mr-4 border-2 gap-2"
-                    key={index}
-                  >
-                    <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                      <img
-                        src={project?.business?.avatar_url}
-                        alt={project?.business?.fullname}
-                        className="h-full w-full object-cover object-center"
-                      />
-                    </div>
+              Array.isArray(dataProjectList) &&
+              dataProjectList?.map((project, index) => (
+                <Link
+                  href={`/project-list/detail/${project.id}`}
+                  className="flex flex-row py-4 px-4 mb-4 mr-4 border-2 gap-2"
+                  key={index}
+                >
+                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                    <img
+                      src={project?.business?.avatar_url}
+                      alt={project?.business?.fullname}
+                      className="h-full w-full object-cover object-center"
+                    />
+                  </div>
 
-                    <div className="ml-4 flex flex-1 flex-col">
-                      <div>
-                        <div className="flex flex-col overflow-hidden justify-between text-base font-medium text-gray-900">
-                          <h3 className="overflow-hidden">
-                            {project?.name_project}
-                          </h3>
-                          <p className="text-sm text-gray-400 italic">
-                            {project?.specialized_field}
-                          </p>
-                        </div>
-                        <p className="mt-1 text-sm text-gray-500">{""}</p>
-                      </div>
-                      <div className="flex flex-1 items-end justify-between text-sm">
-                        <p className="text-gray-500">
-                          Ngày hết hạn đăng kí:{" "}
-                          {formatDate(
-                            project?.project_registration_expired_date
-                          )}
+                  <div className="ml-4 flex flex-1 flex-col">
+                    <div>
+                      <div className="flex flex-col overflow-hidden justify-between text-base font-medium text-gray-900">
+                        <h3 className="overflow-hidden">
+                          {project?.name_project}
+                        </h3>
+                        <p className="text-sm text-gray-400 italic">
+                          {project?.specialized_field}
                         </p>
                       </div>
+                      <p className="mt-1 text-sm text-gray-500">{""}</p>
                     </div>
-                  </Link>
-                ))
+                    <div className="flex flex-1 items-end justify-between text-sm">
+                      <p className="text-gray-500">
+                        Ngày hết hạn đăng kí:{" "}
+                        {formatDate(project?.project_registration_expired_date)}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))
             )}
           </div>
         </div>

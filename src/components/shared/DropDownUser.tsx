@@ -42,6 +42,13 @@ const roleSpecificMenuItems: Record<string, { path: string; name: string }[]> =
       { path: "/#", name: "Hoạt động gần đây" },
       { path: "/support", name: "Trợ giúp" },
     ],
+    Lecturer: [
+      { path: "/business-profile", name: "Trang cá nhân" },
+      { path: "/#", name: "Quản lý dự án" },
+      { path: "/lecturer-board", name: "Quản lý nhóm" },
+      { path: "/#", name: "Hoạt động gần đây" },
+      { path: "/support", name: "Trợ giúp" },
+    ]
   };
 
 const DropdownButton: React.FC<DropdownButtonProps> = ({ children }) => (
@@ -132,7 +139,7 @@ const DropDownUser: React.FC<UserProps> = ({ userData }) => {
                         generateFallbackAvatar(userData?.fullname)
                       }
                       alt="User Avatar"
-                      className="avatar-user object-cover rounded-3xl"
+                      className="avatar-user w-full h-full object-cover rounded-3xl"
                     />
                   </div>
 

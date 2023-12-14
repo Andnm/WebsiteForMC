@@ -2,17 +2,18 @@ import React from "react";
 import "./style.scss";
 
 interface PaginationProps {
+  hiddenNumberPage?: boolean;
   currentPage: number;
   totalItems: number;
   onPageChange: (page: number) => void;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
+  hiddenNumberPage,
   currentPage,
   totalItems,
   onPageChange,
 }) => {
-
   const itemsPerPage = 10;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const maxVisiblePages = 5;
@@ -69,9 +70,11 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <nav className="flex justify-center items-center gap-3">
-      <p className="flex items-center justify-center text-center text-sm w-28">
-        {startItem} - {endItem} of {totalItems}
-      </p>
+      {!hiddenNumberPage && (
+        <p className="flex items-center justify-center text-center text-sm w-35">
+          {startItem} - {endItem} trong tổng {totalItems}
+        </p>
+      )}
 
       <ul className="pagination text-base">
         <li
@@ -83,6 +86,7 @@ const Pagination: React.FC<PaginationProps> = ({
             Trang trước
           </div>
         </li>
+
         {renderPageNumbers.map((number, index) => (
           <li
             key={index}

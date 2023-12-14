@@ -8,7 +8,10 @@ import { getAllGroupAreMembers } from "@/src/redux/features/groupSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import { GroupType } from "@/src/types/group.type";
 import { UserGroupType } from "@/src/types/user-group.type";
-import { formatDate } from "@/src/utils/handleFunction";
+import {
+  formatDate,
+  getRelationshipStatusInfo,
+} from "@/src/utils/handleFunction";
 import { AlertDialogCreateGroupAndInviteMember } from "@/components/alert-dialog/AlertDialogCreateGroupAndInviteMember";
 
 interface StatusInfo {
@@ -21,24 +24,9 @@ const GroupPage = () => {
 
   const [groupList, setGroupList] = React.useState<UserGroupType[]>([]);
 
-  const { loadingGroup, loadingListGroup } = useAppSelector(
+  const { loadingGroup, loadingListGroup }: any = useAppSelector(
     (state) => state.group
   );
-
-  const getRelationshipStatusInfo = (status: string): StatusInfo => {
-    switch (status) {
-      case "Pending":
-        return { color: "purple", text: "Đang chờ xét duyệt" };
-      case "Joined":
-        return { color: "green", text: "Đã tham gia" };
-      case "Outed":
-        return { color: "gray", text: "Đã rời nhóm" };
-      case "Rejected":
-        return { color: "red", text: "Từ chối lời mời" };
-      default:
-        return { color: "black", text: "Trạng thái không xác định" };
-    }
-  };
 
   const getGroupStatusInfo = (status: string): StatusInfo => {
     switch (status) {
@@ -98,71 +86,81 @@ const GroupPage = () => {
         </AlertDialogCreateGroupAndInviteMember>
       </div>
 
-      <div className="mt-8 grid grid-cols-3 justify-center items-stretch w-full gap-4">
-        {groupList.map((group, index) => (
-          <Link
-            key={index}
-            href={`/group/${group.group.id}/member`}
-            className="booking-item mb-5 hover:shadow-xl transition duration-150 ease-in-out"
-          >
-            <div className="card-booking">
-              <div className="main flex flex-col justify-between gap-3">
-                <div className="header">
-                  <p>{group.group?.group_name}</p>
-                </div>
+      {Array.isArray(groupList) && groupList.length > 0 ? (
+        <div className="mt-8 grid grid-cols-3 justify-center items-stretch w-full gap-4">
+          {groupList.map((group, index) => (
+            <Link
+              key={index}
+              href={`/group/${group.group.id}/member`}
+              className="booking-item mb-5 hover:shadow-xl transition duration-150 ease-in-out"
+            >
+              <div className="card-booking">
+                <div className="main flex flex-col justify-between gap-3">
+                  <div className="header">
+                    <p>{group.group?.group_name}</p>
+                  </div>
 
-                <div className="body flex gap-3">
-                  <div className="content">
-                    <p>Ngày tạo: {formatDate(group.group?.createdAt ?? "")}</p>
-                    <p>Số lượng: {group.group?.group_quantity || 0}</p>
+                  <div className="body flex gap-3">
+                    <div className="content">
+                      <p>
+                        Ngày tạo: {formatDate(group.group?.createdAt ?? "")}
+                      </p>
+                      <p>Số lượng: {group.group?.group_quantity || 0}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="card-footer flex items-center gap-2">
-              <div className="flex items-center gap-2">
-                <div
-                  className="circle"
-                  style={{
-                    backgroundColor: getRelationshipStatusInfo(
-                      group?.relationship_status
-                    ).color,
-                  }}
-                ></div>
-                <p
-                  className="text-sm"
-                  style={{
-                    color: getRelationshipStatusInfo(group?.relationship_status)
-                      .color,
-                  }}
-                >
-                  {getRelationshipStatusInfo(group?.relationship_status).text}
-                </p>
-              </div>
+              <div className="card-footer flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="circle"
+                    style={{
+                      backgroundColor: getRelationshipStatusInfo(
+                        group?.relationship_status
+                      ).color,
+                    }}
+                  ></div>
+                  <p
+                    className="text-sm"
+                    style={{
+                      color: getRelationshipStatusInfo(
+                        group?.relationship_status
+                      ).color,
+                    }}
+                  >
+                    {getRelationshipStatusInfo(group?.relationship_status).text}
+                  </p>
+                </div>
 
-              <div className="flex items-center gap-2">
-                <div
-                  className="circle"
-                  style={{
-                    backgroundColor: getGroupStatusInfo(
-                      group?.group?.group_status
-                    ).color,
-                  }}
-                ></div>
-                <p
-                  className="text-sm"
-                  style={{
-                    color: getGroupStatusInfo(group?.group?.group_status).color,
-                  }}
-                >
-                  {getGroupStatusInfo(group?.group?.group_status).text}
-                </p>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="circle"
+                    style={{
+                      backgroundColor: getGroupStatusInfo(
+                        group?.group?.group_status
+                      ).color,
+                    }}
+                  ></div>
+                  <p
+                    className="text-sm"
+                    style={{
+                      color: getGroupStatusInfo(group?.group?.group_status)
+                        .color,
+                    }}
+                  >
+                    {getGroupStatusInfo(group?.group?.group_status).text}
+                  </p>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-lg text-neutral-700">
+          Bạn chưa tham gia nhóm nào cả.
+        </div>
+      )}
     </div>
   );
 };

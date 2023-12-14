@@ -55,6 +55,13 @@ const GeneralHeader = () => {
     },
   ];
 
+  const navItemLecturer = [
+    {
+      nameItem: "Bảng làm việc",
+      path: "/lecturer-board",
+    },
+  ];
+
   const getNavItems = () => {
     if (userData && userData.role_name) {
       switch (userData.role_name) {
@@ -62,6 +69,8 @@ const GeneralHeader = () => {
           return navItemsStudent;
         case "Business":
           return navItemsBusiness;
+        case "Lecturer":
+          return navItemLecturer;
         default:
           return navItemsGeneral;
       }

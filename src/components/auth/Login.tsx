@@ -10,7 +10,11 @@ import { useInputChange } from "@/src/hook/useInputChange";
 
 import "@/src/styles/auth/auth-style.scss";
 import SpinnerLoading from "../loading/SpinnerLoading";
-import { getRedirectResult, signInWithPopup, signInWithRedirect } from "firebase/auth";
+import {
+  getRedirectResult,
+  signInWithPopup,
+  signInWithRedirect,
+} from "firebase/auth";
 import { auth, googleAuthProvider } from "@/src/utils/configFirebase";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
@@ -48,6 +52,9 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
           case "Student":
             router.push("/student-board");
             break;
+          case "Lecturer":
+            router.push("/lecturer-board");
+            break;
           default:
             router.push("/");
             break;
@@ -60,7 +67,6 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
 
   const handleLoginWithGoogle = () => {
     signInWithPopup(auth, googleAuthProvider).then(async (data: any) => {
-      console.log(data)
       dispatch(loginWithGoogle(data?.user?.accessToken) as any).then(
         (result: any) => {
           if (loginWithGoogle.fulfilled.match(result)) {
@@ -74,6 +80,9 @@ const Login: React.FC<LoginProps> = ({ actionClose }) => {
                 break;
               case "Student":
                 router.push("/student-board");
+                break;
+              case "Lecturer":
+                router.push("/lecturer-board");
                 break;
               default:
                 router.push("/");

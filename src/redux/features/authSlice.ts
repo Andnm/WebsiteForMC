@@ -63,11 +63,9 @@ export const loginWithGoogle = createAsyncThunk(
   "auth/loginWithGoogle",
   async (accessToken: any, thunkAPI) => {
     try {
-      console.log(accessToken)
       const response = await http.post<SignInResponse>("/auth/google/login", {
         token: accessToken,
       });
-      console.log(response);
 
       saveTokenToSessionStorage(response.data.accessToken);
 

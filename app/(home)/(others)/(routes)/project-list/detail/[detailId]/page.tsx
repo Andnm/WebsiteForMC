@@ -31,11 +31,11 @@ const ProjectDetail = () => {
     dispatch(getAllGroupAreMembers()).then((result) => {
       if (getAllGroupAreMembers.fulfilled.match(result)) {
         setGroupList(result.payload);
+        console.log("group", result.payload);
       }
     });
   }, [params.detailId]);
 
-  console.log(dataProject);
 
   return (
     <div className="bg-gray-100">

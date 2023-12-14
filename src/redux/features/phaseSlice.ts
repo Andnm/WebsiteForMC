@@ -107,6 +107,39 @@ export const changeStatusPhaseByBusiness = createAsyncThunk(
   }
 );
 
+interface UploadFeedbackProps {
+  phaseId: number;
+  feedback: string;
+}
+export const uploadFeedback = createAsyncThunk(
+  "phase/uploadFeedback",
+  async (dataBody: UploadFeedbackProps, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.patch<any>(
+        `/phases/uploadFeedback`,
+        dataBody,
+        configHeader
+      );
+
+      return response.data;
+    } catch (error) {
+      console.log(error)
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
 export const phaseSlice = createSlice({
   name: "phase",
   initialState,
@@ -152,6 +185,21 @@ export const phaseSlice = createSlice({
       state.error = "";
     });
     builder.addCase(changeStatusPhaseByBusiness.rejected, (state, action) => {
+      state.loadingPhase = false;
+      state.error = action.payload as string;
+    });
+
+    //upload feedback
+    builder.addCase(uploadFeedback.pending, (state) => {
+      state.loadingPhase = true;
+      state.error = "";
+    });
+    builder.addCase(uploadFeedback.fulfilled, (state, action) => {
+      state.loadingPhase = false;
+      // state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(uploadFeedback.rejected, (state, action) => {
       state.loadingPhase = false;
       state.error = action.payload as string;
     });

@@ -42,7 +42,7 @@ export const AlertDialogOnlyInviteMember: React.FC<DialogViewProjectProps> = ({
   const [loadingHandleInviteMember, setLoadingHandleInviteMember] =
     React.useState(false);
   const dispatch = useAppDispatch();
-  const { loadingListGroup, error } = useAppSelector((state) => state.group);
+  const { loadingListGroup, error }: any = useAppSelector((state) => state.group);
 
   const handleNewMemberChange = (
     event: React.ChangeEvent<HTMLInputElement>

@@ -14,7 +14,6 @@ const ProjectListStudent: React.FC<PitchingProjectListProps> = ({
   setDataPitching,
   loadingPitching,
 }) => {
-  console.log(dataPitching)
   const getProjectNameByStatus = (status: string) => {
     switch (status) {
       case "Pending":

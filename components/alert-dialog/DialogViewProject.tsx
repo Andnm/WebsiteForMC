@@ -34,7 +34,7 @@ export const DialogViewProject: React.FC<DialogViewProjectProps> = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>{children}</DialogTrigger>
-      <DialogContent className="opacity-100 max-w-6xl bg-white">
+      <DialogContent className="opacity-100 bg-opacity-100 max-w-6xl bg-white">
         <DialogHeader>
           <DialogTitle>Thông tin dự án</DialogTitle>
         </DialogHeader>

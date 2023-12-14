@@ -9,11 +9,13 @@ interface ProgressLoadingProps {
 const getStatusColor = (status: string): string => {
   switch (status) {
     case "Processing":
-      return "bg-orange-300 text-orange-600";
+      return "bg-orange-600 text-orange-300";
     case "Done":
-      return "bg-green-300 text-green-600";
+      return "bg-green-600 text-green-300";
     case "Warning":
-      return "bg-red-300 text-red-600";
+      return "bg-red-600 text-red-300";
+    case "Pending":
+      return "bg-gray-600 text-gray-300";
     default:
       return "bg-teal-300 text-teal-600";
   }

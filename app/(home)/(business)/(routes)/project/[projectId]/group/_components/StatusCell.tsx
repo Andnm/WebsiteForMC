@@ -1,4 +1,4 @@
-import { getColorByProjectStatus } from "@/src/utils/handleFunction";
+import { changeStatusFromEnToVn, getColorByProjectStatus } from "@/src/utils/handleFunction";
 
 const StatusCell: React.FC<{ status: string; classes: string }> = ({
   status,
@@ -13,11 +13,11 @@ const StatusCell: React.FC<{ status: string; classes: string }> = ({
           )}`}
           style={{ borderRadius: "7px" }}
         >
-          {status}
+          {changeStatusFromEnToVn(status)}
         </p>
       </div>
     </td>
   );
 };
 
-export default StatusCell
+export default StatusCell;

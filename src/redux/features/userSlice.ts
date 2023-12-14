@@ -33,7 +33,7 @@ export const searchUserByEmail = createAsyncThunk(
       },
     };
 
-    console.log(searchEmail);
+    // console.log('api', searchEmail);
     try {
       const response = await http.get<any>(
         `/users/search/${roleName}/${searchEmail}`,
@@ -42,6 +42,7 @@ export const searchUserByEmail = createAsyncThunk(
 
       return response.data;
     } catch (error) {
+      // console.log('error', error)
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );

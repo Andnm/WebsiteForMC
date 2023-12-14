@@ -18,6 +18,7 @@ const initialState: PitchingState = {
 
 //get all register pitching by student
 // cái này là sẽ show ra danh sách những DỰ ÁN mà nhóm của student này đã đăng kí
+//có thể dùng cho cả LECTURE
 export const getAllRegisterPitchingByStudent = createAsyncThunk(
   "pitching/getAllRegisterPitching",
   async (_, thunkAPI) => {
@@ -75,12 +76,15 @@ export const getAllRegisterPitchingByBusiness = createAsyncThunk(
 //register pitching
 interface RegisterPitchingBody {
   groupId: number;
+  document_url?: string;
+  subject_code?: string;
+  lecturer_email?: string;
   projectId: number;
 }
 
 export const registerPitching = createAsyncThunk(
   "pitching/registerPitching",
-  async ({ groupId, projectId }: RegisterPitchingBody, thunkAPI) => {
+  async (dataBody: RegisterPitchingBody, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -89,11 +93,11 @@ export const registerPitching = createAsyncThunk(
         Authorization: `Bearer ${token}`,
       },
     };
-
+ 
     try {
       const response = await http.post<any>(
         `/register-pitching`,
-        { groupId, projectId },
+        dataBody,
         configHeader
       );
 

@@ -41,8 +41,6 @@ const CategoryForm = forwardRef<HTMLTextAreaElement, CategoryFormProps>(
     const [formData, setFormData] = React.useState<CategoryType>({
       category_name: "",
       detail: "",
-      category_start_date: "",
-      category_expected_end_date: "",
       result_expected: "",
       phaseId: phaseId,
       groupId: 0,
@@ -123,28 +121,6 @@ const CategoryForm = forwardRef<HTMLTextAreaElement, CategoryFormProps>(
             placeholder="Nhập chi tiết..."
             value={formData.detail}
             onChange={(e) => handleChange("detail", e.target.value)}
-          />
-
-          <FormInput
-            type="date"
-            id="category_start_date"
-            className="w-full px-2 py-1 h-7 border-neutral-200/100 bg-white transition"
-            placeholder="Nhập vào category_start_date"
-            value={formData.category_start_date}
-            onChange={(e) =>
-              handleChange("category_start_date", e.target.value)
-            }
-          />
-
-          <FormInput
-            type="date"
-            id="category_expected_end_date"
-            className="w-full px-2 py-1 h-7 border-neutral-200/100 bg-white transition"
-            placeholder="Nhập vào category_expected_end_date"
-            value={formData.category_expected_end_date}
-            onChange={(e) =>
-              handleChange("category_expected_end_date", e.target.value)
-            }
           />
 
           <FormTextArea

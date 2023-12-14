@@ -44,6 +44,7 @@ const DialogViewCategory = ({
   const [userLogin, setUserLogin] = useUserLogin();
   const [editingField, setEditingField] = React.useState(null);
   const [editedValue, setEditedValue] = React.useState("");
+  console.log(userLogin);
 
   // cost
   const [isCreatingCost, setIsCreatingCost] = React.useState(false);
@@ -231,25 +232,6 @@ const DialogViewCategory = ({
                               </span>
                             </div>
 
-                            <div className="flex items-center">
-                              <span className="text-gray-500 mr-2">
-                                Ngày bắt đầu:
-                              </span>
-                              <span className="font-semibold">
-                                {formatDate(phaseData.category_start_date)}
-                              </span>
-                            </div>
-
-                            <div className="flex items-center">
-                              <span className="text-gray-500 mr-2">
-                                Ngày dự tính kết thúc:
-                              </span>
-                              <span className="font-semibold">
-                                {formatDate(
-                                  phaseData.category_expected_end_date
-                                )}
-                              </span>
-                            </div>
 
                             <div className="flex items-center">
                               <span className="text-gray-500 mr-2">
@@ -401,13 +383,15 @@ const DialogViewCategory = ({
                               </div>
                             </div>
                           ) : (
-                            <button
+                            userLogin?.role_name === "Student" ? (<button
                               className="bg-blue-500 text-white text-sm px-4 py-2 rounded"
                               onClick={handleOpenCreateCost}
                             >
                               Tạo chi phí
-                            </button>
-                          )}
+                            </button>) : (<p className="pl-4">(Chưa được cập nhập)</p>)
+                          )
+                          
+                          }
                         </div>
 
                         <div className="mt-4">
@@ -442,12 +426,13 @@ const DialogViewCategory = ({
                                 </div>
                               ))
                             ) : (
-                              <ImageUpload
+                              userLogin?.role_name === "Student" ? (<ImageUpload
                                 cost={cost}
                                 setCost={setCost}
                                 evidence={evidence}
                                 setEvidence={setEvidence}
-                              />
+                              />): (<p className="pl-4">(Chưa được cập nhập)</p>)
+                              
                             )}
                           </div>
                         </div>

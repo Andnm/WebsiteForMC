@@ -59,7 +59,8 @@ const ManageProjectHeader: React.FC = () => {
       </div>
 
       <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-        <Tabs value="all" className="filter w-full md:w-max">
+        {/* tạm thời ẩn đi */}
+        {/* <Tabs value="all" className="filter w-full md:w-max">
           <TabsHeader>
             {TABS.map(({ label, value }) => (
               <Tab key={value} value={value}>
@@ -67,7 +68,7 @@ const ManageProjectHeader: React.FC = () => {
               </Tab>
             ))}
           </TabsHeader>
-        </Tabs>
+        </Tabs> */}
 
         <div
           style={{ borderRadius: "7px" }}

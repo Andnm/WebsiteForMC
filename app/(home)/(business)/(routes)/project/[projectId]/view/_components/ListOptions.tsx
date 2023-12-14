@@ -8,11 +8,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Check, MoreHorizontal } from "lucide-react";
+import { Check, MoreHorizontal, Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useUserLogin } from "@/src/hook/useUserLogin";
 import { IoMdWarning } from "react-icons/io";
-import { changeStatusPhaseByBusiness } from "@/src/redux/features/phaseSlice";
+import {
+  changeStatusPhaseByBusiness,
+  uploadFeedback,
+} from "@/src/redux/features/phaseSlice";
 import { useAppDispatch } from "@/src/redux/store";
 import toast from "react-hot-toast";
 
@@ -55,9 +58,23 @@ const ListOptions = ({
         }
 
         console.log(result);
-
       }
     );
+  };
+
+  const handleAddFeedback = () => {
+    const dataBody = {
+      phaseId: data.id,
+      feedback: "hmmm",
+    };
+    
+    dispatch(uploadFeedback(dataBody)).then((result) => {
+      if (uploadFeedback.fulfilled.match(result)) {
+        toast.success("Tạo feedback thành công!");
+      } else {
+        toast.error(`${result.payload}`);
+      }
+    });
   };
 
   return (
@@ -97,26 +114,15 @@ const ListOptions = ({
           </>
         )}
 
-        {userLogin?.role_name === "Business" && (
+        {(userLogin?.role_name === "Lecturer" ||
+          userLogin?.role_name === "Business") && (
           <>
             <Button
-              onClick={() => handleChangeStatus("Done")}
+              onClick={handleAddFeedback}
               className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
               variant={"ghost"}
             >
-              <Check className="w-7 h-7 mr-1 text-green-500" /> Xác nhận hoàn
-              thành giai đoạn này
-            </Button>
-
-            <Separator className="bg-gray-200/100" />
-
-            <Button
-              onClick={() => handleChangeStatus("Warning")}
-              className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
-              variant={"ghost"}
-            >
-              <IoMdWarning className="w-3 h-3 mr-1 text-red-500" />
-              Cảnh báo giai đoạn này
+              <Plus className="w-3 h-3 mr-1" /> Thêm feedback
             </Button>
           </>
         )}

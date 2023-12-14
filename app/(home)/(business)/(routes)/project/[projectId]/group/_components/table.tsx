@@ -12,7 +12,7 @@ import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { BiDetail } from "react-icons/bi";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlinePlaylistRemove } from "react-icons/md";
-import { formatDate } from "@/src/utils/handleFunction";
+import { changeStatusFromEnToVn, formatDate } from "@/src/utils/handleFunction";
 import StatusCell from "./StatusCell";
 import InfoText from "./InfoText";
 import { useAppDispatch } from "@/src/redux/store";
@@ -26,7 +26,7 @@ interface TableProps {
   projectId: number;
 }
 
-const TABLE_HEAD = ["Thành viên", "Trạng thái", "Ngày tham gia"];
+const TABLE_HEAD = ["Thành viên", "Chức vụ", "Trạng thái", "Ngày tham gia"];
 
 const DefaultAvatarURL =
   "https://cdn.popsww.com/blog/sites/2/2021/03/doraemon-tap-97.jpg";
@@ -43,7 +43,7 @@ const TableMemberInGroup: React.FC<TableProps> = ({
     dispatch(getAllMemberByGroupId(group?.group?.id)).then((result: any) => {
       if (getAllMemberByGroupId.fulfilled.match(result)) {
         setMemberInGroup(result.payload);
-        // console.log(result.payload);
+        console.log(result.payload);
       }
     });
   }, []);
@@ -75,7 +75,7 @@ const TableMemberInGroup: React.FC<TableProps> = ({
                 >
                   <InfoText className="flex items-center gap-2 leading-none opacity-70">
                     {head}
-                    {index !== TABLE_HEAD.length - 1 && (
+                    {index !== TABLE_HEAD.length && (
                       <RiExpandUpDownLine className="h-4 w-4" />
                     )}
                   </InfoText>
@@ -105,7 +105,9 @@ const TableMemberInGroup: React.FC<TableProps> = ({
                           className="w-10 h-10 object-cover rounded-full"
                         />
                         <div className="flex flex-col">
-                          <InfoText className="text-start">{member?.user?.fullname}</InfoText>
+                          <InfoText className="text-start">
+                            {member?.user?.fullname}
+                          </InfoText>
 
                           <InfoText className="opacity-70">
                             {member?.user?.email}
@@ -113,6 +115,12 @@ const TableMemberInGroup: React.FC<TableProps> = ({
                         </div>
                       </div>
                     </Hint>
+                  </td>
+
+                  <td className={classes}>
+                    <InfoText>
+                      {changeStatusFromEnToVn(member?.role_in_group)}
+                    </InfoText>
                   </td>
 
                   <StatusCell

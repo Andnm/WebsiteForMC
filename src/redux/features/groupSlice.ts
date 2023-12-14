@@ -51,6 +51,7 @@ export const createGroup = createAsyncThunk(
 );
 
 // lấy tất cả group mà user đang là member
+//có thể dùng cho cả LECTURE
 export const getAllGroupAreMembers = createAsyncThunk(
   "group/getAllGroupAreMembers",
   async (_, thunkAPI) => {
@@ -173,7 +174,7 @@ export const getAllMemberByGroupId = createAsyncThunk<any, number>(
   }
 );
 
-export const groupSlice = createSlice({
+export const groupSlice: any = createSlice({
   name: "group",
   initialState,
   reducers: {},

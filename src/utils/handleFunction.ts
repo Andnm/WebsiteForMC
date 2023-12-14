@@ -57,6 +57,16 @@ export const changeStatusFromEnToVn = (status: string): string => {
       return "cần được làm";
     case "doing":
       return "đang làm";
+    case "joined":
+      return "Đang tham gia";
+    case "member":
+      return "Thành viên";
+    case "leader":
+      return "Trưởng nhóm";
+    case "lecturer":
+      return "Giảng viên";
+    case "pending":
+      return "Đang chờ";
     default:
       return "Trạng thái không xác định";
   }
@@ -82,7 +92,9 @@ export const truncateString = (input: string, maxLength: number): string => {
   return input;
 };
 
-export const generateFallbackAvatar = (fullname: string | undefined): string => {
+export const generateFallbackAvatar = (
+  fullname: string | undefined
+): string => {
   const fallbackColor = "#FF9966";
   const initials = fullname?.charAt(0).toUpperCase() || "";
   const svgString = `
@@ -95,4 +107,24 @@ export const generateFallbackAvatar = (fullname: string | undefined): string => 
 `;
   const dataUrl = `data:image/svg+xml;base64,${btoa(svgString)}`;
   return dataUrl;
+};
+
+interface StatusInfo {
+  color: string;
+  text: string;
+}
+
+export const getRelationshipStatusInfo = (status: string): StatusInfo => {
+  switch (status) {
+    case "Pending":
+      return { color: "purple", text: "Đang chờ xét duyệt" };
+    case "Joined":
+      return { color: "green", text: "Đã tham gia" };
+    case "Outed":
+      return { color: "gray", text: "Đã rời nhóm" };
+    case "Rejected":
+      return { color: "red", text: "Từ chối lời mời" };
+    default:
+      return { color: "black", text: "Trạng thái không xác định" };
+  }
 };

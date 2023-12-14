@@ -30,9 +30,12 @@ import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
 import Pagination from "@/src/components/shared/Pagination";
 
 interface ProjectTableProps {
+  totalObject: any;
   dataTable: any[];
   setDataTable: React.Dispatch<React.SetStateAction<any[]>>;
   loadingProject: boolean;
+  currentPage: number;
+  onPageChange: (page: number) => void;
 }
 
 const TABLE_HEAD = [
@@ -45,16 +48,17 @@ const TABLE_HEAD = [
 ];
 
 const ProjectTable: React.FC<ProjectTableProps> = ({
+  totalObject,
   dataTable,
   setDataTable,
   loadingProject,
+  currentPage,
+  onPageChange
 }) => {
+  console.log(totalObject)
   const dispatch = useAppDispatch();
   const [isOpenModalDetail, setIsOpenModalDetail] = React.useState(false);
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const onPageChange = (newPage: any) => {
-    setCurrentPage(newPage);
-  };
+
   //quản lý thông tin hiện ra
   const [selectedProject, setSelectedProject] = React.useState<any | null>(
     null
@@ -423,7 +427,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 
   const buttonConfirm = isEditMode ? "Xác nhận thay đổi" : "Phê duyệt";
 
-  if (dataTable.length === 0) {
+  if (dataTable?.length === 0) {
     return (
       <CardBody className="text-center">
         <InfoText>Chưa có dự án nào được tạo.</InfoText>
@@ -452,7 +456,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
               ))}
             </tr>
           </thead>
-          {dataTable.map((business: any, index) => {
+          {dataTable?.map((business: any, index) => {
             const isLast = index === dataTable.length - 1;
 
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
@@ -591,7 +595,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 
       <Pagination
         currentPage={currentPage}
-        totalItems={100}
+        totalItems={totalObject}
         onPageChange={onPageChange}
       />
 

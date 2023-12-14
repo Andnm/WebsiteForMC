@@ -89,7 +89,34 @@ export const getAllProjectByEveryOne = createAsyncThunk(
   "listProject/getAllProjectByEveryOne",
   async (_, thunkAPI) => {
     try {
-      const response = await http.get<any>("/projects");
+      const response = await http.get<any>(`/projects`);
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
+export const getAllProjectByAdmin = createAsyncThunk(
+  "listProject/getAllProjectByAdmin",
+  async (pageIndex: number, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.get<any>(
+        `/projects/admin?page=${pageIndex}`,
+        configHeader
+      );
 
       return response.data;
     } catch (error) {
@@ -254,6 +281,21 @@ export const projectSlice = createSlice({
       state.error = "";
     });
     builder.addCase(getAllProjectByEveryOne.rejected, (state, action) => {
+      state.loadingProjectList = false;
+      state.error = action.payload as string;
+    });
+
+    //get All Project By Admin
+    builder.addCase(getAllProjectByAdmin.pending, (state) => {
+      state.loadingProjectList = true;
+      state.error = "";
+    });
+    builder.addCase(getAllProjectByAdmin.fulfilled, (state, action) => {
+      state.loadingProjectList = false;
+      // state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getAllProjectByAdmin.rejected, (state, action) => {
       state.loadingProjectList = false;
       state.error = action.payload as string;
     });

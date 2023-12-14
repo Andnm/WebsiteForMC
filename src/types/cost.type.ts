@@ -7,6 +7,5 @@ export interface CostType {
   category?: {
     category_name: string;
     detail: string;
-    category_start_date: string;
   };
 }
