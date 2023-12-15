@@ -18,7 +18,7 @@ const ListPhaseContainer = ({
   phaseData,
   setPhaseData,
 }: ListPhaseContainerProps) => {
-  console.log("phasedata", phaseData);
+  // console.log("phasedata", phaseData);
 
   return (
     <ol className="flex gap-x-3 h-full flex-wrap">

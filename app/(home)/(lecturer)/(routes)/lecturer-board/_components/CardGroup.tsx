@@ -4,6 +4,7 @@ import {
   changeStatusFromEnToVn,
   formatDate,
   generateFallbackAvatar,
+  getColorByProjectStatus,
   getRelationshipStatusInfo,
 } from "@/src/utils/handleFunction";
 import { Clock, GraduationCap, Loader } from "lucide-react";
@@ -38,11 +39,13 @@ const CardGroup = ({ group, lectureData }: CardGroupProps) => {
       if (getAllMemberByGroupId.fulfilled.match(result)) {
         setMemberInGroup(result.payload);
       } else {
-        toast.error("Lỗi khi lấy thông tin thành viên");
+        // toast.error("Lỗi khi lấy thông tin thành viên");
       }
     });
   }, []);
 
+  console.log(group)
+  
   return (
     <div
       className="cursor-pointer hover:scale-102 transition-transform duration-300 transform h-full border-2 border-gray-200 border-opacity-60 rounded-2xl overflow-hidden"
@@ -54,6 +57,14 @@ const CardGroup = ({ group, lectureData }: CardGroupProps) => {
           <p className="text-white text-lg italic pl-2">
             {group?.project?.name_project}
           </p>
+          <div
+            className={`${getColorByProjectStatus(
+              group?.register_pitching_status
+            )} px-3 py-1 rounded-xl text-sm text-center`}
+            style={{width: '100px'}}
+          >
+            {group?.register_pitching_status}
+          </div>
         </div>
         {Array.isArray(memberInGroup) &&
           memberInGroup.length !== 0 &&
@@ -63,14 +74,17 @@ const CardGroup = ({ group, lectureData }: CardGroupProps) => {
               return (
                 <img
                   key={index}
-                  className={`h-14 w-14 object-cover rounded-full border-2 border-white absolute -bottom-6 right-[${
-                    16 + 40 * index
-                  }px] z-${40 - 10 * index}`}
+                  className={`h-14 w-14 object-cover rounded-full border-2 border-white absolute -bottom-6  z-${
+                    40 - 10 * index
+                  }`}
                   src={
                     filteredMember.user.avatar_url ||
                     generateFallbackAvatar(filteredMember?.user?.email)
                   }
-                  alt={`Avatar ${filteredMember.user.full_name}`}
+                  style={{
+                    right: `${16 + 40 * index}px`,
+                  }}
+                  alt={`Avatar`}
                 />
               );
             })}

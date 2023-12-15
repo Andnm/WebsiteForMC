@@ -25,59 +25,164 @@ import {
   changeStatusFromEnToVn,
   getColorByProjectStatus,
 } from "@/src/utils/handleFunction";
+import { usePathname } from "next/navigation";
+import {
+  confirmSummaryReport,
+  getSummaryReportByProjectId,
+  upSummaryReportByLeader,
+} from "@/src/redux/features/summaryReportSlice";
+import { storage } from "@/src/utils/configFirebase";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
 
 interface ViewNavbarProps {
   dataProject: any;
   setDataProject: any;
+  projectId: number;
 }
 
-const TABLE_HEAD = [
-  "Doanh nghiệp xác nhận",
-  "Giảng viên xác nhận",
-  "File tổng kết",
-];
-
-const TABLE_ROWS = [
-  {
-    business_confirm: "Chưa xác nhận",
-    lecture_confirm: "Chưa xác nhận",
-    summary_report: "Nộp file",
-  },
-];
+const TABLE_HEAD = ["Doanh nghiệp ", "Giảng viên ", "File tổng kết"];
 
 export const ViewNavbar = ({
   dataProject,
   setDataProject,
+  projectId,
 }: ViewNavbarProps) => {
-  console.log("dataProject", dataProject);
   const [userLogin, setUserLogin] = useUserLogin();
   const [open, setOpen] = React.useState(false);
+  const [summaryReport, setSummaryReport] = React.useState<any>([]);
+
+  const pathName = usePathname();
   const dispatch = useAppDispatch();
+
+  const extractNumberFromPath = (pathName: string): number => {
+    const match = pathName.match(/\/(\d+)\/view/);
+    return match ? parseInt(match[1], 10) : 0; 
+  };
 
   const openDrawer = () => setOpen(true);
   const closeDrawer = () => setOpen(false);
 
   const handleDoneProject = () => {
-    dispatch(checkProjectCanDone(dataProject?.id)).then((result) => {
-      if (checkProjectCanDone.fulfilled.match(result)) {
-        const projectId = dataProject.id;
-        const projectStatus = "Done";
-        dispatch(
-          changeStatusProjectByLecturer({ projectId, projectStatus })
-        ).then((res) => {
-          if (changeStatusProjectByLecturer.fulfilled.match(res)) {
-            toast.success(`Thay đổi trạng thái dự án thành công!`);
-            setDataProject(res.payload);
-          } else {
-            toast.error(`${res.payload}`);
-          }
-        });
-      } else {
-        toast.error(`${result.payload}`);
-        return;
+    dispatch(checkProjectCanDone(extractNumberFromPath(pathName))).then(
+      (result) => {
+        if (checkProjectCanDone.fulfilled.match(result)) {
+          const projectId = dataProject?.id;
+          const projectStatus = "Done";
+          dispatch(
+            changeStatusProjectByLecturer({ projectId, projectStatus })
+          ).then((res) => {
+            if (changeStatusProjectByLecturer.fulfilled.match(res)) {
+              toast.success(`Thay đổi trạng thái dự án thành công!`);
+              setDataProject(res.payload);
+            } else {
+              toast.error(`${res.payload}`);
+            }
+          });
+        } else {
+          toast.error(`${result.payload}`);
+          return;
+        }
       }
-    });
+    );
   };
+
+  const handleClickConfirmSummaryReport = () => {
+    dispatch(confirmSummaryReport(extractNumberFromPath(pathName))).then(
+      (result) => {
+        if (confirmSummaryReport.fulfilled.match(result)) {
+          toast.success("Xác nhận báo cáo thành công");
+          setSummaryReport(result.payload);
+          console.log("confirm", result.payload);
+        } else {
+          toast.error(`${result.payload}`);
+        }
+      }
+    );
+  };
+
+  const [loadingUploadFile, setLoadingUploadFile] = React.useState(false);
+  const [file, setFile] = React.useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = React.useState<number | null>(
+    null
+  );
+  const [downloadURL, setDownloadURL] = React.useState<string | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+    }
+  };
+  const handleUpload = async () => {
+    setLoadingUploadFile(true);
+
+    if (file) {
+      const storageRef = ref(storage, `uploads/${file.name}`);
+
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(progress);
+        },
+        (error) => {
+          console.error("Lỗi khi tải tệp lên Firebase Storage", error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setDownloadURL(downloadURL);
+            const bodyData = {
+              summary_report_url: "abc",
+              projectId: dataProject?.id,
+            };
+            dispatch(upSummaryReportByLeader(bodyData)).then((result) => {
+              if (upSummaryReportByLeader.fulfilled.match(result)) {
+                toast.success("Tải lên báo cáo thành công");
+                setSummaryReport(result.payload);
+                setLoadingUploadFile(false);
+                console.log(result.payload);
+              } else {
+                toast.error(`${result.payload}`);
+                setLoadingUploadFile(false);
+              }
+            });
+          });
+        }
+      );
+    }
+  };
+
+  const handleUploadSummaryReport = () => {
+    handleUpload();
+  };
+
+  const handleDownloadFile = () => {
+    const fileUrl = summaryReport.summary_report_url;
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.download = `${dataProject.name_project}_SUMMARY_REPORT`;
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  React.useEffect(() => {
+    dispatch(getSummaryReportByProjectId(extractNumberFromPath(pathName))).then(
+      (result) => {
+        if (getSummaryReportByProjectId.fulfilled.match(result)) {
+          setSummaryReport(result.payload);
+          console.log(result);
+        } else {
+          // toast.error("Lỗi khi lấy dữ liệu");
+        }
+      }
+    );
+  }, []);
 
   return (
     <>
@@ -92,62 +197,66 @@ export const ViewNavbar = ({
         className="w-full h-14 z-20 bg-black/50 fixed top-17 flex
   items-center px-6 gap-x-4 text-white justify-between"
       >
-        <div className="flex gap-2 items-center">
-          <p>Trạng thái dự án: </p>
-          <div
-            className={`${getColorByProjectStatus(
-              dataProject?.project_status
-            )} px-3 py-1 rounded-xl`}
-          >
-            {changeStatusFromEnToVn(dataProject?.project_status)}
-          </div>
-        </div>
-
-        <div className="flex gap-2 items-center">
-          {!open && dataProject?.project_status === "Done" && (
-            <Button
-              onClick={openDrawer}
-              className="bg-teal-300 text-teal-900 hover:bg-teal-300 rounded"
-            >
-              Tổng kết
-            </Button>
-          )}
-
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button className="h-auto w-auto p-2" variant={"ghost"}>
-                <MoreHorizontal className="h-6 w-6 ml-[420px]" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="px-0 pt-3 pb-3 bg-white ml-[420px]"
-              side="bottom"
-              align="start"
-              style={{ borderRadius: "7px" }}
-            >
-              <div className="text-sm font-medium text-center text-neutral-600 pb-4">
-                Các chức năng khác
-              </div>
-
-              <Button
-                className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
-                variant={"ghost"}
+        {pathName === `/project/${projectId}/view` && (
+          <>
+            <div className="flex gap-2 items-center">
+              <p>Trạng thái dự án: </p>
+              <div
+                className={`${getColorByProjectStatus(
+                  dataProject?.project_status
+                )} px-3 py-1 rounded-xl`}
               >
-                <BiDetail className="w-3 h-3 mr-1" /> Chi tiết dự án
-              </Button>
+                {changeStatusFromEnToVn(dataProject?.project_status)}
+              </div>
+            </div>
 
-              {userLogin?.role_name === "Lecturer" && (
+            <div className="flex gap-2 items-center">
+              {!open && dataProject?.project_status === "Done" && (
                 <Button
-                  className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
-                  variant={"ghost"}
-                  onClick={handleDoneProject}
+                  onClick={openDrawer}
+                  className="bg-teal-300 text-teal-900 hover:bg-teal-300 rounded"
                 >
-                  <Check className="w-3 h-3 mr-1" /> Hoàn thành dự án
+                  Tổng kết
                 </Button>
               )}
-            </PopoverContent>
-          </Popover>
-        </div>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button className="h-auto w-auto p-2" variant={"ghost"}>
+                    <MoreHorizontal className="h-6 w-6 ml-[420px]" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="px-0 pt-3 pb-3 bg-white ml-[420px]"
+                  side="bottom"
+                  align="start"
+                  style={{ borderRadius: "7px" }}
+                >
+                  <div className="text-sm font-medium text-center text-neutral-600 pb-4">
+                    Các chức năng khác
+                  </div>
+
+                  <Button
+                    className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
+                    variant={"ghost"}
+                  >
+                    <BiDetail className="w-3 h-3 mr-1" /> Chi tiết dự án
+                  </Button>
+
+                  {userLogin?.role_name === "Lecturer" && (
+                    <Button
+                      className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
+                      variant={"ghost"}
+                      onClick={handleDoneProject}
+                    >
+                      <Check className="w-3 h-3 mr-1" /> Hoàn thành dự án
+                    </Button>
+                  )}
+                </PopoverContent>
+              </Popover>
+            </div>
+          </>
+        )}
 
         <Drawer
           overlay={false}
@@ -199,49 +308,95 @@ export const ViewNavbar = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {TABLE_ROWS.map(
-                    (
-                      { business_confirm, lecture_confirm, summary_report },
-                      index
-                    ) => {
-                      const isLast = index === TABLE_ROWS.length - 1;
-                      const classes = isLast
-                        ? "p-4"
-                        : "p-4 border-b border-blue-gray-50";
-
-                      return (
-                        <tr key={index}>
-                          <td className={classes}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {business_confirm}
-                            </Typography>
-                          </td>
-                          <td className={`${classes} bg-blue-gray-50/50`}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {lecture_confirm}
-                            </Typography>
-                          </td>
-                          <td className={classes}>
-                            <Button className="font-normal">
-                              {summary_report}
-                            </Button>
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )}
+                  <tr>
+                    <td className="pl-5">
+                      {summaryReport?.isBusinessConfirmed ? (
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          Đã xác nhận
+                        </Typography>
+                      ) : userLogin?.role_name === "Business" ? (
+                        <Button
+                          onClick={handleClickConfirmSummaryReport}
+                          className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
+                        >
+                          Xác nhận
+                        </Button>
+                      ) : (
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          Chưa xác nhận
+                        </Typography>
+                      )}
+                    </td>
+                    <td className={` pl-5 bg-blue-gray-50/50`}>
+                      {summaryReport?.isBusinessConfirmed ? (
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          Đã xác nhận
+                        </Typography>
+                      ) : userLogin?.role_name === "Lecturer" ? (
+                        <Button
+                          onClick={handleClickConfirmSummaryReport}
+                          className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
+                        >
+                          Xác nhận
+                        </Button>
+                      ) : (
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          Chưa xác nhận
+                        </Typography>
+                      )}
+                    </td>
+                    <td className="p-4">
+                      {summaryReport?.summary_report_url ? (
+                        <Button
+                          className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
+                          onClick={handleDownloadFile}
+                        >
+                          Tải xuống báo cáo
+                        </Button>
+                      ) : userLogin?.role_name === "Student" ? (
+                        <input
+                          type="file"
+                          onChange={handleFileChange}
+                          className="text-sm"
+                        />
+                      ) : (
+                        <p className="text-sm">Chưa nộp báo cáo tổng kết</p>
+                      )}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </Card>
           </div>
+
+          <div className="relative left-1/3 mt-5">
+            {file && (
+              <Button
+                className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
+                onClick={handleUploadSummaryReport}
+              >
+                Tải lên báo cáo
+              </Button>
+            )}
+          </div>
+
+          {loadingUploadFile && <SpinnerLoading />}
         </Drawer>
 
         <ViewTitleForm />

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAppDispatch, useAppSelector } from "@/src/redux/store";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import "./style.scss";
 import { ViewNavbar } from "./_components/ViewNavbar";
 import { getProjectById } from "@/src/redux/features/projectSlice";
@@ -26,6 +26,7 @@ const ViewIdLayout = ({
   const [dataProject, setDataProject] = React.useState<ProjectType | undefined>(
     undefined
   );
+  const pathName = usePathname();
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -45,14 +46,23 @@ const ViewIdLayout = ({
           backgroundImage: `url('https://ss-images.saostar.vn/2020/02/15/6994345/7campusdhfpttphcm.jpg')`,
         }}
       >
-        <ViewNavbar
-          dataProject={dataProject}
-          setDataProject={setDataProject}
-        />
+        {pathName === `/project/${params.projectId}/view` && (
+          <ViewNavbar
+            projectId={params.projectId}
+            dataProject={dataProject}
+            setDataProject={setDataProject}
+          />
+        )}
 
         <div className="absolute inset-0 bg-black/10" />
 
-        <main className="relative pt-14 h-full w-full">{children}</main>
+        <main
+          className={`relative ${
+            pathName === `/project/${params.projectId}/view` && " pt-14 "
+          } h-full w-full`}
+        >
+          {children}
+        </main>
       </div>
     </div>
   );

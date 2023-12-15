@@ -19,7 +19,7 @@ const ProjectIdPage = () => {
     const projectId = parseInt(params.projectId, 10);
     dispatch(getPhaseByProjectId(projectId)).then((result) => {
       console.log("phase", result);
-      const sortedPhaseData = [...result.payload]?.sort((a, b) => a.id - b.id);
+      const sortedPhaseData = [...result?.payload]?.sort((a, b) => a.id - b.id);
 
       setPhaseData(sortedPhaseData);
     });

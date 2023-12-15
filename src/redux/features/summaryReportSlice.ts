@@ -46,7 +46,7 @@ export const getSummaryReportByProjectId = createAsyncThunk(
 
 export const upSummaryReportByLeader = createAsyncThunk(
   "summaryReport/upSummaryReportByLeader",
-  async (bodyData, thunkAPI) => {
+  async (bodyData: any, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -85,8 +85,9 @@ export const confirmSummaryReport = createAsyncThunk(
     };
 
     try {
-      const response = await http.get<any>(
+      const response = await http.patch<any>(
         `/summary-report/confirm/${projectId}`,
+        [],
         configHeader
       );
 

@@ -108,7 +108,7 @@ const LecturerBoard = () => {
     <div>
       <HeaderLecturerBoardGroup />
 
-      <main className="mt-3 grid grid-cols-4 gap-2">
+      <main className="mt-3 mb-5 grid grid-cols-4 gap-2">
         {Array.isArray(dataGroupList) && dataGroupList.length === 0 ? (
           <div className="text-center text-lg text-neutral-700">
             Bạn chưa tham gia nhóm nào cả.

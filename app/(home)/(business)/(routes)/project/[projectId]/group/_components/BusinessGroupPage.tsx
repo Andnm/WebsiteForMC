@@ -47,6 +47,7 @@ const BusinessGroupPage: React.FC<BusinessGroupPageProps> = ({ projectId }) => {
     const link = document.createElement("a");
     link.href = fileUrl;
     link.download = `${group.group.group_name}_introduction`;
+    link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

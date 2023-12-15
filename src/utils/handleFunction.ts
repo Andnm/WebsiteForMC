@@ -21,6 +21,8 @@ export const getColorByProjectStatus = (status: string): string => {
       return "bg-red-200 text-red-900";
     case "End":
       return "bg-gray-200 text-gray-900";
+    case "Rejected":
+      return "bg-red-200 text-red-900";
     default:
       return "bg-green-200 text-green-900";
   }
@@ -53,6 +55,8 @@ export const changeStatusFromEnToVn = (status: string): string => {
       return "Đang bị cảnh báo";
     case "done":
       return "Đã xong";
+    case "public":
+      return "Đang công khai";
     case "todo":
       return "cần được làm";
     case "doing":
@@ -67,6 +71,8 @@ export const changeStatusFromEnToVn = (status: string): string => {
       return "Giảng viên";
     case "pending":
       return "Đang chờ";
+    case "selected":
+      return "Đã được chọn";
     default:
       return "Trạng thái không xác định";
   }
