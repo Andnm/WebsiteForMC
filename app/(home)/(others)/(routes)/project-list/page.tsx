@@ -44,10 +44,18 @@ const ProjectList = () => {
   React.useEffect(() => {
     dispatch(getAllProjectByEveryOne()).then((result) => {
       if (getAllProjectByEveryOne.fulfilled.match(result)) {
-        setDataProjectList(result.payload[1]);
-      }else {
-        toast.error('Có lỗi xảy ra khi tải danh sách dự án!')
-      } 
+        const filteredProjects = result.payload[1].filter((project: any) => {
+          const expirationDate = new Date(
+            project.project_registration_expired_date
+          );
+          const currentDate = new Date();
+          return expirationDate > currentDate;
+        });
+
+        setDataProjectList(filteredProjects);
+      } else {
+        toast.error("Có lỗi xảy ra khi tải danh sách dự án!");
+      }
     });
   }, []);
 
