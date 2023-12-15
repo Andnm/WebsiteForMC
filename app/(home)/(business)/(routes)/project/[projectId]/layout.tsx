@@ -45,7 +45,10 @@ const ViewIdLayout = ({
           backgroundImage: `url('https://ss-images.saostar.vn/2020/02/15/6994345/7campusdhfpttphcm.jpg')`,
         }}
       >
-        <ViewNavbar />
+        <ViewNavbar
+          dataProject={dataProject}
+          setDataProject={setDataProject}
+        />
 
         <div className="absolute inset-0 bg-black/10" />
 

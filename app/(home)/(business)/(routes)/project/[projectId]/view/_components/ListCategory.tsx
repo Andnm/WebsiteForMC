@@ -9,7 +9,7 @@ interface ListCategoryProps {
 }
 
 const ListCategory = ({ dataCategory, setDataCategory }: ListCategoryProps) => {
-  console.log(dataCategory);
+  // console.log(dataCategory);
   const [isOpenModalDetail, setIsOpenModalDetail] = React.useState(false);
 
   const [selectedCategory, setSelectedCategory] = React.useState<any | null>(

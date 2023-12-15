@@ -18,7 +18,7 @@ export const ListHeader = ({
   setPhaseData,
 }: ListHeaderProps) => {
   const [userLogin, setUserLogin] = useUserLogin();
-  console.log("data", data);
+  // console.log("data", data);
 
   const getBorderColorClass = () => {
     switch (data.phase_status) {

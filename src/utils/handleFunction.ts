@@ -40,7 +40,7 @@ export const formatCurrency = (amount?: number | null): string => {
 };
 
 export const changeStatusFromEnToVn = (status: string): string => {
-  switch (status.toLowerCase()) {
+  switch (status?.toLowerCase()) {
     case "not transferred":
       return "Chưa chuyển";
     case "transferred":

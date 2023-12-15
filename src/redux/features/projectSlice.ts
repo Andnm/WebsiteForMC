@@ -220,6 +220,61 @@ export const changeStatusProjectByAdmin = createAsyncThunk(
   }
 );
 
+export const checkProjectCanDone = createAsyncThunk(
+  "listProject/checkProjectCanDone",
+  async (projectId: number, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.get<any>(
+        `/phases/checkProjectCanDone/${projectId}`,
+        configHeader
+      );
+      return response.data;
+    } catch (error) {
+      // console.log(error);
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
+export const changeStatusProjectByLecturer = createAsyncThunk(
+  "listProject/changeStatusProjectByLecturer",
+  async ({ projectId, projectStatus }: ChangeStatusParams, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.patch<any>(
+        `/projects/changeStatus/${projectId}/${projectStatus}`,
+        [],
+        configHeader
+      );
+      return response.data;
+    } catch (error) {
+      // console.log(error);
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
 export const projectSlice = createSlice({
   name: "listProject",
   initialState,
@@ -340,6 +395,36 @@ export const projectSlice = createSlice({
       state.error = "";
     });
     builder.addCase(changeStatusProjectByAdmin.rejected, (state, action) => {
+      state.loadingProject = false;
+      state.error = action.payload as string;
+    });
+
+    //check Project Can Done
+    builder.addCase(checkProjectCanDone.pending, (state) => {
+      state.loadingProject = true;
+      state.error = "";
+    });
+    builder.addCase(checkProjectCanDone.fulfilled, (state, action) => {
+      state.loadingProject = false;
+      // state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(checkProjectCanDone.rejected, (state, action) => {
+      state.loadingProject = false;
+      state.error = action.payload as string;
+    });
+
+    //change Status Project By Lecturer
+    builder.addCase(changeStatusProjectByLecturer.pending, (state) => {
+      state.loadingProject = true;
+      state.error = "";
+    });
+    builder.addCase(changeStatusProjectByLecturer.fulfilled, (state, action) => {
+      state.loadingProject = false;
+      // state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(changeStatusProjectByLecturer.rejected, (state, action) => {
       state.loadingProject = false;
       state.error = action.payload as string;
     });
