@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 :root {
   margin: 0;
   padding: 0;
@@ -14,5 +14,19 @@
 }
 
 .text-destructive {
-  color:red;
+  color: red;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker-wrapper .react-datepicker__input-container {
+  display: flex;
+  align-items: center;
+}
+
+.react-datepicker-wrapper .react-datepicker__input-container input {
+  padding: 10px 8px 6px 35px !important;
+  display: flex;
 }

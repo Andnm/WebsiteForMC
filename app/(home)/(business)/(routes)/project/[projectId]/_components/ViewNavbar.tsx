@@ -136,7 +136,7 @@ export const ViewNavbar = ({
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setDownloadURL(downloadURL);
             const bodyData = {
-              summary_report_url: "abc",
+              summary_report_url: downloadURL,
               projectId: dataProject?.id,
             };
             dispatch(upSummaryReportByLeader(bodyData)).then((result) => {

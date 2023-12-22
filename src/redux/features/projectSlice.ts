@@ -20,7 +20,7 @@ const initialState: ListProjectState = {
 
 export const createNewProject = createAsyncThunk(
   "listProject/createNewProject",
-  async (formData: ProjectType, thunkAPI) => {
+  async (dataBody: ProjectType, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -33,12 +33,13 @@ export const createNewProject = createAsyncThunk(
     try {
       const response = await http.post<any>(
         "/projects",
-        formData,
+        dataBody,
         configHeader
       );
 
       return response.data;
     } catch (error) {
+      console.log(error)
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );

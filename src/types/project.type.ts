@@ -20,9 +20,9 @@ export interface ProjectType {
   request: string;
   note: string;
   document_related_link: string;
-  project_registration_expired_date: string;
-  project_start_date: string;
-  project_expected_end_date: string;
+  project_registration_expired_date?: string;
+  project_start_date?: string;
+  project_expected_end_date?: string;
   project_status?: string;
   createdAt?: string;
 }

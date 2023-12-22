@@ -49,13 +49,17 @@ const ProjectList: React.FC<ProjectListProps> = ({
       groupedProjects[status].push(project);
     });
 
+    // console.log(groupedProjects);
+
     return groupedProjects;
   };
 
   const renderProjectsByStatus = () => {
     const groupedProjects = groupProjectsByStatus();
 
-    return Object.entries(groupedProjects).map(([status, projects]) => (
+    const reversedGroupedProjects = Object.entries(groupedProjects).reverse();
+
+    return reversedGroupedProjects.map(([status, projects]) => (
       <div key={status}>
         <div className="flex items-center font-semibold text-lg text-neutral-700 mb-4">
           <p className="">{status}</p>

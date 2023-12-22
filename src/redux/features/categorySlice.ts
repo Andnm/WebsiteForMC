@@ -29,6 +29,8 @@ export const createCategory = createAsyncThunk(
       },
     };
 
+    console.log("dataBody", dataBody)
+
     try {
       const response = await http.post<any>(
         `/categories`,
@@ -38,6 +40,7 @@ export const createCategory = createAsyncThunk(
 
       return response.data;
     } catch (error) {
+      console.log(error)
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );

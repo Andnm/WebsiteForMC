@@ -70,9 +70,9 @@ const ListForm = ({
       projectId: projectId,
       groupId: groupId,
     };
-    console.log(dataBody)
+    console.log(dataBody);
 
-    dispatch(createPhase(dataBody)).then((result) => {
+    dispatch(createPhase(dataBody)).then((result: any) => {
       if (createPhase.fulfilled.match(result)) {
         setPhaseData((prevDataTable) => [...prevDataTable, result.payload]);
         console.log(result.payload);
