@@ -1,4 +1,8 @@
-export const formatDate = (inputDate: string) => {
+export const formatDate = (inputDate: string | undefined) => {
+  if (!inputDate) {
+    return "N/A"; 
+  }
+
   const date = new Date(inputDate);
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
