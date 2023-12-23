@@ -8,12 +8,14 @@ import { PhaseType } from "@/src/types/phase.type";
 import { useAppDispatch } from "@/src/redux/store";
 import { getAllRegisterPitchingByBusiness } from "@/src/redux/features/pitchingSlice";
 import ProgressLoading from "@/src/components/loading/ProgressLoading";
+import { useUserLogin } from "@/src/hook/useUserLogin";
 
 const ProjectIdPage = () => {
   const params = useParams<{ projectId: string }>();
   const dispatch = useAppDispatch();
   const [phaseData, setPhaseData] = React.useState<any | null>();
   const [groupId, setGroupId] = React.useState<number>(0);
+  const [userLogin, setUserLogin] = useUserLogin();
 
   React.useEffect(() => {
     const projectId = parseInt(params.projectId, 10);
@@ -52,7 +54,7 @@ const ProjectIdPage = () => {
           setPhaseData={setPhaseData}
         />
       ) : (
-        <>Chưa có lịch hoạt động nào cả</>
+        userLogin?.role_name !== "Student" && <>Chưa có lịch hoạt động nào cả</>
       )}
     </div>
   );

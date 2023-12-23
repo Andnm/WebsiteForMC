@@ -277,7 +277,7 @@ export const changeStatusProjectByLecturer = createAsyncThunk(
 );
 
 export const projectSlice = createSlice({
-  name: "listProject",
+  name: "project",
   initialState,
   reducers: {},
   extraReducers: (builder) => {

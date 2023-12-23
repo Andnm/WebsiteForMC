@@ -138,8 +138,8 @@ export const changeStatusCost = createAsyncThunk(
   }
 );
 
-export const categorySlice = createSlice({
-  name: "category",
+export const costSlice = createSlice({
+  name: "cost",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -205,4 +205,4 @@ export const categorySlice = createSlice({
   },
 });
 
-export default categorySlice.reducer;
+export default costSlice.reducer;

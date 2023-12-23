@@ -174,7 +174,7 @@ export const getAllMemberByGroupId = createAsyncThunk<any, number>(
   }
 );
 
-export const groupSlice: any = createSlice({
+export const groupSlice = createSlice({
   name: "group",
   initialState,
   reducers: {},

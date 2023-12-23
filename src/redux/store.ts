@@ -8,16 +8,22 @@ import groupReducer from "./features/groupSlice";
 import pitchingReducer from "./features/pitchingSlice";
 import phaseReducer from "./features/phaseSlice";
 import categoryReducer from "./features/categorySlice";
+import costReducer from "./features/costSlice";
+import evidenceReducer from "./features/evidenceSlice";
+import summaryReportReducer from "./features/summaryReportSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    user: userReducer,
-    project: projectReducer,
+    category: categoryReducer,
+    cost: costReducer,
+    evidence: evidenceReducer,
     group: groupReducer,
-    pitching: pitchingReducer,
     phase: phaseReducer,
-    category: categoryReducer
+    pitching: pitchingReducer,
+    project: projectReducer,
+    summaryReport: summaryReportReducer,
+    user: userReducer,
   },
 });
 

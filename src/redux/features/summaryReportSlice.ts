@@ -100,7 +100,7 @@ export const confirmSummaryReport = createAsyncThunk(
   }
 );
 
-export const evidenceSlice = createSlice({
+export const summaryReportSlice = createSlice({
   name: "summaryReport",
   initialState,
   reducers: {},
@@ -137,4 +137,4 @@ export const evidenceSlice = createSlice({
   },
 });
 
-export default evidenceSlice.reducer;
+export default summaryReportSlice.reducer;
