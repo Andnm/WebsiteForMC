@@ -1,7 +1,9 @@
+"use client";
+
+import React from "react";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import { useDispatch } from "react-redux";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UserType } from "@/src/types/user.type";
@@ -10,6 +12,12 @@ import {
   generateFallbackAvatar,
   truncateString,
 } from "@/src/utils/handleFunction";
+import NotificationItems from "./_components/Notification/NotificationItems";
+import NotificationList from "./_components/Notification/NotificationList";
+import { getAllNotification } from "@/src/redux/features/notificationSlice";
+import { useAppDispatch } from "@/src/redux/store";
+import { io as ClientIO } from "socket.io-client";
+import { socketInstance } from "@/src/utils/socket/socket-provider";
 
 interface UserProps {
   userData: UserType;
@@ -23,9 +31,6 @@ interface DropdownMenuItemProps {
   path?: string;
   children: React.ReactNode;
 }
-
-const DefaultAvatarURL =
-  "https://cdn.popsww.com/blog/sites/2/2021/03/doraemon-tap-97.jpg";
 
 const roleSpecificMenuItems: Record<string, { path: string; name: string }[]> =
   {
@@ -48,7 +53,7 @@ const roleSpecificMenuItems: Record<string, { path: string; name: string }[]> =
       { path: "/lecturer-board", name: "Quản lý nhóm" },
       { path: "/#", name: "Hoạt động gần đây" },
       { path: "/support", name: "Trợ giúp" },
-    ]
+    ],
   };
 
 const DropdownButton: React.FC<DropdownButtonProps> = ({ children }) => (
@@ -78,7 +83,7 @@ const DropdownMenuItem: React.FC<DropdownMenuItemProps> = ({
 
 const DropDownUser: React.FC<UserProps> = ({ userData }) => {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const renderRoleSpecificMenuItems = () => {
     const roleItems = roleSpecificMenuItems[userData?.role_name || ""] || [];
@@ -98,6 +103,26 @@ const DropDownUser: React.FC<UserProps> = ({ userData }) => {
     }
   };
 
+  //handle notification
+  const [dataNotification, setDataNotification] = React.useState<
+    any | undefined
+  >();
+
+  const [newNotificationQuantity, setNewNotificationQuantity] = React.useState<
+    number | undefined
+  >();
+
+  React.useEffect(() => {
+    dispatch(getAllNotification()).then((result) => {
+      socketInstance.on("getNotifications", (data: any) => {
+        setNewNotificationQuantity(data.total_notifications);
+        setDataNotification(data.notifications);
+        // setNewNotificationQuantity(result.payload[0]);
+        // setDataNotification(result.payload[1]);
+      });
+    });
+  }, []);
+
   return (
     <div className="flex justify-center items-center flex-row gap-4">
       {/* Notifications Dropdown */}
@@ -105,11 +130,21 @@ const DropDownUser: React.FC<UserProps> = ({ userData }) => {
         <DropdownButton>
           <IoIosNotificationsOutline className="w-7 h-7 object-cover rounded-3xl text-black" />
         </DropdownButton>
-        <Transition as={Fragment} {...commonTransitionProps}>
-          <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none text-black">
-            <div className="px-5 py-5">
-              <p>Bạn chưa có thông báo nào</p>
+        {newNotificationQuantity !== 0 && (
+          <span className="absolute -top-2 -right-1">
+            <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-orange-500 text-white">
+              {newNotificationQuantity}
             </div>
+          </span>
+        )}
+
+        <Transition as={Fragment} {...commonTransitionProps}>
+          <Menu.Items className="absolute z-50 right-0 mt-2 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none text-black">
+            <NotificationList
+              dataNotification={dataNotification}
+              setDataNotification={setDataNotification}
+              setNewNotificationQuantity={setNewNotificationQuantity}
+            />
           </Menu.Items>
         </Transition>
       </Menu>

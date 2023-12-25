@@ -52,7 +52,7 @@ const StudentSidebar: React.FC<SidebarProps> = ({
 
   const routesInProject = [
     {
-      label: "View",
+      label: "Công việc",
       icon: <MdOutlineGridView className="w-5 h-5" />,
       href: "/view",
     },
@@ -62,7 +62,7 @@ const StudentSidebar: React.FC<SidebarProps> = ({
       href: "/chat",
     },
     {
-      label: "Setting",
+      label: "Cài đặt",
       icon: <IoSettingsOutline className="w-5 h-5" />,
       href: "/setting",
     },

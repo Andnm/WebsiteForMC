@@ -5,6 +5,7 @@ import authReducer from "./features/authSlice";
 import userReducer from "./features/userSlice";
 import projectReducer from "./features/projectSlice";
 import groupReducer from "./features/groupSlice";
+import notificationReducer from "./features/notificationSlice";
 import pitchingReducer from "./features/pitchingSlice";
 import phaseReducer from "./features/phaseSlice";
 import categoryReducer from "./features/categorySlice";
@@ -19,6 +20,7 @@ export const store = configureStore({
     cost: costReducer,
     evidence: evidenceReducer,
     group: groupReducer,
+    notification: notificationReducer,
     phase: phaseReducer,
     pitching: pitchingReducer,
     project: projectReducer,

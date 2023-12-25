@@ -62,22 +62,22 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
 
   const routesInProject = [
     {
-      label: "View",
+      label: "Công việc",
       icon: <MdOutlineGridView className="w-5 h-5" />,
       href: "/view",
     },
     {
-      label: "Group",
+      label: "Nhóm",
       icon: <HiOutlineUserGroup className="w-5 h-5" />,
       href: "/group",
     },
     {
-      label: "Chat",
+      label: "Tin nhắn",
       icon: <IoChatboxEllipsesOutline className="w-5 h-5" />,
       href: "/chat",
     },
     {
-      label: "Setting",
+      label: "Cài đặt",
       icon: <IoSettingsOutline className="w-5 h-5" />,
       href: "/setting",
     },

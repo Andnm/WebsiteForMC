@@ -4,8 +4,10 @@ import { PhaseType } from "@/src/types/phase.type";
 import React from "react";
 import ListForm from "./ListForm";
 import ListItem from "./ListItem";
+import { useUserLogin } from "@/src/hook/useUserLogin";
 
 interface ListPhaseContainerProps {
+  project: any;
   projectId: number;
   groupId: number;
   phaseData: PhaseType[];
@@ -13,16 +15,20 @@ interface ListPhaseContainerProps {
 }
 
 const ListPhaseContainer = ({
+  project,
   projectId,
   groupId,
   phaseData,
   setPhaseData,
 }: ListPhaseContainerProps) => {
   // console.log("phasedata", phaseData);
+  const [userLogin, setUserLogin] = useUserLogin();
 
   return (
     <ol className="flex gap-x-3 h-full flex-wrap">
-      {Array.isArray(phaseData) && phaseData.length === 0 ? (
+      {Array.isArray(phaseData) &&
+      phaseData.length === 0 &&
+      userLogin?.role_name !== "Student" ? (
         <p className="text-white">Sinh viên chưa tạo giai đoạn</p>
       ) : (
         phaseData?.map((phase, index) => {
@@ -30,6 +36,7 @@ const ListPhaseContainer = ({
             <ListItem
               key={index}
               index={index}
+              project={project}
               data={phase}
               groupId={groupId}
               setPhaseData={setPhaseData}
@@ -39,6 +46,7 @@ const ListPhaseContainer = ({
       )}
 
       <ListForm
+        project={project}
         groupId={groupId}
         projectId={projectId}
         phaseData={phaseData}

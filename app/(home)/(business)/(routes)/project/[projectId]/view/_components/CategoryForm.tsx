@@ -16,6 +16,7 @@ import React, { forwardRef } from "react";
 import toast from "react-hot-toast";
 
 interface CategoryFormProps {
+  phaseData: any;
   phaseId: number;
   dataCategory: CategoryType[];
   setDataCategory: React.Dispatch<React.SetStateAction<any[]>>;
@@ -27,6 +28,7 @@ interface CategoryFormProps {
 const CategoryForm = forwardRef<HTMLTextAreaElement, CategoryFormProps>(
   (
     {
+      phaseData,
       phaseId,
       isEditing,
       setDataCategory,
@@ -159,7 +161,7 @@ const CategoryForm = forwardRef<HTMLTextAreaElement, CategoryFormProps>(
 
     return (
       <div className="pt-2 px-2">
-        {userLogin?.role_name === "Student" && (
+        {userLogin?.role_name === "Student" && phaseData?.phase_status !== "Done" &&(
           <Button
             onClick={enableEditing}
             className="h-auto px-2 py-1.5 w-full 

@@ -14,14 +14,14 @@ const ProjectListStudent: React.FC<PitchingProjectListProps> = ({
   setDataPitching,
   loadingPitching,
 }) => {
-  const getProjectNameByStatus = (status: string) => {
+  const getProjectNameByStatusOfStudent = (status: string) => {
     switch (status) {
       case "Pending":
-        return "Dự án đang chờ phê duyệt";
+        return "Dự án đang chờ doanh nghiệp phê duyệt";
       case "Selected":
-        return "Dự án đã được chọn";
+        return "Dự án đã được doanh nghiệp chọn";
       case "Rejected":
-        return "Dự án đã bị từ chối";
+        return "Dự án đã bị doanh nghiệp từ chối";
       default:
         return "Tên dự án không xác định";
     }
@@ -31,7 +31,7 @@ const ProjectListStudent: React.FC<PitchingProjectListProps> = ({
     const groupedProjects: Record<string, any[]> = {};
 
     dataPitching.forEach((pitching) => {
-      const status = getProjectNameByStatus(pitching.register_pitching_status);
+      const status = getProjectNameByStatusOfStudent(pitching.register_pitching_status);
       if (!groupedProjects[status]) {
         groupedProjects[status] = [];
       }
@@ -75,20 +75,19 @@ const ProjectListStudent: React.FC<PitchingProjectListProps> = ({
                 </p>
               </Link>
             ) : (
-              <DialogViewProject project={pitching.project} key={pitching.id}>
-                <div
-                  role="button"
-                  className="aspect-video relative h-full w-full bg-muted rounded-sm flex flex-col gap-y-1 items-start p-2
-                  hover:opacity-50 transition"
-                  style={{
-                    backgroundColor: "rgb(229 231 235)",
-                  }}
-                >
-                  <p className="inline-flex items-start text-base font-bold w-full overflow-hidden text-black">
-                    {pitching.project.name_project}
-                  </p>
-                </div>
-              </DialogViewProject>
+              <Link
+              key={pitching.id}
+              href={`/project/${pitching.project.id}/chat`}
+              className="group relative aspect-video bg-no-repeat bg-center bg-cover bg-sky-700 rounded-sm h-full w-full p-2 overflow-hidden"
+              style={{
+                backgroundImage: `url('https://ss-images.saostar.vn/2020/02/15/6994345/7campusdhfpttphcm.jpg')`,
+              }}
+            >
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
+              <p className="inline-flex w-full overflow-hidden relative font-semibold text-white">
+                {pitching.project.name_project}
+              </p>
+            </Link>
             )
           )}
         </div>

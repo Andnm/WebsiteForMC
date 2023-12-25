@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useUserLogin } from "@/src/hook/useUserLogin";
+import { useAppDispatch } from "@/src/redux/store";
+import { getAllRegisterPitchingByBusiness } from "@/src/redux/features/pitchingSlice";
 
 interface BoardTitleFormProps {
   dataProject?: ProjectType;
@@ -15,9 +17,11 @@ interface BoardTitleFormProps {
 
 const ViewSidebar = ({ dataProject }: BoardTitleFormProps) => {
   const [userLogin, setUserLogin] = useUserLogin();
+  const [dataGroupPitching, setDataGroupPitching] = React.useState<any>([]);
 
   const router = useRouter();
   const pathName = usePathname();
+  const dispatch = useAppDispatch();
 
   //xử lý để cắt đường dẫn navigate cho đúng
   const thirdSlashIndex = pathName.indexOf("/", pathName.indexOf("/") + 1);
@@ -32,29 +36,29 @@ const ViewSidebar = ({ dataProject }: BoardTitleFormProps) => {
 
   const initialRoutesInProject = [
     {
-      label: "View",
+      label: "Công việc",
       icon: <MdOutlineGridView className="w-5 h-5" />,
       href: `${currentPath}view`,
     },
     {
-      label: "Group",
+      label: "Nhóm",
       icon: <HiOutlineUserGroup className="w-5 h-5" />,
       href: `${currentPath}group`,
     },
     {
-      label: "Chat",
+      label: "Tin nhắn",
       icon: <IoChatboxEllipsesOutline className="w-5 h-5" />,
       href: `${currentPath}chat`,
     },
     {
-      label: "Setting",
+      label: "Cài đặt",
       icon: <IoSettingsOutline className="w-5 h-5" />,
       href: `${currentPath}setting`,
     },
   ];
 
   const routesInProject = isStudent
-    ? initialRoutesInProject.filter((route) => route.label !== "Group")
+    ? initialRoutesInProject.filter((route) => route.label !== "Nhóm")
     : initialRoutesInProject;
 
   const handleNavigate = (href: string) => {

@@ -8,6 +8,7 @@ import { ViewNavbar } from "./_components/ViewNavbar";
 import { getProjectById } from "@/src/redux/features/projectSlice";
 import { ProjectType } from "@/src/types/project.type";
 import ViewSidebar from "./_components/ViewSidebar";
+import { getAllRegisterPitchingByBusiness } from "@/src/redux/features/pitchingSlice";
 
 const ViewIdLayout = ({
   children,
@@ -26,6 +27,8 @@ const ViewIdLayout = ({
   const [dataProject, setDataProject] = React.useState<ProjectType | undefined>(
     undefined
   );
+
+  const [groupId, setGroupId] = React.useState<number>(0);
   const pathName = usePathname();
   const dispatch = useAppDispatch();
 
@@ -35,6 +38,22 @@ const ViewIdLayout = ({
         setDataProject(result.payload);
       }
     });
+
+    dispatch(getAllRegisterPitchingByBusiness(params.projectId)).then(
+      (result) => {
+        if (getAllRegisterPitchingByBusiness.fulfilled.match(result)) {
+          // console.log('group', result.payload);
+          const selectedGroup = result.payload.find(
+            (item: any) => item.register_pitching_status === "Selected"
+          );
+
+          if (selectedGroup) {
+            setGroupId(selectedGroup.group.id);
+          }
+        } else {
+        }
+      }
+    );
   }, []);
 
   return (
@@ -51,6 +70,7 @@ const ViewIdLayout = ({
             projectId={params.projectId}
             dataProject={dataProject}
             setDataProject={setDataProject}
+            groupId={groupId}
           />
         )}
 

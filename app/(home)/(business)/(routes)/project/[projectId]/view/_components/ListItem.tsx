@@ -9,13 +9,20 @@ import { getAllCategoryOfPhase } from "@/src/redux/features/categorySlice";
 import ListCategory from "./ListCategory";
 
 interface ListItemProps {
+  project: any;
   data: PhaseType;
   setPhaseData: React.Dispatch<React.SetStateAction<any[]>>;
   index: number;
   groupId: number;
 }
 
-const ListItem = ({ data, groupId, index, setPhaseData }: ListItemProps) => {
+const ListItem = ({
+  project,
+  data,
+  groupId,
+  index,
+  setPhaseData,
+}: ListItemProps) => {
   const [dataCategory, setDataCategory] = React.useState<any>([]);
   const textareaRef = React.useRef<React.ElementRef<"textarea">>(null);
   const [isEditing, setIsEditing] = React.useState(false);
@@ -62,6 +69,7 @@ const ListItem = ({ data, groupId, index, setPhaseData }: ListItemProps) => {
         )}
 
         <CategoryForm
+          phaseData={data}
           phaseId={data.id}
           dataCategory={dataCategory}
           setDataCategory={setDataCategory}

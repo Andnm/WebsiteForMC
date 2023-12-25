@@ -16,7 +16,6 @@ const StudentBoard = () => {
   React.useEffect(() => {
     dispatch(getAllRegisterPitchingByStudent()).then((result) => {
       if (getAllRegisterPitchingByStudent.fulfilled.match(result)) {
-        console.log(result.payload)
         setDataPitching(result.payload);
       }
     });

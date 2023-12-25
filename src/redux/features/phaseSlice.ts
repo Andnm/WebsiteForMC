@@ -35,6 +35,8 @@ export const createPhase = createAsyncThunk(
       },
     };
 
+    console.log(dataBody)
+
     try {
       const response = await http.post<any>(`/phases`, dataBody, configHeader);
 

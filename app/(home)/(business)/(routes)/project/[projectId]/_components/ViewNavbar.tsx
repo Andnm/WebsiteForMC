@@ -8,7 +8,7 @@ import { useUserLogin } from "@/src/hook/useUserLogin";
 import { Drawer, IconButton } from "@material-tailwind/react";
 import React from "react";
 import { Card, Typography } from "@material-tailwind/react";
-import { Check, MoreHorizontal } from "lucide-react";
+import { Check, Edit, MoreHorizontal } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -24,21 +24,25 @@ import toast from "react-hot-toast";
 import {
   changeStatusFromEnToVn,
   getColorByProjectStatus,
+  truncateString,
 } from "@/src/utils/handleFunction";
 import { usePathname } from "next/navigation";
 import {
   confirmSummaryReport,
   getSummaryReportByProjectId,
   upSummaryReportByLeader,
+  updateSummaryReportByLeader,
 } from "@/src/redux/features/summaryReportSlice";
 import { storage } from "@/src/utils/configFirebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
+import { Hint } from "@/components/hint";
 
 interface ViewNavbarProps {
   dataProject: any;
   setDataProject: any;
   projectId: number;
+  groupId: number;
 }
 
 const TABLE_HEAD = ["Doanh nghiệp ", "Giảng viên ", "File tổng kết"];
@@ -47,6 +51,7 @@ export const ViewNavbar = ({
   dataProject,
   setDataProject,
   projectId,
+  groupId,
 }: ViewNavbarProps) => {
   const [userLogin, setUserLogin] = useUserLogin();
   const [open, setOpen] = React.useState(false);
@@ -57,7 +62,7 @@ export const ViewNavbar = ({
 
   const extractNumberFromPath = (pathName: string): number => {
     const match = pathName.match(/\/(\d+)\/view/);
-    return match ? parseInt(match[1], 10) : 0; 
+    return match ? parseInt(match[1], 10) : 0;
   };
 
   const openDrawer = () => setOpen(true);
@@ -88,17 +93,20 @@ export const ViewNavbar = ({
   };
 
   const handleClickConfirmSummaryReport = () => {
-    dispatch(confirmSummaryReport(extractNumberFromPath(pathName))).then(
-      (result) => {
-        if (confirmSummaryReport.fulfilled.match(result)) {
-          toast.success("Xác nhận báo cáo thành công");
-          setSummaryReport(result.payload);
-          console.log("confirm", result.payload);
-        } else {
-          toast.error(`${result.payload}`);
-        }
+    const bodyData = {
+      project_id: extractNumberFromPath(pathName),
+      groupId: groupId,
+    };
+
+    dispatch(confirmSummaryReport(bodyData)).then((result) => {
+      if (confirmSummaryReport.fulfilled.match(result)) {
+        toast.success("Xác nhận báo cáo thành công");
+        setSummaryReport(result.payload);
+        console.log("confirm", result.payload);
+      } else {
+        toast.error(`${result.payload}`);
       }
-    );
+    });
   };
 
   const [loadingUploadFile, setLoadingUploadFile] = React.useState(false);
@@ -106,7 +114,9 @@ export const ViewNavbar = ({
   const [uploadProgress, setUploadProgress] = React.useState<number | null>(
     null
   );
-  const [downloadURL, setDownloadURL] = React.useState<string | null>(null);
+  const [isEditingSummaryReport, setIsEditingSummaryReport] =
+    React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -114,6 +124,7 @@ export const ViewNavbar = ({
       setFile(selectedFile);
     }
   };
+
   const handleUpload = async () => {
     setLoadingUploadFile(true);
 
@@ -134,22 +145,37 @@ export const ViewNavbar = ({
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setDownloadURL(downloadURL);
             const bodyData = {
               summary_report_url: downloadURL,
               projectId: dataProject?.id,
+              groupId: groupId,
             };
-            dispatch(upSummaryReportByLeader(bodyData)).then((result) => {
-              if (upSummaryReportByLeader.fulfilled.match(result)) {
-                toast.success("Tải lên báo cáo thành công");
-                setSummaryReport(result.payload);
-                setLoadingUploadFile(false);
-                console.log(result.payload);
-              } else {
-                toast.error(`${result.payload}`);
-                setLoadingUploadFile(false);
-              }
-            });
+
+            if (summaryReport.length === 0) {
+              dispatch(upSummaryReportByLeader(bodyData)).then((result) => {
+                if (upSummaryReportByLeader.fulfilled.match(result)) {
+                  toast.success("Tải lên báo cáo thành công");
+                  setSummaryReport(result.payload);
+                  setLoadingUploadFile(false);
+                  setFile(null);
+                } else {
+                  toast.error(`${result.payload}`);
+                  setLoadingUploadFile(false);
+                }
+              });
+            } else {
+              dispatch(updateSummaryReportByLeader(bodyData)).then((result) => {
+                if (updateSummaryReportByLeader.fulfilled.match(result)) {
+                  toast.success("Cập nhập báo cáo thành công");
+                  setSummaryReport(result.payload);
+                  setLoadingUploadFile(false);
+                  setFile(null);
+                } else {
+                  toast.error(`${result.payload}`);
+                  setLoadingUploadFile(false);
+                }
+              });
+            }
           });
         }
       );
@@ -169,6 +195,20 @@ export const ViewNavbar = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleCancelUploadSummaryReport = () => {
+    setFile(null);
+  };
+
+  const handleUpdateSummaryReport = () => {};
+
+  const handleClickEditSummaryReport = () => {
+    setIsEditingSummaryReport(true);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   React.useEffect(() => {
@@ -336,7 +376,7 @@ export const ViewNavbar = ({
                       )}
                     </td>
                     <td className={` pl-5 bg-blue-gray-50/50`}>
-                      {summaryReport?.isBusinessConfirmed ? (
+                      {summaryReport?.isLecturerConfirmed ? (
                         <Typography
                           variant="small"
                           color="blue-gray"
@@ -362,13 +402,51 @@ export const ViewNavbar = ({
                       )}
                     </td>
                     <td className="p-4">
-                      {summaryReport?.summary_report_url ? (
+                      {summaryReport?.summary_report_url &&
+                      (summaryReport?.isBusinessConfirmed ||
+                        summaryReport?.isStudentConfirmed) ? (
                         <Button
                           className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
                           onClick={handleDownloadFile}
                         >
                           Tải xuống báo cáo
                         </Button>
+                      ) : summaryReport?.summary_report_url ? (
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="file"
+                            onChange={handleFileChange}
+                            className="text-sm"
+                            ref={fileInputRef}
+                            style={{ display: "none" }}
+                          />
+
+                          {file ? (
+                            <p className="text-sm">
+                              {truncateString(file.name, 15)}
+                            </p>
+                          ) : (
+                            <Button
+                              className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
+                              onClick={handleDownloadFile}
+                            >
+                              Tải xuống báo cáo
+                            </Button>
+                          )}
+
+                          {userLogin?.role_name === "Student" && (
+                            <Hint
+                              sideOffset={10}
+                              description={`Thay đổi báo cáo`}
+                              side={"top"}
+                            >
+                              <Edit
+                                className="cursor-pointer w-5 h-5"
+                                onClick={handleClickEditSummaryReport}
+                              />
+                            </Hint>
+                          )}
+                        </div>
                       ) : userLogin?.role_name === "Student" ? (
                         <input
                           type="file"
@@ -387,12 +465,21 @@ export const ViewNavbar = ({
 
           <div className="relative left-1/3 mt-5">
             {file && (
-              <Button
-                className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
-                onClick={handleUploadSummaryReport}
-              >
-                Tải lên báo cáo
-              </Button>
+              <div className="flex gap-3">
+                <Button
+                  className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
+                  onClick={handleUploadSummaryReport}
+                >
+                  Tải lên báo cáo
+                </Button>
+
+                <Button
+                  className="font-normal transition text-white hover:text-red-600 border border-orange-600 bg-orange-600"
+                  onClick={handleCancelUploadSummaryReport}
+                >
+                  Hủy
+                </Button>
+              </div>
             )}
           </div>
 

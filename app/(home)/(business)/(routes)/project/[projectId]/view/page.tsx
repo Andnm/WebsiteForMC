@@ -9,18 +9,25 @@ import { useAppDispatch } from "@/src/redux/store";
 import { getAllRegisterPitchingByBusiness } from "@/src/redux/features/pitchingSlice";
 import ProgressLoading from "@/src/components/loading/ProgressLoading";
 import { useUserLogin } from "@/src/hook/useUserLogin";
+import { getProjectById } from "@/src/redux/features/projectSlice";
 
 const ProjectIdPage = () => {
   const params = useParams<{ projectId: string }>();
   const dispatch = useAppDispatch();
   const [phaseData, setPhaseData] = React.useState<any | null>();
   const [groupId, setGroupId] = React.useState<number>(0);
+  const [project, setProject] = React.useState<any | null>();
   const [userLogin, setUserLogin] = useUserLogin();
 
   React.useEffect(() => {
     const projectId = parseInt(params.projectId, 10);
+
+    dispatch(getProjectById(projectId)).then((result) => {
+      setProject(result.payload);
+    });
+
     dispatch(getPhaseByProjectId(projectId)).then((result) => {
-      console.log("phase", result);
+      // console.log("phase", result);
       const sortedPhaseData = [...result?.payload]?.sort((a, b) => a.id - b.id);
 
       setPhaseData(sortedPhaseData);
@@ -45,16 +52,17 @@ const ProjectIdPage = () => {
   return (
     <div className="p-4 h-full overflow-x-auto">
       <ProgressLoading phaseData={phaseData} />
-
-      {phaseData !== null ? (
+      {project?.project_status === "Public" ||
+      project?.project_status === "Pending" ? (
+        <p className="text-white">Dự án chưa bắt đầu</p>
+      ) : (
         <ListPhaseContainer
           projectId={parseInt(params.projectId, 10)}
           groupId={groupId}
           phaseData={phaseData}
           setPhaseData={setPhaseData}
+          project={project}
         />
-      ) : (
-        userLogin?.role_name !== "Student" && <>Chưa có lịch hoạt động nào cả</>
       )}
     </div>
   );

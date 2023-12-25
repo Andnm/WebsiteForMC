@@ -72,9 +72,9 @@ export const upSummaryReportByLeader = createAsyncThunk(
   }
 );
 
-export const confirmSummaryReport = createAsyncThunk(
-  "summaryReport/confirmSummaryReport",
-  async (projectId: number, thunkAPI) => {
+export const updateSummaryReportByLeader = createAsyncThunk(
+  "summaryReport/updateSummaryReportByLeader",
+  async (bodyData: any, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -86,8 +86,37 @@ export const confirmSummaryReport = createAsyncThunk(
 
     try {
       const response = await http.patch<any>(
-        `/summary-report/confirm/${projectId}`,
-        [],
+        `/summary-report`,
+        bodyData,
+        configHeader
+      );
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
+export const confirmSummaryReport = createAsyncThunk(
+  "summaryReport/confirmSummaryReport",
+  async (bodyData: any, thunkAPI) => {
+    console.log(bodyData)
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.patch<any>(
+        `/summary-report/confirm/`,
+        bodyData,
         configHeader
       );
 
@@ -131,6 +160,21 @@ export const summaryReportSlice = createSlice({
       state.error = "";
     });
     builder.addCase(upSummaryReportByLeader.rejected, (state, action) => {
+      state.loadingSummaryReport = false;
+      state.error = action.payload as string;
+    });
+
+    //update Summary Report By Leader
+    builder.addCase(updateSummaryReportByLeader.pending, (state) => {
+      state.loadingSummaryReport = true;
+      state.error = "";
+    });
+    builder.addCase(updateSummaryReportByLeader.fulfilled, (state, action) => {
+      state.loadingSummaryReport = false;
+      //   state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(updateSummaryReportByLeader.rejected, (state, action) => {
       state.loadingSummaryReport = false;
       state.error = action.payload as string;
     });
