@@ -191,6 +191,7 @@ export const updateProjectByAdmin = createAsyncThunk(
 interface ChangeStatusParams {
   projectId: number;
   projectStatus: string;
+  groupId?: number;
 }
 
 export const changeStatusProjectByAdmin = createAsyncThunk(
@@ -250,7 +251,7 @@ export const checkProjectCanDone = createAsyncThunk(
 
 export const changeStatusProjectByLecturer = createAsyncThunk(
   "listProject/changeStatusProjectByLecturer",
-  async ({ projectId, projectStatus }: ChangeStatusParams, thunkAPI) => {
+  async ({ projectId, projectStatus, groupId }: ChangeStatusParams, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -262,7 +263,7 @@ export const changeStatusProjectByLecturer = createAsyncThunk(
 
     try {
       const response = await http.patch<any>(
-        `/projects/changeStatus/${projectId}/${projectStatus}`,
+        `/projects/changeStatus/${projectId}/${projectStatus}/${groupId}`,
         [],
         configHeader
       );

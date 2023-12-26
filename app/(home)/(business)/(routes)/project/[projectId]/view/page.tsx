@@ -10,6 +10,7 @@ import { getAllRegisterPitchingByBusiness } from "@/src/redux/features/pitchingS
 import ProgressLoading from "@/src/components/loading/ProgressLoading";
 import { useUserLogin } from "@/src/hook/useUserLogin";
 import { getProjectById } from "@/src/redux/features/projectSlice";
+import { socketInstance } from "@/src/utils/socket/socket-provider";
 
 const ProjectIdPage = () => {
   const params = useParams<{ projectId: string }>();
@@ -28,9 +29,16 @@ const ProjectIdPage = () => {
 
     dispatch(getPhaseByProjectId(projectId)).then((result) => {
       // console.log("phase", result);
-      const sortedPhaseData = [...result?.payload]?.sort((a, b) => a.id - b.id);
+      socketInstance.on(`getPhases-${projectId}`, (data: any) => {
+        // console.log("phase", data.phases)
+        // const sortedPhaseData = [...data.phases]?.sort((a, b) => a.id - b.id);
+        // console.log("data.phases", data.phases);
+        setPhaseData(data.phases);
+      });
+      // console.log("api", result)
+      // const sortedPhaseData = [...result?.payload]?.sort((a, b) => a.id - b.id);
 
-      setPhaseData(sortedPhaseData);
+      // setPhaseData(sortedPhaseData);
     });
 
     dispatch(getAllRegisterPitchingByBusiness(projectId)).then((result) => {

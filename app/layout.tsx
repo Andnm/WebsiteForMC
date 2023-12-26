@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { StoreProvider } from "@/src/redux/StoreProvider";
 import { Toaster } from "react-hot-toast";
 import { SocketProvider } from "@/src/utils/socket/socket-provider";
+import { AuthProvider } from "@/src/utils/context/auth-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -27,10 +28,12 @@ export default function RootLayout({
     <StoreProvider>
       <html lang="vi">
         <body suppressHydrationWarning={true} className={inter.className}>
-          <SocketProvider>
-            {children}
-            <Toaster position="top-right" />
-          </SocketProvider>
+          <AuthProvider>
+            <SocketProvider>
+              {children}
+              <Toaster position="top-right" />
+            </SocketProvider>
+          </AuthProvider>
         </body>
       </html>
     </StoreProvider>

@@ -24,6 +24,8 @@ import { getEvidenceInCost } from "@/src/redux/features/evidenceSlice";
 import { EvidenceType } from "@/src/types/evidence.type";
 
 interface DialogViewCategoryProps {
+  project: any;
+  phaseData?: any;
   open: boolean;
   dataCategory: any;
   setDataCategory: React.Dispatch<React.SetStateAction<any[]>>;
@@ -31,6 +33,7 @@ interface DialogViewCategoryProps {
 }
 
 const DialogViewCategory = ({
+  project,
   open,
   dataCategory,
   setDataCategory,
@@ -44,7 +47,6 @@ const DialogViewCategory = ({
   const [userLogin, setUserLogin] = useUserLogin();
   const [editingField, setEditingField] = React.useState(null);
   const [editedValue, setEditedValue] = React.useState("");
-  console.log(userLogin);
 
   // cost
   const [isCreatingCost, setIsCreatingCost] = React.useState(false);
@@ -115,8 +117,8 @@ const DialogViewCategory = ({
     const id = cost.id;
     dispatch(changeStatusCost({ id, costStatus })).then((result) => {
       if (changeStatusCost.fulfilled.match(result)) {
-        console.log(cost);
-        console.log(result.payload);
+        // console.log(cost);
+        // console.log(result.payload);
         setCost(result.payload);
         toast.success("Chuyển trạng thái thành công!");
       } else {
@@ -131,19 +133,19 @@ const DialogViewCategory = ({
     dispatch(getCostInCategory(dataCategory.id))
       .then((result) => {
         if (getCostInCategory.fulfilled.match(result)) {
-          console.log("cost", result.payload);
+          // console.log("cost", result.payload);
           setCost(result.payload);
 
           dispatch(getEvidenceInCost(result.payload.id)).then((res) => {
             if (getEvidenceInCost.fulfilled.match(res)) {
               setEvidence(res.payload);
-              console.log("res", res.payload);
+              // console.log("res", res.payload);
             } else {
-              toast.error("Lỗi khi tải bằng chứng");
+              // toast.error("Lỗi khi tải bằng chứng");
             }
           });
         } else {
-          console.log("error", result.payload);
+          // console.log("error", result.payload);
         }
       })
       .catch((error) => {
@@ -219,7 +221,9 @@ const DialogViewCategory = ({
                                 {changeStatusFromEnToVn(
                                   phaseData.category_status
                                 )}
-                                <Edit className="cursor-pointer w-4 h-4" />
+                                {userLogin?.role_name === "Student" && (
+                                  <Edit className="cursor-pointer w-4 h-4" />
+                                )}
                               </span>
                             </div>
 
@@ -231,7 +235,6 @@ const DialogViewCategory = ({
                                 {phaseData.detail}
                               </span>
                             </div>
-
 
                             <div className="flex items-center">
                               <span className="text-gray-500 mr-2">
@@ -286,12 +289,17 @@ const DialogViewCategory = ({
                                 ) : (
                                   <div className="flex items-center gap-2">
                                     (Chưa cập nhập){" "}
-                                    <Edit
-                                      className="cursor-pointer w-4 h-4"
-                                      onClick={() =>
-                                        startEditing("result_actual", phaseData)
-                                      }
-                                    />
+                                    {userLogin?.role_name === "Student" && (
+                                      <Edit
+                                        className="cursor-pointer w-4 h-4"
+                                        onClick={() =>
+                                          startEditing(
+                                            "result_actual",
+                                            phaseData
+                                          )
+                                        }
+                                      />
+                                    )}
                                   </div>
                                 )}
                               </span>
@@ -342,7 +350,9 @@ const DialogViewCategory = ({
                                 </span>
                                 <span className="font-semibold flex items-center gap-2">
                                   {formatCurrency(cost.expected_cost)}
-                                  <Edit className="cursor-pointer w-4 h-4" />
+                                  {userLogin?.role_name === "Student" && (
+                                    <Edit className="cursor-pointer w-4 h-4" />
+                                  )}
                                 </span>
                               </div>
 
@@ -361,14 +371,15 @@ const DialogViewCategory = ({
                                 </span>
                                 <span className="font-semibold flex items-center gap-2">
                                   {changeStatusFromEnToVn(cost.cost_status)}
-                                  {cost.cost_status !== "Received" && (
-                                    <Edit
-                                      className="cursor-pointer w-4 h-4"
-                                      onClick={() =>
-                                        handleChangeStatus(cost.cost_status)
-                                      }
-                                    />
-                                  )}
+                                  {cost.cost_status !== "Received" &&
+                                    userLogin?.role_name === "Student" && (
+                                      <Edit
+                                        className="cursor-pointer w-4 h-4"
+                                        onClick={() =>
+                                          handleChangeStatus(cost.cost_status)
+                                        }
+                                      />
+                                    )}
                                 </span>
                               </div>
 
@@ -378,20 +389,22 @@ const DialogViewCategory = ({
                                 </span>
                                 <span className="font-semibold flex items-center gap-2">
                                   {formatCurrency(cost.actual_cost)}
-                                  <Edit className="cursor-pointer w-4 h-4" />
+                                  {userLogin?.role_name === "Student" && (
+                                    <Edit className="cursor-pointer w-4 h-4" />
+                                  )}
                                 </span>
                               </div>
                             </div>
-                          ) : (
-                            userLogin?.role_name === "Student" ? (<button
+                          ) : userLogin?.role_name === "Student" ? (
+                            <button
                               className="bg-blue-500 text-white text-sm px-4 py-2 rounded"
                               onClick={handleOpenCreateCost}
                             >
                               Tạo chi phí
-                            </button>) : (<p className="pl-4">(Chưa được cập nhập)</p>)
-                          )
-                          
-                          }
+                            </button>
+                          ) : (
+                            <p className="pl-4">(Chưa được cập nhập)</p>
+                          )}
                         </div>
 
                         <div className="mt-4">
@@ -420,19 +433,25 @@ const DialogViewCategory = ({
                                     </span>
                                     <span className="font-semibold flex items-center gap-2">
                                       {item.description}
-                                      <Edit className="cursor-pointer w-4 h-4" />
+                                      {userLogin?.role_name === "Student" && (
+                                        <Edit className="cursor-pointer w-4 h-4" />
+                                      )}
                                     </span>
                                   </div>
                                 </div>
                               ))
-                            ) : (
-                              userLogin?.role_name === "Student" ? (<ImageUpload
+                            ) : userLogin?.role_name === "Student" ? (
+                              <ImageUpload
+                                project={project}
+                                phaseData={phaseData}
                                 cost={cost}
                                 setCost={setCost}
                                 evidence={evidence}
                                 setEvidence={setEvidence}
-                              />): (<p className="pl-4">(Chưa được cập nhập)</p>)
-                              
+                                dataCategory={dataCategory}
+                              />
+                            ) : (
+                              <p className="pl-4">(Chưa được cập nhập)</p>
                             )}
                           </div>
                         </div>

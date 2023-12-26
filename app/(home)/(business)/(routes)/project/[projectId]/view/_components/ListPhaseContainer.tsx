@@ -27,7 +27,7 @@ const ListPhaseContainer = ({
   return (
     <ol className="flex gap-x-3 h-full flex-wrap">
       {Array.isArray(phaseData) &&
-      phaseData.length === 0 &&
+      phaseData?.length === 0 &&
       userLogin?.role_name !== "Student" ? (
         <p className="text-white">Sinh viên chưa tạo giai đoạn</p>
       ) : (

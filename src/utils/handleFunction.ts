@@ -73,6 +73,14 @@ export const formatCurrency = (amount?: number | null): string => {
   return formattedAmount;
 };
 
+export const formatNumberWithCommas = (value: number) => {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+export const convertCommaStringToNumber = (value: string): number => {
+  return parseFloat(value.replace(/,/g, ""));
+};
+
 export const changeStatusFromEnToVn = (status: string): string => {
   switch (status?.toLowerCase()) {
     case "not transferred":

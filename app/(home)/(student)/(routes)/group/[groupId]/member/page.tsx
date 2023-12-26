@@ -19,6 +19,8 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { createNewNotification } from "@/src/redux/features/notificationSlice";
+import { NOTIFICATION_TYPE } from "@/src/constants/notification";
 
 const MemberGroup = ({ params }: { params: { groupId: number } }) => {
   const [dataGroup, setDataGroup] = React.useState<UserGroupType[]>([]);
@@ -40,6 +42,24 @@ const MemberGroup = ({ params }: { params: { groupId: number } }) => {
     dispatch(replyInviteToJoinGroup({ userGroupId, relationshipStatus })).then(
       (result) => {
         if (replyInviteToJoinGroup.fulfilled.match(result)) {
+          const leaderEmail = dataGroup
+            .map((item) =>
+              item.role_in_group === "Leader" ? item.user?.email : null
+            )
+            .filter(Boolean)
+            .join(", ");
+
+          const dataBodyNoti = {
+            notification_type: NOTIFICATION_TYPE.REPLY_INVITE_MEMBER,
+            information: `${userLogin?.fullname} đã ${relationshipStatus === "Joined" ? "chấp thuận" : "từ chối"} lời mời tham gia group ${dataGroup[0]?.group?.group_name} của bạn`,
+            sender_email: `${userLogin?.email}`,
+            receiver_email: `${leaderEmail}`,
+          };
+
+          dispatch(createNewNotification(dataBodyNoti)).then((result) => {
+            console.log(result)
+          })
+
           const updatedIndex = dataGroup.findIndex(
             (item) => item.id === result.payload.id
           );

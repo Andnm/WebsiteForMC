@@ -9,20 +9,30 @@ import { Button } from "@/components/ui/button";
 import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
 import { useAppDispatch } from "@/src/redux/store";
 import { FormInput } from "@/src/components/form/FormInput";
+import { NOTIFICATION_TYPE } from "@/src/constants/notification";
+import { createNewNotification } from "@/src/redux/features/notificationSlice";
+import { useUserLogin } from "@/src/hook/useUserLogin";
 
 interface ImageUploadProps {
   cost: any;
   setCost: React.Dispatch<React.SetStateAction<any[]>>;
   evidence: any;
   setEvidence: React.Dispatch<React.SetStateAction<any[]>>;
+  dataCategory: any;
+  project: any;
+  phaseData: any;
 }
 
 const ImageUpload = ({
+  dataCategory,
+  project,
+  phaseData,
   cost,
   setCost,
   evidence,
   setEvidence,
 }: ImageUploadProps) => {
+
   const dispatch = useAppDispatch();
 
   const [isOpenConfirmCancelAction, setIsOpenConfirmCancelAction] =
@@ -31,6 +41,8 @@ const ImageUpload = ({
   const [preImgLoad, setPreImgLoad] = useState(null || "");
   const [imageLoad, setImageLoad] = useState<any>("");
   const [descriptionImg, setDescriptionImg] = useState<string>("");
+
+  const [userLogin, setUserLogin] = useUserLogin();
 
   const actionCloseUploadAvatar = () => {
     if (preImgLoad) {
@@ -63,10 +75,20 @@ const ImageUpload = ({
 
             dispatch(createEvidence(dataBody)).then((result) => {
               if (createEvidence.fulfilled.match(result)) {
-                setEvidence((preData) => [
-                  ...preData,
-                  result.payload,
-                ]);
+                const dataBodyNoti = {
+                  notification_type: NOTIFICATION_TYPE.POST_EVIDENCE_BUSINESS,
+                  information: `Bạn có chi phí cần được xác nhận ở dự án ${project?.name_project} tại giai đoạn ${dataCategory?.phase?.phase_number} trong hạng mục ${dataCategory?.category_name}`,
+                  sender_email: `${userLogin?.email}`,
+                  receiver_email: "business@gmail.com",
+                };
+
+                dispatch(createNewNotification(dataBodyNoti)).then(
+                  (resNoti) => {
+                    console.log(resNoti);
+                  }
+                );
+
+                setEvidence((preData) => [...preData, result.payload]);
                 toast.success("Cập nhập bằng chứng thành công!");
                 setPreImgLoad("");
                 setIsLoading(false);

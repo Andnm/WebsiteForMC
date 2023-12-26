@@ -41,9 +41,17 @@ export const getAllNotification = createAsyncThunk(
   }
 );
 
+interface DataBodyNotiType {
+  notification_type: string;
+  information: string;
+  sender_email: string | undefined;
+  receiver_email: string;
+  note?: number
+}
+
 export const createNewNotification = createAsyncThunk(
   "notification/createNewNotification",
-  async (dataBody, thunkAPI) => {
+  async (dataBodyNoti: DataBodyNotiType, thunkAPI) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -56,7 +64,7 @@ export const createNewNotification = createAsyncThunk(
     try {
       const response = await http.post<any>(
         `/notifications`,
-        dataBody,
+        dataBodyNoti,
         configHeader
       );
 
@@ -84,6 +92,34 @@ export const updateAllNotification = createAsyncThunk(
     try {
       const response = await http.patch<any>(
         `/notifications/read-all`,
+        [],
+        configHeader
+      );
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
+export const updateSelectedNotification = createAsyncThunk(
+  "notification/updateSelectedNotification",
+  async (id: number, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.patch<any>(
+        `/notifications/read/${id}`,
         [],
         configHeader
       );
@@ -143,6 +179,21 @@ export const notificationSlice = createSlice({
       state.error = "";
     });
     builder.addCase(updateAllNotification.rejected, (state, action) => {
+      state.loadingNotification = false;
+      state.error = action.payload as string;
+    });
+
+    //update Selected Notification
+    builder.addCase(updateSelectedNotification.pending, (state) => {
+      state.loadingNotification = true;
+      state.error = "";
+    });
+    builder.addCase(updateSelectedNotification.fulfilled, (state, action) => {
+      state.loadingNotification = false;
+      //   state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(updateSelectedNotification.rejected, (state, action) => {
       state.loadingNotification = false;
       state.error = action.payload as string;
     });

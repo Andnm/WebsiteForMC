@@ -26,6 +26,9 @@ import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import vn from "date-fns/locale/vi";
 import { Hint } from "../hint";
 import { IoHelpCircleOutline } from "react-icons/io5";
+import { createNewNotification } from "@/src/redux/features/notificationSlice";
+import { NOTIFICATION_TYPE } from "@/src/constants/notification";
+import { useUserLogin } from "@/src/hook/useUserLogin";
 
 registerLocale("vi", vn);
 setDefaultLocale("vi");
@@ -87,6 +90,8 @@ export const AlertDialogCreateProject = ({
     project_start_date: null,
     project_expected_end_date: null,
   });
+
+  const [userLogin, setUserLogin] = useUserLogin();
 
   const { loadingProject, loadingProjectList, error }: any = useAppSelector(
     (state) => state.project
@@ -216,12 +221,23 @@ export const AlertDialogCreateProject = ({
     dispatch(createNewProject(dataBody as ProjectType)).then((result) => {
       if (createNewProject.rejected.match(result)) {
         //do something
-        console.log(result)
+        console.log(result);
         toast.error(`${result.payload}`);
       } else if (createNewProject.fulfilled.match(result)) {
-        toast.success("Tạo dự án thành công!");
-        setDataProjects((prevData) => [...prevData, result.payload]);
-        handleCancel();
+
+        const dataBodyNoti = {
+          notification_type: NOTIFICATION_TYPE.CREATE_PROJECT,
+          information: "Có một dự án mới cần được duyệt",
+          sender_email: userLogin?.email,
+          receiver_email: "admin@gmail.com",
+        };
+
+        dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
+          console.log(resNoti);
+          toast.success("Tạo dự án thành công!");
+          setDataProjects((prevData) => [...prevData, result.payload]);
+          handleCancel();
+        });
       }
     });
   };

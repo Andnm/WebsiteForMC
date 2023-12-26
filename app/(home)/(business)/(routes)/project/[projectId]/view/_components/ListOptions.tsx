@@ -19,18 +19,24 @@ import {
 import { useAppDispatch } from "@/src/redux/store";
 import toast from "react-hot-toast";
 import { BiDetail } from "react-icons/bi";
+import { NOTIFICATION_TYPE } from "@/src/constants/notification";
+import { createNewNotification } from "@/src/redux/features/notificationSlice";
 
 interface ListOptionsProps {
+  project: any;
   data: PhaseType;
   setPhaseData: React.Dispatch<React.SetStateAction<any[]>>;
   onAddCategory: () => void;
 }
 
 const ListOptions = ({
+  project,
   data,
   onAddCategory,
   setPhaseData,
 }: ListOptionsProps) => {
+  // console.log('data phase', data)
+  // console.log('project', project)
   const [userLogin, setUserLogin] = useUserLogin();
   const dispatch = useAppDispatch();
 
@@ -95,8 +101,33 @@ const ListOptions = ({
     const phaseId = data.id;
     const phaseStatus = "Done";
     dispatch(changeStatusPhaseByBusiness({ phaseId, phaseStatus })).then(
-      (result) => {
+      (result: any) => {
         if (changeStatusPhaseByBusiness.fulfilled.match(result)) {
+
+          const dataBodyNoti = {
+            notification_type: NOTIFICATION_TYPE.DONE_PHASE_BUSINESS,
+            information: `Giai đoạn ${data.phase_number} của dự án ${project?.name_project} đã hoàn thành`,
+            sender_email: userLogin?.email,
+            receiver_email: project?.business?.email,
+            note: project.id
+          };
+  
+          dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
+            console.log(resNoti);
+          });
+
+          const dataBodyNotiLecturer = {
+            notification_type: NOTIFICATION_TYPE.DONE_PHASE_BUSINESS,
+            information: `Giai đoạn ${data.phase_number} của dự án ${project?.name_project} đã hoàn thành`,
+            sender_email: userLogin?.email,
+            receiver_email: "lecturer@gmail.com",
+            note: project.id
+          };
+  
+          dispatch(createNewNotification(dataBodyNotiLecturer)).then((resNoti) => {
+            console.log(resNoti);
+          });
+
           setPhaseData((prevDataTable) => {
             const updatedIndex = prevDataTable.findIndex(
               (item) => item.id === result.payload.id

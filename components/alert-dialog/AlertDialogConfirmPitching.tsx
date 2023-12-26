@@ -31,8 +31,12 @@ import { Skeleton } from "../ui/skeleton";
 import { generateFallbackAvatar } from "@/src/utils/handleFunction";
 import { storage } from "@/src/utils/configFirebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { NOTIFICATION_TYPE } from "@/src/constants/notification";
+import { createNewNotification } from "@/src/redux/features/notificationSlice";
+import { useUserLogin } from "@/src/hook/useUserLogin";
 
 interface AlertDialogConfirmPitchingProps {
+  dataProject: any;
   children: React.ReactNode;
   projectId: number;
   groupList: any;
@@ -40,7 +44,7 @@ interface AlertDialogConfirmPitchingProps {
 
 export const AlertDialogConfirmPitching: React.FC<
   AlertDialogConfirmPitchingProps
-> = ({ children, projectId, groupList }) => {
+> = ({ children, projectId, groupList, dataProject}) => {
   const [open, setOpen] = React.useState(false);
 
   const [loadingRegisterPitching, setLoadingRegisterPitching] = React.useState(false)
@@ -79,6 +83,8 @@ export const AlertDialogConfirmPitching: React.FC<
   const [memberResultSearch, setMemberResultSearch] = React.useState<any[]>([]);
   const [memberList, setMemberList] = React.useState<any[]>([]);
   //
+
+  const [userLogin, setUserLogin] = useUserLogin();
 
   const handleNewMemberChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -128,7 +134,7 @@ export const AlertDialogConfirmPitching: React.FC<
       setFile(selectedFile);
     }
   };
-
+  // console.log(dataProject)
   const handleUpload = async () => {
     setLoadingRegisterPitching(true)
     
@@ -165,6 +171,18 @@ export const AlertDialogConfirmPitching: React.FC<
 
             dispatch(registerPitching(dataBody)).then((result) => {
               if (registerPitching.fulfilled.match(result)) {
+     
+                const dataBodyNoti = {
+                  notification_type: NOTIFICATION_TYPE.REGISTER_PITCHING_BUSINESS,
+                  information: `Nhóm ${selected?.group?.group_name} đã đăng kí pitching dự án ${dataProject?.name_project} của bạn`,
+                  sender_email: `${userLogin?.email}`,
+                  receiver_email: `${dataProject?.business?.email}`,
+                };
+        
+                dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
+                  console.log(resNoti);
+                });
+
                 router.push("/student-board");
                 toast.success("Đăng kí thành công!");
               } else {

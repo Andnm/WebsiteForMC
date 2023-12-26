@@ -29,8 +29,6 @@ export const createCategory = createAsyncThunk(
       },
     };
 
-    console.log("dataBody", dataBody)
-
     try {
       const response = await http.post<any>(
         `/categories`,

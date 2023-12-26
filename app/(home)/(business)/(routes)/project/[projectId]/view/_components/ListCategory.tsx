@@ -4,11 +4,18 @@ import { changeStatusFromEnToVn } from "@/src/utils/handleFunction";
 import React from "react";
 
 interface ListCategoryProps {
+  project: any;
+  phaseData: any;
   dataCategory: any;
   setDataCategory: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-const ListCategory = ({ dataCategory, setDataCategory }: ListCategoryProps) => {
+const ListCategory = ({
+  project,
+  phaseData,
+  dataCategory,
+  setDataCategory,
+}: ListCategoryProps) => {
   // console.log(dataCategory);
   const [isOpenModalDetail, setIsOpenModalDetail] = React.useState(false);
 
@@ -35,7 +42,6 @@ const ListCategory = ({ dataCategory, setDataCategory }: ListCategoryProps) => {
   };
 
   return (
-
     // mới sửa khúc này
     <div className="pt-2 px-2 flex flex-col gap-2">
       {Array.isArray(dataCategory) &&
@@ -66,6 +72,8 @@ const ListCategory = ({ dataCategory, setDataCategory }: ListCategoryProps) => {
 
       {isOpenModalDetail && selectedCategory && (
         <DialogViewCategory
+          project={project}
+          phaseData={phaseData}
           open={isOpenModalDetail}
           dataCategory={selectedCategory}
           setDataCategory={setDataCategory}

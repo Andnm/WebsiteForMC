@@ -25,6 +25,9 @@ import toast from "react-hot-toast";
 import { X } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { searchUserByEmail } from "@/src/redux/features/userSlice";
+import { NOTIFICATION_TYPE } from "@/src/constants/notification";
+import { createNewNotification } from "@/src/redux/features/notificationSlice";
+import { useUserLogin } from "@/src/hook/useUserLogin";
 
 interface DialogViewProjectProps {
   children: React.ReactNode;
@@ -43,7 +46,9 @@ export const AlertDialogCreateGroupAndInviteMember: React.FC<
   const [loadingSearchResult, setLoadingSearchResult] = React.useState(false);
   const [memberResultSearch, setMemberResultSearch] = React.useState<any[]>([]);
   const [memberList, setMemberList] = React.useState<any[]>([]);
-  
+
+  const [userLogin, setUserLogin] = useUserLogin();
+
   const [
     loadingHandleInviteAndCreateGroup,
     setLoadingHandleInviteAndCreateGroup,
@@ -111,6 +116,19 @@ export const AlertDialogCreateGroupAndInviteMember: React.FC<
                 } else {
                   // console.log(res.payload);
                   toast.success(`Mời ${user.email} thành công!`);
+
+                  const dataBodyNoti = {
+                    notification_type: NOTIFICATION_TYPE.INVITE_GROUP,
+                    information: `${userLogin?.fullname} đã gửi lời mời bạn tham gia group ${groupName}`,
+                    sender_email: `${userLogin?.email}`,
+                    receiver_email: `${user.email}`,
+                  };
+
+                  dispatch(createNewNotification(dataBodyNoti)).then(
+                    (resNoti) => {
+                      console.log(resNoti);
+                    }
+                  );
                 }
               });
             }

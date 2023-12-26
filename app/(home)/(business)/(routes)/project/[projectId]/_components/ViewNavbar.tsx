@@ -37,6 +37,9 @@ import { storage } from "@/src/utils/configFirebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
 import { Hint } from "@/components/hint";
+import { socketInstance } from "@/src/utils/socket/socket-provider";
+import { NOTIFICATION_TYPE } from "@/src/constants/notification";
+import { createNewNotification } from "@/src/redux/features/notificationSlice";
 
 interface ViewNavbarProps {
   dataProject: any;
@@ -75,9 +78,33 @@ export const ViewNavbar = ({
           const projectId = dataProject?.id;
           const projectStatus = "Done";
           dispatch(
-            changeStatusProjectByLecturer({ projectId, projectStatus })
+            changeStatusProjectByLecturer({ projectId, projectStatus, groupId })
           ).then((res) => {
             if (changeStatusProjectByLecturer.fulfilled.match(res)) {
+              const dataBodyNoti = {
+                notification_type: NOTIFICATION_TYPE.DONE_PROJECT_BUSINESS,
+                information: `Mentor xác nhận dự án ${dataProject?.name_project} đã hoàn thành `,
+                sender_email: `${userLogin?.email}`,
+                receiver_email: "business@gmail.com",
+                note: projectId,
+              };
+
+              dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
+                console.log(resNoti);
+              });
+
+              const dataBodyNoti2 = {
+                notification_type: NOTIFICATION_TYPE.DONE_PROJECT_STUDENT,
+                information: `Mentor xác nhận dự án ${dataProject?.name_project} đã hoàn thành `,
+                sender_email: `${userLogin?.email}`,
+                receiver_email: "dangnguyenminhan123@gmail.com",
+                note: projectId,
+              };
+
+              dispatch(createNewNotification(dataBodyNoti2)).then((resNoti) => {
+                console.log(resNoti);
+              });
+
               toast.success(`Thay đổi trạng thái dự án thành công!`);
               setDataProject(res.payload);
             } else {
@@ -102,7 +129,7 @@ export const ViewNavbar = ({
       if (confirmSummaryReport.fulfilled.match(result)) {
         toast.success("Xác nhận báo cáo thành công");
         setSummaryReport(result.payload);
-        console.log("confirm", result.payload);
+        // console.log("confirm", result.payload);
       } else {
         toast.error(`${result.payload}`);
       }
@@ -215,10 +242,20 @@ export const ViewNavbar = ({
     dispatch(getSummaryReportByProjectId(extractNumberFromPath(pathName))).then(
       (result) => {
         if (getSummaryReportByProjectId.fulfilled.match(result)) {
-          setSummaryReport(result.payload);
-          console.log(result);
+          socketInstance.on(`getSummaryReports-${projectId}`, (data: any) => {
+            console.log("ok socket");
+            setSummaryReport(data.summaryReport);
+            // console.log(data.summaryReport)
+          });
+          // setSummaryReport(result.payload);
+          // console.log(result.payload);
         } else {
           // toast.error("Lỗi khi lấy dữ liệu");
+          socketInstance.on(`getSummaryReports-${projectId}`, (data: any) => {
+            console.log("ok socket fail");
+            setSummaryReport(data.summaryReport);
+            // console.log(data.summaryReport)
+          });
         }
       }
     );

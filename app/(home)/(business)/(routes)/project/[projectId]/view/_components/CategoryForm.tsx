@@ -7,9 +7,14 @@ import { FormTextArea } from "@/src/components/form/FormTextArea";
 import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
 import { useUserLogin } from "@/src/hook/useUserLogin";
 import { createCategory } from "@/src/redux/features/categorySlice";
+import { createCost } from "@/src/redux/features/costSlice";
 import { getAllRegisterPitchingByBusiness } from "@/src/redux/features/pitchingSlice";
 import { useAppDispatch } from "@/src/redux/store";
 import { CategoryType } from "@/src/types/category.type";
+import {
+  convertCommaStringToNumber,
+  formatNumberWithCommas,
+} from "@/src/utils/handleFunction";
 import { Plus, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { forwardRef } from "react";
@@ -47,6 +52,8 @@ const CategoryForm = forwardRef<HTMLTextAreaElement, CategoryFormProps>(
       phaseId: phaseId,
       groupId: 0,
     });
+
+    const [costEstimates, setCostEstimates] = React.useState<any>();
     const [userLogin, setUserLogin] = useUserLogin();
 
     const handleChange = (field: keyof CategoryType, value: string) => {
@@ -63,25 +70,49 @@ const CategoryForm = forwardRef<HTMLTextAreaElement, CategoryFormProps>(
 
       dispatch(createCategory(formData)).then((result) => {
         if (createCategory.fulfilled.match(result)) {
-          setDataCategory((prevDataTable) => [
-            ...prevDataTable,
-            result.payload,
-          ]);
-          console.log(result.payload);
-          toast.success("Tạo hạng mục thành công!");
-          setFormData((prevData) => ({
-            ...prevData,
-            category_name: "",
-            detail: "",
-            result_expected: "",
-            phaseId: phaseId,
-          }));
+          // setDataCategory((prevDataTable) => [
+          //   ...prevDataTable,
+          //   result.payload,
+          // ]);
+          // console.log(result.payload);
+
+          const dataBody = {
+            expected_cost: convertCommaStringToNumber(costEstimates),
+            categoryId: result.payload.id,
+            phaseId: result.payload.phase.id,
+          };
+
+          dispatch(createCost(dataBody)).then((resCreateCost) => {
+            if (createCost.fulfilled.match(resCreateCost)) {
+              toast.success("Tạo hạng mục thành công!");
+              setFormData((prevData) => ({
+                ...prevData,
+                category_name: "",
+                detail: "",
+                result_expected: "",
+                phaseId: phaseId,
+              }));
+
+              setCostEstimates(null);
+            }
+          });
         } else {
           toast.error(`${result.payload}`);
         }
         disableEditing();
         setIsLoading(false);
       });
+    };
+
+    const handleCancelCreateCategory = () => {
+      setFormData((prevData) => ({
+        ...prevData,
+        category_name: "",
+        detail: "",
+        result_expected: "",
+      }));
+      setCostEstimates(null);
+      disableEditing();
     };
 
     const params = useParams<{ projectId: string }>();
@@ -127,9 +158,23 @@ const CategoryForm = forwardRef<HTMLTextAreaElement, CategoryFormProps>(
             id="title"
             onKeyDown={() => {}}
             ref={ref}
-            placeholder="Nhập chi tiết..."
+            placeholder="Nhập chi tiết ..."
             value={formData.detail}
             onChange={(e) => handleChange("detail", e.target.value)}
+          />
+
+          <FormInput
+            type="text"
+            id="category_name"
+            className="w-full px-2 py-1 h-7 border-neutral-200/100 bg-white transition"
+            placeholder="Nhập vào dự trù chi phí ..."
+            value={costEstimates}
+            onChange={(e) => {
+              const inputValue = e.target.value.replace(/,/g, "");
+              const numericValue = parseInt(inputValue, 10) || 0;
+              const formattedValue = formatNumberWithCommas(numericValue);
+              setCostEstimates(formattedValue);
+            }}
           />
 
           <FormTextArea
@@ -151,7 +196,11 @@ const CategoryForm = forwardRef<HTMLTextAreaElement, CategoryFormProps>(
             >
               Tạo hạng mục
             </button>
-            <Button onClick={disableEditing} size="sm" variant={"ghost"}>
+            <Button
+              onClick={handleCancelCreateCategory}
+              size="sm"
+              variant={"ghost"}
+            >
               <X className="h-5 w-5" />
             </Button>
           </div>
@@ -161,19 +210,20 @@ const CategoryForm = forwardRef<HTMLTextAreaElement, CategoryFormProps>(
 
     return (
       <div className="pt-2 px-2">
-        {userLogin?.role_name === "Student" && phaseData?.phase_status !== "Done" &&(
-          <Button
-            onClick={enableEditing}
-            className="h-auto px-2 py-1.5 w-full 
+        {userLogin?.role_name === "Student" &&
+          phaseData?.phase_status !== "Done" && (
+            <Button
+              onClick={enableEditing}
+              className="h-auto px-2 py-1.5 w-full 
           justify-start text-muted-foreground text-sm
           hover:opacity-60"
-            size="sm"
-            variant={"ghost"}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Thêm hạng mục
-          </Button>
-        )}
+              size="sm"
+              variant={"ghost"}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Thêm hạng mục
+            </Button>
+          )}
 
         {loading && <SpinnerLoading />}
       </div>

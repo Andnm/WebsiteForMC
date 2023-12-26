@@ -16,8 +16,8 @@ import NotificationItems from "./_components/Notification/NotificationItems";
 import NotificationList from "./_components/Notification/NotificationList";
 import { getAllNotification } from "@/src/redux/features/notificationSlice";
 import { useAppDispatch } from "@/src/redux/store";
-import { io as ClientIO } from "socket.io-client";
 import { socketInstance } from "@/src/utils/socket/socket-provider";
+import { useUserLogin } from "@/src/hook/useUserLogin";
 
 interface UserProps {
   userData: UserType;
@@ -84,6 +84,7 @@ const DropdownMenuItem: React.FC<DropdownMenuItemProps> = ({
 const DropDownUser: React.FC<UserProps> = ({ userData }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const [userLogin, setUserLogin] = useUserLogin();
 
   const renderRoleSpecificMenuItems = () => {
     const roleItems = roleSpecificMenuItems[userData?.role_name || ""] || [];
@@ -114,7 +115,7 @@ const DropDownUser: React.FC<UserProps> = ({ userData }) => {
 
   React.useEffect(() => {
     dispatch(getAllNotification()).then((result) => {
-      socketInstance.on("getNotifications", (data: any) => {
+      socketInstance.on(`getNotifications-${userData?.email}`, (data: any) => {
         setNewNotificationQuantity(data.total_notifications);
         setDataNotification(data.notifications);
         // setNewNotificationQuantity(result.payload[0]);

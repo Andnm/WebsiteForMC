@@ -46,8 +46,8 @@ const ListForm = ({
   phaseData,
   setPhaseData,
 }: ListFormProp) => {
-  console.log("project", project);
-  console.log("phaseData", phaseData);
+  // console.log("project", project);
+  // console.log("phaseData", phaseData);
 
   const [isEditing, setIsEditing] = React.useState(false);
   const formRef = React.useRef<React.ElementRef<"form">>(null);
@@ -104,8 +104,8 @@ const ListForm = ({
 
     dispatch(createPhase(dataBody)).then((result: any) => {
       if (createPhase.fulfilled.match(result)) {
-        setPhaseData((prevDataTable) => [...prevDataTable, result.payload]);
-        console.log(result.payload);
+        // setPhaseData((prevDataTable) => [...prevDataTable, result.payload]);
+        // console.log(result.payload);
         toast.success("Tạo giai đoạn thành công!");
       } else {
         toast.error(`${result.payload}`);
@@ -139,11 +139,11 @@ const ListForm = ({
 
     switch (name) {
       case "phase_start_date":
-        if (phaseData.length === 0) {
+        if (phaseData?.length === 0) {
           return projectStartDate;
         } else {
           const endDatePreviousPhase = new Date(
-            phaseData[phaseData.length - 1]?.phase_expected_end_date
+            phaseData[phaseData?.length - 1]?.phase_expected_end_date
           );
           return endDatePreviousPhase;
         }

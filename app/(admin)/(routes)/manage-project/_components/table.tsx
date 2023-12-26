@@ -28,6 +28,8 @@ import {
 import toast from "react-hot-toast";
 import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
 import Pagination from "@/src/components/shared/Pagination";
+import { createNewNotification } from "@/src/redux/features/notificationSlice";
+import { NOTIFICATION_TYPE } from "@/src/constants/notification";
 
 interface ProjectTableProps {
   totalObject: any;
@@ -53,9 +55,8 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
   setDataTable,
   loadingProject,
   currentPage,
-  onPageChange
+  onPageChange,
 }) => {
-  console.log(totalObject)
   const dispatch = useAppDispatch();
   const [isOpenModalDetail, setIsOpenModalDetail] = React.useState(false);
 
@@ -357,6 +358,18 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 
     dispatch(updateProjectByAdmin(dataResponse)).then((result: any) => {
       if (updateProjectByAdmin.fulfilled.match(result)) {
+
+        const dataBodyNoti = {
+          notification_type: NOTIFICATION_TYPE.UPDATE_PROJECT,
+          information: `Dự án ${selectedProject?.name_project} đã được sửa đổi và phê duyệt`,
+          sender_email: "admin@gmail.com",
+          receiver_email: `${selectedProject?.business?.email}`,
+        };
+
+        dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
+          console.log(resNoti);
+        });
+
         setDataTable((prevDataTable) => {
           const updatedIndex = prevDataTable.findIndex(
             (item) => item.id === result.payload.id
@@ -385,9 +398,22 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
   // hàm phê duyệt
   const handleConfirmProject = (id: number) => {
     // console.log("confirm nè");
+    // console.log(selectedProject?.business?.email)
+
     dispatch(confirmProjectByAdmin(id)).then((result) => {
       if (confirmProjectByAdmin.fulfilled.match(result)) {
         // console.log(result.payload);
+        const dataBodyNoti = {
+          notification_type: NOTIFICATION_TYPE.CONFIRM_PROJECT,
+          information: `Dự án ${selectedProject?.name_project} đã được phê duyệt`,
+          sender_email: "admin@gmail.com",
+          receiver_email: `${selectedProject?.business?.email}`,
+        };
+
+        dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
+          console.log(resNoti);
+        });
+
         setDataTable((prevDataTable) => {
           const updatedIndex = prevDataTable.findIndex(
             (item) => item.id === result.payload.id

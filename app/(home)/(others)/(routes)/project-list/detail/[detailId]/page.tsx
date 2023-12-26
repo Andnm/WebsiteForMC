@@ -36,7 +36,6 @@ const ProjectDetail = () => {
     });
   }, [params.detailId]);
 
-
   return (
     <div className="bg-gray-100">
       <div className="container mx-auto py-8">
@@ -178,6 +177,7 @@ const ProjectDetail = () => {
               <h2 className="text-xl font-bold mb-4">Tên dự án</h2>
               <p className="text-gray-700">{dataProject?.name_project}</p>
               <AlertDialogConfirmPitching
+                dataProject={dataProject}
                 projectId={parseInt(params.detailId, 10)}
                 groupList={groupList}
               >

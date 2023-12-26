@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from "react-redux";
 
 import { List, ListItemSuffix, Chip } from "@material-tailwind/react";
 
@@ -25,55 +25,6 @@ interface NavLinkProps {
   suffix?: React.ReactNode;
 }
 
-const sections = [
-  {
-    title: "Công cụ",
-    features: [
-      {
-        href: "/dashboard",
-        icon: <SiSimpleanalytics className="w-4 h-4" />,
-        label: "Thống kê",
-      },
-      {
-        href: "/notification",
-        icon: <IoNotificationsOutline className="w-4 h-4" />,
-        label: "Thông báo",
-        suffix: (
-          <Chip
-            value="14"
-            size="sm"
-            variant="ghost"
-            color="indigo"
-            className="rounded-full"
-            style={{backgroundColor: "#cccccc"}}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    title: "Quản lý",
-    features: [
-      {
-        href: "/manage-account",
-        icon: <MdOutlineAccountCircle className="w-4 h-4" />,
-        label: "Tài khoản",
-      },
-      { href: "/manage-group", icon: <GrGroup />, label: "Nhóm" },
-      {
-        href: "/manage-project",
-        icon: <GoProjectRoadmap className="w-4 h-4" />,
-        label: "Dự án",
-      },
-      {
-        href: "/manage-report",
-        icon: <GoReport className="w-4 h-4" />,
-        label: "Báo cáo",
-      },
-    ],
-  },
-];
-
 const NavLink: React.FC<NavLinkProps> = ({ href, icon, label, suffix }) => {
   const pathName = usePathname();
   const activeNavLink = pathName === href;
@@ -84,7 +35,7 @@ const NavLink: React.FC<NavLinkProps> = ({ href, icon, label, suffix }) => {
       className={`flex items-center px-4 py-2 gap-3 rounded-lg ${
         activeNavLink ? "bg-blue-100" : "hover:bg-gray-200"
       }`}
-      style={{borderRadius: '5px'}}
+      style={{ borderRadius: "5px" }}
     >
       {icon}
       <p>{label}</p>
@@ -93,10 +44,64 @@ const NavLink: React.FC<NavLinkProps> = ({ href, icon, label, suffix }) => {
   );
 };
 
-const SidebarAdmin = () => {
+interface SidebarAdminProps {
+  newNotificationQuantity: number | undefined;
+}
 
-  const router = useRouter()
-  const dispatch = useDispatch()
+const SidebarAdmin: React.FC<SidebarAdminProps> = ({
+  newNotificationQuantity,
+}) => {
+  const sections = [
+    {
+      title: "Công cụ",
+      features: [
+        {
+          href: "/dashboard",
+          icon: <SiSimpleanalytics className="w-4 h-4" />,
+          label: "Thống kê",
+        },
+        {
+          href: "/notification",
+          icon: <IoNotificationsOutline className="w-4 h-4" />,
+          label: "Thông báo",
+          suffix: (
+            <Chip
+              value={newNotificationQuantity}
+              size="sm"
+              variant="ghost"
+              color="indigo"
+              className="rounded-full"
+              style={{ backgroundColor: "#cccccc" }}
+            />
+          ),
+        },
+      ],
+    },
+    {
+      title: "Quản lý",
+      features: [
+        {
+          href: "/manage-account",
+          icon: <MdOutlineAccountCircle className="w-4 h-4" />,
+          label: "Tài khoản",
+        },
+        { href: "/manage-group", icon: <GrGroup />, label: "Nhóm" },
+        {
+          href: "/manage-project",
+          icon: <GoProjectRoadmap className="w-4 h-4" />,
+          label: "Dự án",
+        },
+        {
+          href: "/manage-report",
+          icon: <GoReport className="w-4 h-4" />,
+          label: "Báo cáo",
+        },
+      ],
+    },
+  ];
+
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
     try {
@@ -136,7 +141,7 @@ const SidebarAdmin = () => {
           href="#"
           className={`flex items-center px-4 py-2 gap-3 border-2 hover:bg-gray-200`}
           onClick={handleLogout}
-          style={{borderRadius: '5px'}}
+          style={{ borderRadius: "5px" }}
         >
           <RiLogoutBoxRLine style={{ fill: "#455A64" }} />
           <p>Đăng xuất</p>

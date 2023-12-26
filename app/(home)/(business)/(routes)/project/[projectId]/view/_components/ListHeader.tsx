@@ -7,12 +7,14 @@ import { Hint } from "@/components/hint";
 import { changeStatusFromEnToVn } from "@/src/utils/handleFunction";
 
 interface ListHeaderProps {
+  project: any;
   data: PhaseType;
   setPhaseData: React.Dispatch<React.SetStateAction<any[]>>;
   onAddCategory: () => void;
 }
 
 export const ListHeader = ({
+  project,
   data,
   onAddCategory,
   setPhaseData,
@@ -58,6 +60,7 @@ export const ListHeader = ({
         <></>
       ) : (
         <ListOptions
+          project={project}
           onAddCategory={onAddCategory}
           data={data}
           setPhaseData={setPhaseData}

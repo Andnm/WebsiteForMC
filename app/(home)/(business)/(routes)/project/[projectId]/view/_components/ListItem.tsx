@@ -7,6 +7,7 @@ import CategoryForm from "./CategoryForm";
 import { useAppDispatch } from "@/src/redux/store";
 import { getAllCategoryOfPhase } from "@/src/redux/features/categorySlice";
 import ListCategory from "./ListCategory";
+import { socketInstance } from "@/src/utils/socket/socket-provider";
 
 interface ListItemProps {
   project: any;
@@ -43,8 +44,13 @@ const ListItem = ({
   // console.log("phase", data);
 
   React.useEffect(() => {
-    dispatch(getAllCategoryOfPhase(data.id)).then((result) => {
-      setDataCategory(result.payload);
+    dispatch(getAllCategoryOfPhase(data.id)).then((result: any) => {
+      socketInstance.on(`getCategories-${data.id}`, (dataResponse: any) => {
+        // console.log("data.categories", dataResponse.categories);
+        setDataCategory(dataResponse.categories);
+      });
+
+      // setDataCategory(result.payload);
       // console.log("category", result.payload);
     });
   }, []);
@@ -59,10 +65,13 @@ const ListItem = ({
           onAddCategory={enableEditing}
           data={data}
           setPhaseData={setPhaseData}
+          project={project}
         />
 
         {data && (
           <ListCategory
+            project={project}
+            phaseData={data}
             dataCategory={dataCategory}
             setDataCategory={setDataCategory}
           />
