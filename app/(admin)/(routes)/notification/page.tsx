@@ -44,6 +44,7 @@ const Notification = () => {
         console.log("data", data)
         setNewNotificationQuantity(data.total_notifications);
         setDataNotification(data.notifications);
+        console.log("admin", data.notifications)
       });
     });
   }, []);
