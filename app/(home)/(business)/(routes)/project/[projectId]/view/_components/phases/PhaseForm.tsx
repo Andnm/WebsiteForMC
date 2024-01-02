@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
-import { ListWrapper } from "./ListWrapper";
+import { ListWrapper } from "../ListWrapper";
 import { FiPlus } from "react-icons/fi";
 import { FormInput } from "@/src/components/form/FormInput";
 import { useParams } from "next/navigation";

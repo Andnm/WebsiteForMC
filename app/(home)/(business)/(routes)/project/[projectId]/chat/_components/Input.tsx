@@ -14,14 +14,20 @@ import {
 } from "firebase/firestore";
 import { db } from "@/src/utils/configFirebase";
 import { useUserLogin } from "@/src/hook/useUserLogin";
+import { extractLastName } from "@/src/utils/handleFunction";
 
-const Input = () => {
+interface InputProps {
+  projectId: number;
+}
+
+const Input: React.FC<InputProps> = ({ projectId }) => {
   const [valueText, setValueText] = React.useState("");
 
   const { selectedUserChat }: any = useAuthContext();
   const [userLogin, setUserLogin] = useUserLogin();
 
-  const compareCombinedEmail = `${userLogin?.email}-admin@gmail.com`
+  // projectId-groupId
+  const compareIdentifierUserChat = `${projectId}-${selectedUserChat.groupId}`;
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
@@ -36,12 +42,22 @@ const Input = () => {
         name: userLogin?.fullname,
         avatar: userLogin?.avatar_url,
         createdAt: serverTimestamp(),
-        combinedEmail: compareCombinedEmail,
+        groupId: selectedUserChat.groupId,
         senderEmail: userLogin?.email,
-         
+        identifierUserChat: compareIdentifierUserChat,
+      });
+
+      const userChatsRef = doc(db, "userChats", compareIdentifierUserChat);
+
+      await updateDoc(userChatsRef, {
+        newMsg: true,
+        lastMessages: valueText,
+        senderEmail: userLogin?.email,
+        lastNameSender: extractLastName(userLogin?.fullname as string),
+        createdAt: serverTimestamp(),
       });
     } catch (error) {
-      console.error("Error send messages from admin to customer:", error);
+      console.error("Error send messages: ", error);
     }
 
     setValueText("");

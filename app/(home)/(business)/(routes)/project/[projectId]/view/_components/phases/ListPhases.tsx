@@ -2,11 +2,11 @@
 
 import { PhaseType } from "@/src/types/phase.type";
 import React from "react";
-import { ListHeader } from "./ListHeader";
-import CategoryForm from "./CategoryForm";
+import { ListHeader } from "../ListHeader";
+import CategoryForm from "../category/CategoryForm";
 import { useAppDispatch } from "@/src/redux/store";
 import { getAllCategoryOfPhase } from "@/src/redux/features/categorySlice";
-import ListCategory from "./ListCategory";
+import ListCategory from "../category/ListCategory";
 import { socketInstance } from "@/src/utils/socket/socket-provider";
 
 interface ListItemProps {

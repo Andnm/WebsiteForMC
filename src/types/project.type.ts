@@ -24,5 +24,7 @@ export interface ProjectType {
   project_start_date?: string;
   project_expected_end_date?: string;
   project_status?: string;
+  business_type?: string;
+  business_model?: string;
   createdAt?: string;
 }

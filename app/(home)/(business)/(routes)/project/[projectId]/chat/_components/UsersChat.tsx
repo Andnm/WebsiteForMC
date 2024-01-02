@@ -16,69 +16,84 @@ import {
 } from "firebase/firestore";
 import { db } from "@/src/utils/configFirebase";
 import { useAuthContext } from "@/src/utils/context/auth-provider";
+import { extractNumberAtIndex } from "@/src/utils/handleFunction";
+import { useUserLogin } from "@/src/hook/useUserLogin";
 
-const UsersChat = () => {
+interface UsersChatProps {
+  arrayGroupId?: number[];
+  projectId: number;
+  userLogin: any;
+}
+
+const UsersChat: React.FC<UsersChatProps> = ({
+  arrayGroupId,
+  projectId,
+  userLogin,
+}) => {
   const [usersChat, setUsersChat] = React.useState<any>([]);
-
   const { selectedUserChat, setSelectedUserChat }: any = useAuthContext();
 
   React.useEffect(() => {
     const q = query(collection(db, "userChats"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const usersChat: any[] = [];
-      console.log("querySnapshot", querySnapshot.docs);
       querySnapshot.forEach((doc: any) => {
         const docData = doc.data() as any;
-        usersChat.push({ ...docData, id: doc.id });
-        console.log("come here");
+
+        if (extractNumberAtIndex(docData.identifierUserChat, 1) === projectId) {
+          if (userLogin?.role_name === "Business") {
+            usersChat.push({ ...docData, id: doc.id });
+          } else if (
+            arrayGroupId?.includes(
+              extractNumberAtIndex(docData.identifierUserChat, 2) as number
+            )
+          ) {
+            usersChat.push({ ...docData, id: doc.id });
+          }
+        }
       });
 
       setUsersChat(usersChat);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [usersChat]);
 
-  const handleUserClick = (userEmail: any, fullName: string) => {
-    setSelectedUserChat({ userEmail: userEmail, userName: fullName });
-    console.log("selectedUserChat", selectedUserChat);
+  const handleUserClick = (identifierUserChat: string, groupName: string) => {
+    setSelectedUserChat({
+      groupId: extractNumberAtIndex(identifierUserChat, 2),
+      groupName: groupName,
+    });
   };
 
   return (
     <div>
-      <div className={"userChat"}>
-        <img
-          src={
-            "https://cdn.popsww.com/blog/sites/2/2021/03/doraemon-tap-97.jpg"
+      {usersChat?.map((obj: any, index: number) => (
+        <div
+          className={
+            selectedUserChat?.groupName === obj?.groupName
+              ? "userChat selected"
+              : "userChat"
           }
-          alt=""
-        />
-        <div className="userChatInfo">
-          <span>Nhóm 1</span>
-          <p>Xin hỏi là khi nà...</p>
+          key={index}
+          onClick={() =>
+            handleUserClick(obj?.identifierUserChat, obj?.groupName)
+          }
+        >
+          <img src={obj?.avatarGroup} alt="" />
+          <div className="userChatInfo">
+            <span>{obj?.groupName}</span>
+            {userLogin?.email === obj?.senderEmail ? (
+              <p>Bạn: {obj?.lastMessages}</p>
+            ) : (
+              <p>
+                {obj?.lastNameSender}: {obj?.lastMessages}
+              </p>
+            )}
+          </div>
         </div>
-      </div>
+      ))}
     </div>
-
-    // <div>
-    //   {usersChat?.map((obj: any) => (
-    //     <div
-    //       className={
-    //         selectedUserChat?.userEmail === obj?.senderEmail
-    //           ? "userChat selected"
-    //           : "userChat"
-    //       }
-    //       key={obj?.senderEmail}
-    //       onClick={() => handleUserClick(obj?.userEmail, obj?.name)}
-    //     >
-    //       <img src={obj?.avatar} alt="" />
-    //       <div className="userChatInfo">
-    //         <span>{obj?.name}</span>
-    //         <p>{obj?.lastMessages}</p>
-    //       </div>
-    //     </div>
-    //   ))}
-    // </div>
   );
 };
 

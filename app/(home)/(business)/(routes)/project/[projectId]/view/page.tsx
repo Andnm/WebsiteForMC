@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useParams } from "next/navigation";
-import ListPhaseContainer from "./_components/ListPhaseContainer";
+import ListPhaseContainer from "./_components/phases/ListPhaseContainer";
 import { getPhaseByProjectId } from "@/src/redux/features/phaseSlice";
 import { PhaseType } from "@/src/types/phase.type";
 import { useAppDispatch } from "@/src/redux/store";

@@ -243,7 +243,7 @@ export const ViewNavbar = ({
       (result) => {
         if (getSummaryReportByProjectId.fulfilled.match(result)) {
           socketInstance.on(`getSummaryReports-${projectId}`, (data: any) => {
-            console.log("ok socket");
+            // console.log("ok socket");
             setSummaryReport(data.summaryReport);
             // console.log(data.summaryReport)
           });
@@ -252,7 +252,7 @@ export const ViewNavbar = ({
         } else {
           // toast.error("Lỗi khi lấy dữ liệu");
           socketInstance.on(`getSummaryReports-${projectId}`, (data: any) => {
-            console.log("ok socket fail");
+            // console.log("ok socket fail");
             setSummaryReport(data.summaryReport);
             // console.log(data.summaryReport)
           });

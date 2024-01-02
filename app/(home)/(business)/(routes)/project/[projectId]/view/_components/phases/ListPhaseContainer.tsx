@@ -2,8 +2,8 @@
 
 import { PhaseType } from "@/src/types/phase.type";
 import React from "react";
-import ListForm from "./ListForm";
-import ListItem from "./ListItem";
+import ListForm from "./PhaseForm";
+import ListPhases from "./ListPhases";
 import { useUserLogin } from "@/src/hook/useUserLogin";
 
 interface ListPhaseContainerProps {
@@ -21,7 +21,7 @@ const ListPhaseContainer = ({
   phaseData,
   setPhaseData,
 }: ListPhaseContainerProps) => {
-  // console.log("phasedata", phaseData);
+  console.log("phasedata", phaseData);
   const [userLogin, setUserLogin] = useUserLogin();
 
   return (
@@ -33,14 +33,14 @@ const ListPhaseContainer = ({
       ) : (
         phaseData?.map((phase, index) => {
           return (
-            <ListItem
+            <ListPhases 
               key={index}
               index={index}
               project={project}
               data={phase}
               groupId={groupId}
               setPhaseData={setPhaseData}
-            ></ListItem>
+            ></ListPhases>
           );
         })
       )}

@@ -59,7 +59,7 @@ const fieldDate: { name: any; label: string }[] = [
     name: "project_registration_expired_date",
     label: "Ngày hết hạn đăng ký dự án",
   },
-  { name: "project_start_date", label: "Ngày bắt đầu dự án" },
+  { name: "project_start_date", label: "Ngày dự kiến bắt đầu dự án" },
   { name: "project_expected_end_date", label: "Ngày dự kiến kết thúc dự án" },
 ];
 
@@ -83,6 +83,8 @@ export const AlertDialogCreateProject = ({
     project_registration_expired_date: "",
     project_start_date: "",
     project_expected_end_date: "",
+    business_type: "Plan",
+    business_model: "b2c"
   });
 
   const [formDate, setFormDate] = React.useState<any>({
@@ -150,9 +152,9 @@ export const AlertDialogCreateProject = ({
       case "project_registration_expired_date":
         return "Ngày hết hạn đăng ký dự án phải lớn hơn ngày hiện tại 1 ngày.";
       case "project_start_date":
-        return "Ngày bắt đầu dự án phải lớn hơn ngày hết hạn đăng ký 7 ngày.";
+        return "Ngày dự kiến bắt đầu dự án phải lớn hơn ngày hết hạn đăng ký 7 ngày.";
       case "project_expected_end_date":
-        return "Ngày dự kiến kết thúc dự án phải nằm trong khoảng từ 2 đến 3 tháng tiếp theo của ngày bắt đầu dự án.";
+        return "Ngày dự kiến kết thúc dự án phải nằm trong khoảng từ 2 đến 3 tháng tiếp theo của ngày dự kiến bắt đầu dự án.";
       default:
         return "";
     }

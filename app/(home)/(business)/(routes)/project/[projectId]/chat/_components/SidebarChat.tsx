@@ -2,7 +2,13 @@ import React from "react";
 import Search from "./Search";
 import UsersChat from "./UsersChat";
 
-const SidebarChat = () => {
+interface SidebarChatProps {
+  arrayGroupId?: number[];
+  projectId: number;
+  userLogin: any;
+}
+
+const SidebarChat: React.FC<SidebarChatProps> = ({ arrayGroupId, projectId, userLogin }) => {
   return (
     <div className="sidebar-chat">
       <div className="navbar">
@@ -11,7 +17,11 @@ const SidebarChat = () => {
 
       <Search />
 
-      <UsersChat />
+      <UsersChat
+        userLogin={userLogin}
+        arrayGroupId={arrayGroupId}
+        projectId={projectId}
+      />
     </div>
   );
 };

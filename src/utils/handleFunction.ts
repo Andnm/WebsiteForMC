@@ -174,3 +174,31 @@ export const getRelationshipStatusInfo = (status: string): StatusInfo => {
       return { color: "black", text: "Trạng thái không xác định" };
   }
 };
+
+export const extractNumberAtIndex = (
+  str: string,
+  index: number
+): number | null => {
+  const parts = str.split("-");
+  const targetPart = parts[index - 1];
+
+  if (targetPart === undefined) {
+    return null;
+  }
+
+  const targetNumber = parseInt(targetPart.trim(), 10);
+
+  if (isNaN(targetNumber)) {
+    return null;
+  }
+
+  return targetNumber;
+};
+
+export const extractLastName = (fullName: string): string => {
+  const nameArray: string[] = fullName.split(" ");
+
+  const lastName: string = nameArray[nameArray.length - 1];
+
+  return lastName;
+};

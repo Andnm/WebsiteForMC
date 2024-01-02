@@ -43,6 +43,33 @@ export const getAllRegisterPitchingByStudent = createAsyncThunk(
   }
 );
 
+export const getAllRegisterPitchingOfStudentByProjectId = createAsyncThunk(
+  "pitching/getAllRegisterPitchingOfStudentByProjectId",
+  async (projectId: number, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.get<any>(
+        `/register-pitching/student/${projectId}`,
+        configHeader
+      );
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
 //get all register pictching by business (truyền vào project id)
 // cái này thì lại sẽ show ra những group đăng kí pitching của dự án nào đó của DN nào đó
 
@@ -159,6 +186,26 @@ export const pitchingSlice = createSlice({
     );
     builder.addCase(
       getAllRegisterPitchingByStudent.rejected,
+      (state, action) => {
+        state.loadingPitching = false;
+        state.error = action.payload as string;
+      }
+    );
+
+    //get all register pitching of student BY PROJECT ID
+    builder.addCase(getAllRegisterPitchingOfStudentByProjectId.pending, (state) => {
+      state.loadingPitching = true;
+      state.error = "";
+    });
+    builder.addCase(
+      getAllRegisterPitchingOfStudentByProjectId.fulfilled,
+      (state, action) => {
+        state.loadingPitching = false;
+        state.error = "";
+      }
+    );
+    builder.addCase(
+      getAllRegisterPitchingOfStudentByProjectId.rejected,
       (state, action) => {
         state.loadingPitching = false;
         state.error = action.payload as string;

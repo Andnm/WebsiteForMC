@@ -28,12 +28,30 @@ import { X } from "lucide-react";
 import Select from "react-select";
 import { searchUserByEmail } from "@/src/redux/features/userSlice";
 import { Skeleton } from "../ui/skeleton";
-import { generateFallbackAvatar } from "@/src/utils/handleFunction";
+import {
+  generateFallbackAvatar,
+  truncateString,
+} from "@/src/utils/handleFunction";
 import { storage } from "@/src/utils/configFirebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { NOTIFICATION_TYPE } from "@/src/constants/notification";
 import { createNewNotification } from "@/src/redux/features/notificationSlice";
 import { useUserLogin } from "@/src/hook/useUserLogin";
+
+import {
+  collection,
+  query,
+  onSnapshot,
+  orderBy,
+  limit,
+  addDoc,
+  serverTimestamp,
+  setDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "@/src/utils/configFirebase";
 
 interface AlertDialogConfirmPitchingProps {
   dataProject: any;
@@ -44,10 +62,11 @@ interface AlertDialogConfirmPitchingProps {
 
 export const AlertDialogConfirmPitching: React.FC<
   AlertDialogConfirmPitchingProps
-> = ({ children, projectId, groupList, dataProject}) => {
+> = ({ children, projectId, groupList, dataProject }) => {
   const [open, setOpen] = React.useState(false);
 
-  const [loadingRegisterPitching, setLoadingRegisterPitching] = React.useState(false)
+  const [loadingRegisterPitching, setLoadingRegisterPitching] =
+    React.useState(false);
 
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -99,13 +118,12 @@ export const AlertDialogConfirmPitching: React.FC<
         searchEmail: event.target.value,
       })
     ).then((result) => {
-      if(searchUserByEmail.fulfilled.match(result)) {
+      if (searchUserByEmail.fulfilled.match(result)) {
         setMemberResultSearch(result.payload);
         setLoadingSearchResult(false);
-      }else {
+      } else {
         // console.log(result.payload)
       }
-      
     });
   };
 
@@ -136,11 +154,10 @@ export const AlertDialogConfirmPitching: React.FC<
   };
   // console.log(dataProject)
   const handleUpload = async () => {
-    setLoadingRegisterPitching(true)
-    
+    setLoadingRegisterPitching(true);
+
     if (file) {
       const storageRef = ref(storage, `uploads/${file.name}`);
-
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
@@ -153,9 +170,9 @@ export const AlertDialogConfirmPitching: React.FC<
         (error) => {
           console.error("Lỗi khi tải tệp lên Firebase Storage", error);
         },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log(downloadURL);
+        async () => {
+          try {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
             setDownloadURL(downloadURL);
 
             const email_of_lecture: string = memberList[0]?.email;
@@ -169,30 +186,45 @@ export const AlertDialogConfirmPitching: React.FC<
               lecturer_email: email_of_lecture,
             };
 
-            dispatch(registerPitching(dataBody)).then((result) => {
-              if (registerPitching.fulfilled.match(result)) {
-     
-                const dataBodyNoti = {
-                  notification_type: NOTIFICATION_TYPE.REGISTER_PITCHING_BUSINESS,
-                  information: `Nhóm ${selected?.group?.group_name} đã đăng kí pitching dự án ${dataProject?.name_project} của bạn`,
-                  sender_email: `${userLogin?.email}`,
-                  receiver_email: `${dataProject?.business?.email}`,
-                };
-        
-                dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
-                  console.log(resNoti);
-                });
+            const result = await dispatch(registerPitching(dataBody));
 
-                router.push("/student-board");
-                toast.success("Đăng kí thành công!");
-              } else {
-                console.log(result.payload);
-                toast.error(`${result.payload}`);
+            if (registerPitching.fulfilled.match(result)) {
+              const dataBodyNoti = {
+                notification_type: NOTIFICATION_TYPE.REGISTER_PITCHING_BUSINESS,
+                information: `Nhóm ${selected?.group?.group_name} đã đăng kí pitching dự án ${dataProject?.name_project} của bạn`,
+                sender_email: `${userLogin?.email}`,
+                receiver_email: `${dataProject?.business?.email}`,
+              };
+
+              const resNoti = await dispatch(createNewNotification(dataBodyNoti));
+
+              console.log(selected)
+              const compareIdentifierUserChat = `${dataProject?.id}-${selected?.group?.id}`;
+
+              try {
+                await setDoc(doc(db, 'userChats', compareIdentifierUserChat), {
+                  groupName: selected?.group?.group_name,
+                  avatarGroup: userLogin?.avatar_url,
+                  lastMessages: ' ',
+                  identifierUserChat: compareIdentifierUserChat,
+                  createdAt: serverTimestamp(),
+                });
+              } catch (error) {
+                console.error('Error handling the message:', error);
               }
-            });
+
+              router.push('/student-board');
+              toast.success('Đăng kí thành công!');
+            } else {
+              console.log(result.payload);
+              toast.error(`${result.payload}`);
+            }
+
             setOpen(false);
-            setLoadingRegisterPitching(false)
-          });
+            setLoadingRegisterPitching(false);
+          } catch (error) {
+            console.error("Error getting download URL:", error);
+          }
         }
       );
     }
@@ -229,7 +261,7 @@ export const AlertDialogConfirmPitching: React.FC<
 
             <X
               onClick={() => setOpen(false)}
-              className="absolute top-0 left-0 w-5 h-5 cursor-pointer text-gray-400"
+              className="absolute top-0 right-2 w-5 h-5 cursor-pointer text-gray-400"
             />
           </AlertDialogHeader>
 
@@ -391,7 +423,7 @@ export const AlertDialogConfirmPitching: React.FC<
           <div className="">
             <p>Chọn nhóm: </p>
             <Listbox value={selected} onChange={setSelected}>
-              <div className="relative mt-1">
+              <div className="relative mt-1 ">
                 <Listbox.Button className="h-10 relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left ring-2 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                   <span className="block truncate">
                     {selected?.group?.group_name}

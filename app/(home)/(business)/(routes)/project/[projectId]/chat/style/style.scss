@@ -71,11 +71,11 @@
 }
 
 .userChat:hover {
-  background-color: rgb(212, 212, 212);
+  background-color: rgb(245, 245, 245);
 }
 
 .userChat.selected {
-  background-color: #2f2d52;
+  background-color: rgb(245, 245, 245);
 }
 
 .userChat img {
@@ -147,7 +147,7 @@
   padding: 20px;
   height: calc(100% - 89px);
   // overflow: scroll;
-  overflow:hidden
+  // overflow: hidden;
 }
 
 .messages .message {
@@ -227,15 +227,14 @@
 .chat-space .emptyConversation {
   height: 100%;
   width: 100%;
-  background-color: #ddddf7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-color: transparent;
+  margin-top: 40px;
+  text-align: center;
 }
 
-.chat-space .emptyConversation p{
+.chat-space .emptyConversation p {
   font-size: 30px;
-  color: darkorchid;
+  color: white;
 }
 
 .chat-space .chatIcons {
