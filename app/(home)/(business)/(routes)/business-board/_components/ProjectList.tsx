@@ -41,13 +41,17 @@ const ProjectList: React.FC<ProjectListProps> = ({
   const groupProjectsByStatus = () => {
     const groupedProjects: Record<string, any[]> = {};
 
-    dataProjects.forEach((project) => {
-      const status = getProjectNameByStatus(project.project_status);
-      if (!groupedProjects[status]) {
-        groupedProjects[status] = [];
-      }
-      groupedProjects[status].push(project);
-    });
+    if (dataProjects && Array.isArray(dataProjects)) {
+      dataProjects.forEach((project) => {
+        const status = getProjectNameByStatus(project?.project_status);
+        if (!groupedProjects[status]) {
+          groupedProjects[status] = [];
+        }
+        groupedProjects[status].push(project);
+      });
+    } else {
+      console.error("dataProjects is not an array or is undefined");
+    }
 
     // console.log(groupedProjects);
 

@@ -8,6 +8,7 @@ import { useAppDispatch } from "@/src/redux/store";
 import { getAllCategoryOfPhase } from "@/src/redux/features/categorySlice";
 import ListCategory from "../category/ListCategory";
 import { socketInstance } from "@/src/utils/socket/socket-provider";
+import NewProgressLoading from "@/src/components/loading/NewProgressLoading";
 
 interface ListItemProps {
   project: any;
@@ -56,7 +57,12 @@ const ListItem = ({
   }, []);
 
   return (
-    <li className="shrink-0 h-auto w-[272px] select-none">
+    <li
+      className="shrink-0 h-auto w-[272px] select-none"
+      style={{ listStyle: "none" }}
+    >
+      <NewProgressLoading phaseData={data} />
+
       <div
         className="w-full rounded-md bg-[#f1f2f4] shadow-md pb-2"
         style={{ borderRadius: "7px", marginBottom: "10px" }}

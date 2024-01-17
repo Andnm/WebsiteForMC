@@ -139,11 +139,11 @@ const ListForm = ({
 
     switch (name) {
       case "phase_start_date":
-        if (phaseData?.length === 0) {
+        if (!phaseData || phaseData.length === 0) {
           return projectStartDate;
         } else {
           const endDatePreviousPhase = new Date(
-            phaseData[phaseData?.length - 1]?.phase_expected_end_date
+            phaseData[phaseData.length - 1]?.phase_expected_end_date
           );
           return endDatePreviousPhase;
         }

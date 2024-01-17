@@ -43,7 +43,7 @@ const ProjectIdPage = () => {
 
     dispatch(getAllRegisterPitchingByBusiness(projectId)).then((result) => {
       if (getAllRegisterPitchingByBusiness.fulfilled.match(result)) {
-        // console.log('group', result.payload);
+        console.log('group', result.payload);
         const selectedGroup = result.payload.find(
           (item: any) => item.register_pitching_status === "Selected"
         );
@@ -59,7 +59,7 @@ const ProjectIdPage = () => {
 
   return (
     <div className="p-4 h-full overflow-x-auto">
-      <ProgressLoading phaseData={phaseData} />
+      {/* <ProgressLoading phaseData={phaseData} /> */}
       {project?.project_status === "Public" ||
       project?.project_status === "Pending" ? (
        

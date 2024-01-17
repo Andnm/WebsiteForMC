@@ -82,7 +82,11 @@ const TableMemberInGroup: React.FC<TableProps> = ({
               <tbody key={index}>
                 <tr>
                   <td className={classes}>
-                    <StudentCardInfo sideOffset={10} side={"top"} dataStudent={member}>
+                    <StudentCardInfo
+                      sideOffset={10}
+                      side={"top"}
+                      dataStudent={member}
+                    >
                       <div className="flex items-center gap-3">
                         <Avatar
                           src={member?.user?.avatar_url || DefaultAvatarURL}
@@ -115,13 +119,21 @@ const TableMemberInGroup: React.FC<TableProps> = ({
         </table>
       </CardBody>
       <div className="absolute bottom-3 right-3 z-10">
-        {register_pitching_status !== "Selected" && (
+        {register_pitching_status === "Pending" && (
           <AlertDialogConfirmChoose
             groupId={group?.group?.id}
             projectId={projectId}
           >
-            <div className="bg-blue-300 text-blue-900 hover:bg-blue-300 mt-6 rounded cursor-pointer hover:underline p-2">Chọn nhóm</div>
+            <div className="bg-blue-300 text-blue-900 hover:bg-blue-100 mt-6 rounded cursor-pointer p-2">
+              Chọn nhóm
+            </div>
           </AlertDialogConfirmChoose>
+        )}
+
+        {register_pitching_status === "Selected" && (
+          <div className="bg-emerald-300 text-emerald-900 hover:bg-emerald-100 mt-6 rounded cursor-pointer p-2">
+            Đã chọn nhóm này
+          </div>
         )}
       </div>
     </>

@@ -67,7 +67,7 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
       href: "/view",
     },
     {
-      label: "Nhóm",
+      label: "Nhóm đăng kí Pitching",
       icon: <HiOutlineUserGroup className="w-5 h-5" />,
       href: "/group",
     },
@@ -77,7 +77,7 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
       href: "/chat",
     },
     {
-      label: "Cài đặt",
+      label: "Thông tin dự án",
       icon: <IoSettingsOutline className="w-5 h-5" />,
       href: "/setting",
     },
@@ -153,9 +153,9 @@ const BusinessSidebar: React.FC<SidebarProps> = ({
         </Button>
       </div>
 
-      {dataProjects.map(
+      {dataProjects?.map(
         (project, index) =>
-          project.project_status === "Processing" && (
+          project?.project_status === "Processing" && (
             <Accordion type="multiple" key={index}>
               <AccordionItem value={`item-${index}`} className="border-none">
                 <AccordionTrigger

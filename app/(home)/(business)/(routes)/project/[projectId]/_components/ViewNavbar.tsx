@@ -71,6 +71,9 @@ export const ViewNavbar = ({
   const openDrawer = () => setOpen(true);
   const closeDrawer = () => setOpen(false);
 
+  const [checkProjectCanDoneStatus, setCheckProjectCanDoneStatus] =
+    React.useState<boolean>(false);
+
   const handleDoneProject = () => {
     dispatch(checkProjectCanDone(extractNumberFromPath(pathName))).then(
       (result) => {
@@ -242,21 +245,30 @@ export const ViewNavbar = ({
     dispatch(getSummaryReportByProjectId(extractNumberFromPath(pathName))).then(
       (result) => {
         if (getSummaryReportByProjectId.fulfilled.match(result)) {
-          socketInstance.on(`getSummaryReports-${projectId}`, (data: any) => {
+          socketInstance.on(`getSummaryReports-${extractNumberFromPath(pathName)}`, (data: any) => {
             // console.log("ok socket");
             setSummaryReport(data.summaryReport);
-            // console.log(data.summaryReport)
+            console.log('data report', data.summaryReport)
           });
           // setSummaryReport(result.payload);
           // console.log(result.payload);
         } else {
           // toast.error("Lỗi khi lấy dữ liệu");
-          socketInstance.on(`getSummaryReports-${projectId}`, (data: any) => {
+          socketInstance.on(`getSummaryReports-${extractNumberFromPath(pathName)}`, (data: any) => {
             // console.log("ok socket fail");
             setSummaryReport(data.summaryReport);
-            // console.log(data.summaryReport)
+            console.log('fail', data.summaryReport)
           });
         }
+      }
+    );
+  }, [summaryReport]);
+
+  React.useEffect(() => {
+    dispatch(checkProjectCanDone(extractNumberFromPath(pathName))).then(
+      (result) => {
+        setCheckProjectCanDoneStatus(result.payload);
+        console.log("result", result.payload);
       }
     );
   }, []);
@@ -288,7 +300,7 @@ export const ViewNavbar = ({
             </div>
 
             <div className="flex gap-2 items-center">
-              {!open && dataProject?.project_status === "Done" && (
+              {!open && checkProjectCanDoneStatus && (
                 <Button
                   onClick={openDrawer}
                   className="bg-teal-300 text-teal-900 hover:bg-teal-300 rounded"
@@ -396,7 +408,7 @@ export const ViewNavbar = ({
                         >
                           Đã xác nhận
                         </Typography>
-                      ) : userLogin?.role_name === "Business" ? (
+                      ) : userLogin?.role_name === "Business"  ? (
                         <Button
                           onClick={handleClickConfirmSummaryReport}
                           className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
@@ -422,7 +434,7 @@ export const ViewNavbar = ({
                         >
                           Đã xác nhận
                         </Typography>
-                      ) : userLogin?.role_name === "Lecturer" ? (
+                      ) : userLogin?.role_name === "Lecturer"  ? (
                         <Button
                           onClick={handleClickConfirmSummaryReport}
                           className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
@@ -492,7 +504,9 @@ export const ViewNavbar = ({
                           className="text-sm"
                         />
                       ) : (
-                        <p className="text-sm">Chưa nộp báo cáo tổng kết</p>
+                        <p className="text-sm">
+                          Sinh viên chưa nộp báo cáo tổng kết
+                        </p>
                       )}
                     </td>
                   </tr>

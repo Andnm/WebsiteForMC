@@ -51,6 +51,7 @@ export const AlertDialogConfirmChoose: React.FC<
       // );
 
       if (chooseGroupByBusiness.fulfilled.match(result)) {
+        console.log('suc', result.payload)
         toast.success("Chọn nhóm thành công!");
       } else {
         console.log(result.payload);

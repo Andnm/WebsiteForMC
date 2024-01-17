@@ -23,19 +23,19 @@ const BusinessBoard = () => {
   React.useEffect(() => {
     dispatch(getAllProjectByBusiness()).then((result: any) => {
       if (getAllProjectByBusiness.fulfilled.match(result)) {
-        // socketInstance.on(`getProjectsOfBusiness`, (data: any) => {
-        //   setDataProjects(data)
-        //   console.log(data)
-        // })
+        socketInstance.on(`getProjectsOfBusiness-${userLogin?.email}`, (data: any) => {
+          setDataProjects(data.projects)
+          console.log(data)
+        })
 
-        setDataProjects(result.payload);
+        // setDataProjects(result.payload);
         // console.log("project", result.payload)
       }else {
         // console.log(result.payload)
       }
     });
 
-  }, []);
+  }, [userLogin]);
 
   return (
     <div className="w-full">

@@ -62,7 +62,7 @@ const StudentSidebar: React.FC<SidebarProps> = ({
       href: "/chat",
     },
     {
-      label: "Cài đặt",
+      label: "Thông tin dự án",
       icon: <IoSettingsOutline className="w-5 h-5" />,
       href: "/setting",
     },

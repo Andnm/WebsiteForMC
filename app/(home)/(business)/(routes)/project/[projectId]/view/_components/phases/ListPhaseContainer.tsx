@@ -21,19 +21,19 @@ const ListPhaseContainer = ({
   phaseData,
   setPhaseData,
 }: ListPhaseContainerProps) => {
-  console.log("phasedata", phaseData);
+  // console.log("phasedata", phaseData);
   const [userLogin, setUserLogin] = useUserLogin();
 
   return (
-    <ol className="flex gap-x-3 h-full flex-wrap">
-      {Array.isArray(phaseData) &&
-      phaseData?.length === 0 &&
+    <div className="flex gap-x-6 h-full flex-wrap">
+      {(phaseData === undefined ||
+        (Array.isArray(phaseData) && phaseData?.length === 0)) &&
       userLogin?.role_name !== "Student" ? (
         <p className="text-white">Sinh viên chưa tạo giai đoạn</p>
       ) : (
         phaseData?.map((phase, index) => {
           return (
-            <ListPhases 
+            <ListPhases
               key={index}
               index={index}
               project={project}
@@ -53,7 +53,7 @@ const ListPhaseContainer = ({
         setPhaseData={setPhaseData}
       />
       <div className="flex-shrink-0 w-1"></div>
-    </ol>
+    </div>
   );
 
   // mới sửa khúc này

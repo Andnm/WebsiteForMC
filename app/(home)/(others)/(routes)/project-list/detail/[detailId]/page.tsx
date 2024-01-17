@@ -9,6 +9,7 @@ import { UserGroupType } from "@/src/types/user-group.type";
 import { formatDate } from "@/src/utils/handleFunction";
 import { useParams } from "next/navigation";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 const ProjectDetail = () => {
   const params = useParams<{ detailId: string }>();
@@ -19,6 +20,16 @@ const ProjectDetail = () => {
   const [groupList, setGroupList] = React.useState<UserGroupType[]>([]);
 
   const dispatch = useAppDispatch();
+
+  const handleDownloadFile = (object: any) => {
+    const link = document.createElement("a");
+    link.href = object;
+    link.download = `${object}_introduction`;
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   React.useEffect(() => {
     const projectId = parseInt(params.detailId, 10);
@@ -60,8 +71,9 @@ const ProjectDetail = () => {
                     Liên hệ
                   </a>
                   <a
-                    href="#"
+                    href="https://hcmuni.fpt.edu.vn/"
                     className="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded"
+                    target="_blank"
                   >
                     Web
                   </a>
@@ -73,9 +85,18 @@ const ProjectDetail = () => {
                   Thông tin khác
                 </span>
                 <ul>
-                  <li className="mb-2">Số điện thoại</li>
-                  <li className="mb-2">Địa chỉ</li>
-                  <li className="mb-2">Quy mô</li>
+                  <li className="mb-2">
+                    <span className="font-bold">Số điện thoại:</span> (028) 7300
+                    5588
+                  </li>
+                  <li className="mb-2">
+                    <span className="font-bold">Địa chỉ: </span>
+                    Lô E2a-7, Đường D1, Khu Công nghệ cao, P.Long Thạnh Mỹ, Tp.
+                    Thủ Đức, TP.HCM.
+                  </li>
+                  <li className="mb-2">
+                    <span className="font-bold">Quy mô: </span> 3000
+                  </li>
                 </ul>
 
                 <hr className="my-6 border-t border-gray-300" />
@@ -173,61 +194,130 @@ const ProjectDetail = () => {
             </div>
           </div>
           <div className="col-span-4 sm:col-span-9">
-            <div className="bg-white shadow rounded-lg p-6">
+            <div className="bg-white shadow rounded-lg p-6 relative">
               <h2 className="text-xl font-bold mb-4">Tên dự án</h2>
-              <p className="text-gray-700">{dataProject?.name_project}</p>
+              <p className="text-gray-700 text-2xl">
+                {dataProject?.name_project}
+              </p>
               <AlertDialogConfirmPitching
                 dataProject={dataProject}
                 projectId={parseInt(params.detailId, 10)}
                 groupList={groupList}
               >
-                <div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">
+                <div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 absolute right-3 top-1">
                   Ứng tuyển ngay
                 </div>
               </AlertDialogConfirmPitching>
 
-              <h2 className="text-xl font-bold mt-6 mb-4">
-                Lĩnh vực chuyên môn
-              </h2>
-              <p className="text-gray-700">{dataProject?.specialized_field}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <h2 className="text-xl font-bold mt-6 mb-4">
+                    Lĩnh vực chuyên môn
+                  </h2>
+                  <p className="text-gray-700">
+                    - {dataProject?.specialized_field}
+                  </p>
+                </div>
+
+                <div className="flex flex-col">
+                  <h2 className="text-xl font-bold mt-6 mb-4">
+                    Mô hình kinh doanh
+                  </h2>
+                  <p className="text-gray-700">
+                    - {dataProject?.business_model}
+                  </p>
+                </div>
+
+                <div className="flex flex-col">
+                  <h2 className="text-xl font-bold mt-6 mb-4">
+                    Hướng đi dự án
+                  </h2>
+                  <p className="text-gray-700">
+                    -{" "}
+                    {dataProject?.business_type === "Project"
+                      ? "Triển khai dự án"
+                      : "Lên kế hoạch"}
+                  </p>
+                </div>
+
+                <div className="flex flex-col">
+                  <h2 className="text-xl font-bold mt-6 mb-4">
+                    Tài liệu liên quan
+                  </h2>
+                  <p className="text-gray-700">
+                    {dataProject?.document_related_link ? (
+                      <Button
+                        className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
+                        onClick={() =>
+                          handleDownloadFile(dataProject?.document_related_link)
+                        }
+                      >
+                        Tải xuống tài liệu
+                      </Button>
+                    ) : (
+                      "(Không được cập nhập)"
+                    )}
+                  </p>
+                </div>
+              </div>
 
               <h2 className="text-xl font-bold mt-6 mb-4">Mô tả dự án</h2>
               <p className="text-gray-700">
-                {dataProject?.description_project}
+                - {dataProject?.description_project}
               </p>
 
               <h2 className="text-xl font-bold mt-6 mb-4">Người phụ trách</h2>
               <p className="text-gray-700">Hiện thông tin ....</p>
 
-              <h2 className="text-xl font-bold mt-6 mb-4">
-                Tài liệu liên quan
-              </h2>
-              <p className="text-gray-700">
-                {dataProject?.document_related_link}
-              </p>
-
               <h2 className="text-xl font-bold mt-6 mb-4">Chú thích</h2>
-              <p className="text-gray-700">{dataProject?.note}</p>
+              <p className="text-gray-700">- {dataProject?.note}</p>
 
               <h2 className="text-xl font-bold mt-6 mb-4">Yêu cầu</h2>
+              <p className="text-gray-700">
+                {dataProject?.request
+                  ? "- " + dataProject?.request
+                  : "(Không được cập nhập)"}
+              </p>
+
+              <h2 className="text-xl font-bold mt-6 mb-4">Thời gian</h2>
               <div className="mb-6">
                 <div className="flex justify-between flex-wrap gap-2 w-full">
-                  <span className="text-gray-700 font-bold">
-                    Thời gian bắt đầu
-                  </span>
-                  <p>
-                    <span className="text-gray-700">
-                      {formatDate(dataProject?.project_start_date ?? "")}
+                  <div>
+                    <span className="text-gray-700 font-bold">
+                      Thời gian dự kiến bắt đầu:
                     </span>
-                  </p>
-                  <span className="text-gray-700 font-bold">
-                    Thời gian kết thúc
-                  </span>
-                  <p>
-                    <span className="text-gray-700">
-                      {formatDate(dataProject?.project_expected_end_date ?? "")}
+                    <p>
+                      <span className="text-gray-700">
+                        {formatDate(dataProject?.project_start_date ?? "")}
+                      </span>
+                    </p>
+                  </div>
+
+                  <div>
+                    <span className="text-gray-700 font-bold">
+                      Thời gian dự kiến kết thúc:
                     </span>
-                  </p>
+                    <p>
+                      <span className="text-gray-700">
+                        {formatDate(
+                          dataProject?.project_expected_end_date ?? ""
+                        )}
+                      </span>
+                    </p>
+                  </div>
+
+                  <div>
+                    <span className="text-gray-700 font-bold">
+                      Thời gian dự kiến hết hạn đăng kí pitching:
+                    </span>
+                    <p>
+                      <span className="text-gray-700">
+                        {formatDate(
+                          dataProject?.project_registration_expired_date ?? ""
+                        )}
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

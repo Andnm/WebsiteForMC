@@ -41,7 +41,7 @@ const ViewSidebar = ({ dataProject }: BoardTitleFormProps) => {
       href: `${currentPath}view`,
     },
     {
-      label: "Nhóm",
+      label: "Nhóm đăng kí Pitching",
       icon: <HiOutlineUserGroup className="w-5 h-5" />,
       href: `${currentPath}group`,
     },
@@ -51,7 +51,7 @@ const ViewSidebar = ({ dataProject }: BoardTitleFormProps) => {
       href: `${currentPath}chat`,
     },
     {
-      label: "Cài đặt",
+      label: "Thông tin dự án",
       icon: <IoSettingsOutline className="w-5 h-5" />,
       href: `${currentPath}setting`,
     },

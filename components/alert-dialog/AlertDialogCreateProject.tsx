@@ -402,10 +402,10 @@ export const AlertDialogCreateProject = ({
                     (resNoti) => {
                       console.log(resNoti);
                       toast.success("Tạo dự án thành công!");
-                      setDataProjects((prevData) => [
-                        ...prevData,
-                        result.payload,
-                      ]);
+                      // setDataProjects((prevData) => [
+                      //   ...prevData,
+                      //   result.payload,
+                      // ]);
                       handleCancel();
                     }
                   );
@@ -435,7 +435,7 @@ export const AlertDialogCreateProject = ({
           dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
             console.log(resNoti);
             toast.success("Tạo dự án thành công!");
-            setDataProjects((prevData) => [...prevData, result.payload]);
+            // setDataProjects((prevData) => [...prevData, result.payload]);
             handleCancel();
           });
         }

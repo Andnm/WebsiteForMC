@@ -17,7 +17,6 @@ const initialState: UserChatStatus = {
   error: "",
 };
 
-
 export const createUserChat = createAsyncThunk(
   "userChat/createUserChat",
   async (dataBody: any, thunkAPI) => {
@@ -30,13 +29,73 @@ export const createUserChat = createAsyncThunk(
       },
     };
 
-    try {
-      const response = await http.post<any>(`/evidences`, dataBody, configHeader);
+    console.log("dataBody", dataBody);
+    console.log("configHeader", configHeader);
 
-      console.log("dataBody", dataBody)
+    try {
+      const response = await http.post<any>(
+        `/user-chat`,
+        dataBody,
+        configHeader
+      );
+
       return response.data;
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
+export const updateUserChat = createAsyncThunk(
+  "userChat/updateUserChat",
+  async ({ identifierUserChat, dataBody }: any, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.patch<any>(
+        `/user-chat/${identifierUserChat}`,
+        dataBody,
+        configHeader
+      );
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
+export const getUserChat = createAsyncThunk(
+  "userChat/getUserChat",
+  async (_, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.get<any>(`/user-chat`, configHeader);
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );
@@ -49,7 +108,7 @@ export const userChatSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    //create evidence
+    //create user chat
     builder.addCase(createUserChat.pending, (state) => {
       state.loadingUserChat = true;
       state.error = "";
@@ -60,6 +119,36 @@ export const userChatSlice = createSlice({
       state.error = "";
     });
     builder.addCase(createUserChat.rejected, (state, action) => {
+      state.loadingUserChat = false;
+      state.error = action.payload as string;
+    });
+
+    //get UserChat
+    builder.addCase(getUserChat.pending, (state) => {
+      state.loadingUserChat = true;
+      state.error = "";
+    });
+    builder.addCase(getUserChat.fulfilled, (state, action) => {
+      state.loadingUserChat = false;
+      //   state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getUserChat.rejected, (state, action) => {
+      state.loadingUserChat = false;
+      state.error = action.payload as string;
+    });
+
+    //update UserChat
+    builder.addCase(updateUserChat.pending, (state) => {
+      state.loadingUserChat = true;
+      state.error = "";
+    });
+    builder.addCase(updateUserChat.fulfilled, (state, action) => {
+      state.loadingUserChat = false;
+      //   state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(updateUserChat.rejected, (state, action) => {
       state.loadingUserChat = false;
       state.error = action.payload as string;
     });

@@ -122,7 +122,7 @@ const DialogViewCategory = ({
         setCost(result.payload);
         toast.success("Chuyển trạng thái thành công!");
       } else {
-        toast.error("Đã có lỗi xảy ra!");
+        toast.error(`${result.payload}`);
       }
     });
   };

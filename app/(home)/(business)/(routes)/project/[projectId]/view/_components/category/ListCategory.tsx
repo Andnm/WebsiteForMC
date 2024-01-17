@@ -16,7 +16,7 @@ const ListCategory = ({
   dataCategory,
   setDataCategory,
 }: ListCategoryProps) => {
-  console.log("dataCategory", dataCategory);
+  // console.log("dataCategory", dataCategory);
   const [isOpenModalDetail, setIsOpenModalDetail] = React.useState(false);
 
   const [selectedCategory, setSelectedCategory] = React.useState<any | null>(
