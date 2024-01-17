@@ -12,6 +12,7 @@ import { formatDate } from "@/src/utils/handleFunction";
 import { Skeleton } from "@/components/ui/skeleton";
 import toast from "react-hot-toast";
 import { socketInstance } from "@/src/utils/socket/socket-provider";
+import DrawerFilter from "@/components/drawer/DrawerFilter";
 
 //có 2 trang là ProjectList lận
 //trang này là show all project list ở ngoài landing page
@@ -69,13 +70,16 @@ const ProjectList = () => {
               return dateA.getTime() - dateB.getTime();
             });
           setDataProjectList(newListProjects);
-
         });
       } else {
         toast.error("Có lỗi xảy ra khi tải danh sách dự án!");
       }
     });
   }, []);
+
+  const [openDrawer, setOpenDrawer] = React.useState(false);
+  const openDrawerAction = () => setOpenDrawer(true);
+  const closeDrawerAction = () => setOpenDrawer(false);
 
   return (
     <>
@@ -93,10 +97,17 @@ const ProjectList = () => {
           />
         </div>
 
-        <Button className="gap-2 ">
+        <Button className="gap-2 border" onClick={openDrawerAction}>
           <MdFilterList className="w-5 h-5" />
-          Filter
+          Bộ lọc
         </Button>
+
+        {openDrawer && (
+          <DrawerFilter
+            openDrawer={openDrawer}
+            closeDrawerAction={closeDrawerAction}
+          />
+        )}
       </div>
 
       <main

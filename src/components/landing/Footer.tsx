@@ -89,7 +89,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <Link href="https://hcmuni.fpt.edu.vn/">
+        <Link href="https://hcmuni.fpt.edu.vn/" target="_blank">
           <img
             className="w-96"
             src="https://live.staticflickr.com/65535/53397875578_9a1ed05b1b_b.jpg"
