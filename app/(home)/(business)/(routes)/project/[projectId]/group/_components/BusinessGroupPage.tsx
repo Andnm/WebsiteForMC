@@ -72,7 +72,7 @@ const BusinessGroupPage: React.FC<BusinessGroupPageProps> = ({ projectId }) => {
               group={group}
               projectId={projectId}
             />
-            <div className="flex w-full justify-between">
+            <div className="absolute bottom-3 left-3 flex w-full justify-between ">
               {group.document_url ? (
                 userLogin?.role_name === "Student" ? (
                   <></>
