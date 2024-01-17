@@ -50,6 +50,31 @@ export const searchUserByEmail = createAsyncThunk(
   }
 );
 
+export const getProfileUser = createAsyncThunk(
+  "user/getProfileUser",
+  async (email: any, thunkAPI) => {
+    const token = getTokenFromSessionStorage();
+    const configHeader = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await http.get<any>(`/users/${email}`, configHeader);
+
+      return response.data;
+    } catch (error) {
+      // console.log('error', error)
+      return thunkAPI.rejectWithValue(
+        (error as ErrorType)?.response?.data?.message
+      );
+    }
+  }
+);
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -66,6 +91,21 @@ export const userSlice = createSlice({
       state.error = "";
     });
     builder.addCase(searchUserByEmail.rejected, (state, action) => {
+      state.loadingUser = false;
+      state.error = action.payload as string;
+    });
+
+    //get Profile User
+    builder.addCase(getProfileUser.pending, (state) => {
+      state.loadingUser = true;
+      state.error = "";
+    });
+    builder.addCase(getProfileUser.fulfilled, (state, action) => {
+      state.loadingUser = false;
+      // state.data = action.payload;
+      state.error = "";
+    });
+    builder.addCase(getProfileUser.rejected, (state, action) => {
       state.loadingUser = false;
       state.error = action.payload as string;
     });
