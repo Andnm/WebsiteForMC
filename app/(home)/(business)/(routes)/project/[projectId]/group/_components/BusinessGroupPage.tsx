@@ -17,6 +17,7 @@ import TableMemberInGroup from "./table";
 import { useUserLogin } from "@/src/hook/useUserLogin";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import "./styles.css"
 
 interface BusinessGroupPageProps {
   projectId: number;
@@ -54,46 +55,48 @@ const BusinessGroupPage: React.FC<BusinessGroupPageProps> = ({ projectId }) => {
   };
 
   return (
-    <div className="p-2 overflow-y-scroll overflow-x-hidden h-full">
+    <div className="p-2 overflow-y-scroll overflow-x-hidden h-full BusinessGroupContainer">
       {dataGroupPitching.length !== 0 ? (
         dataGroupPitching.map((group: any, indexGroup: number) => (
           <div
             key={indexGroup}
-            className="bg-gray-300 p-2 mb-4 relative"
+            className="bg-gray-300 p-2 mb-4 mr-6 relative BusinessGroupCard"
             style={{ borderRadius: "7px" }}
           >
             <div className="flex w-full justify-between">
               <p className="uppercase font-bold">{group.group.group_name} </p>
             </div>
 
-            {group.document_url ? (
-              userLogin?.role_name === "Student" ? (
-                <></>
-              ) : (
-                <Button
-                  className="bg-blue-300 text-blue-900 hover:bg-blue-300 mt-6 rounded"
-                  onClick={() => handleDownload(group)}
-                >
-                  <Download className="w-4 h-4 mr-2" /> File giới thiệu nhóm
-                  {/* {group.document_url} */}
-                </Button>
-              )
-            ) : userLogin?.role_name === "Student" ? (
-              <Button
-                className="bg-teal-300 text-teal-900 hover:bg-teal-300 mt-6 rounded"
-                onClick={handleClickUploadFile}
-              >
-                Tải lên file giới thiệu
-              </Button>
-            ) : (
-              <Button className="mt-3">(Nhóm chưa có file giới thiệu)</Button>
-            )}
-
             <TableMemberInGroup
               register_pitching_status={group.register_pitching_status}
               group={group}
               projectId={projectId}
             />
+            <div className="flex w-full justify-between">
+              {group.document_url ? (
+                userLogin?.role_name === "Student" ? (
+                  <></>
+                ) : (
+                  <Button
+                    className="bg-blue-300 text-blue-900 hover:bg-blue-300 mt-6 rounded"
+                    onClick={() => handleDownload(group)}
+                  >
+                    <Download className="w-4 h-4 mr-2" /> File giới thiệu nhóm
+                    {/* {group.document_url} */}
+                  </Button>
+                )
+              ) : userLogin?.role_name === "Student" ? (
+                <Button
+                  className="bg-teal-300 text-teal-900 hover:bg-teal-300 mt-6 rounded"
+                  onClick={handleClickUploadFile}
+                >
+                  Tải lên file giới thiệu
+                </Button>
+              ) : (
+                <Button className="mt-3">(Nhóm chưa có file giới thiệu)</Button>
+              )}
+            </div>
+
           </div>
         ))
       ) : (

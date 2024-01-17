@@ -26,7 +26,7 @@ interface TableProps {
   projectId: number;
 }
 
-const TABLE_HEAD = ["Thành viên", "Chức vụ", "Trạng thái", "Ngày tham gia"];
+const TABLE_HEAD = ["Thành viên", "Chức vụ"];
 
 const DefaultAvatarURL =
   "https://cdn.popsww.com/blog/sites/2/2021/03/doraemon-tap-97.jpg";
@@ -50,17 +50,6 @@ const TableMemberInGroup: React.FC<TableProps> = ({
 
   return (
     <>
-      <div className="absolute top-1 right-3">
-        {register_pitching_status !== "Selected" && (
-          <AlertDialogConfirmChoose
-            groupId={group?.group?.id}
-            projectId={projectId}
-          >
-            <div className="cursor-pointer hover:underline">Chọn nhóm</div>
-          </AlertDialogConfirmChoose>
-        )}
-      </div>
-
       <CardBody className="px-0">
         <table
           className=" w-full min-w-max table-auto text-left bg-white"
@@ -122,21 +111,22 @@ const TableMemberInGroup: React.FC<TableProps> = ({
                       {changeStatusFromEnToVn(member?.role_in_group)}
                     </InfoText>
                   </td>
-
-                  <StatusCell
-                    status={member.relationship_status}
-                    classes={classes}
-                  />
-
-                  <td className={classes}>
-                    <InfoText>{formatDate(member?.updatedAt)}</InfoText>
-                  </td>
                 </tr>
               </tbody>
             );
           })}
         </table>
       </CardBody>
+      <div className="absolute bottom-3 right-3">
+        {register_pitching_status !== "Selected" && (
+          <AlertDialogConfirmChoose
+            groupId={group?.group?.id}
+            projectId={projectId}
+          >
+            <div className="bg-blue-300 text-blue-900 hover:bg-blue-300 mt-6 rounded cursor-pointer hover:underline p-2">Chọn nhóm</div>
+          </AlertDialogConfirmChoose>
+        )}
+      </div>
     </>
   );
 };
