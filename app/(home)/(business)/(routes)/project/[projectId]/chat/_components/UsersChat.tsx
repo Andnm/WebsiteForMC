@@ -16,7 +16,12 @@ import {
 } from "firebase/firestore";
 import { db } from "@/src/utils/configFirebase";
 import { useAuthContext } from "@/src/utils/context/auth-provider";
-import { extractNumberAtIndex } from "@/src/utils/handleFunction";
+import {
+  convertTimestampToDate,
+  extractNumberAtIndex,
+  getDateTimeDifference,
+  truncateString,
+} from "@/src/utils/handleFunction";
 import { useUserLogin } from "@/src/hook/useUserLogin";
 
 interface UsersChatProps {
@@ -83,13 +88,26 @@ const UsersChat: React.FC<UsersChatProps> = ({
           <img src={obj?.avatarGroup} alt="" />
           <div className="userChatInfo">
             <span>{obj?.groupName}</span>
-            {userLogin?.email === obj?.senderEmail ? (
-              <p>Bạn: {obj?.lastMessages}</p>
-            ) : (
-              <p>
-                {obj?.lastNameSender}: {obj?.lastMessages}
+
+            <p
+              className={`block ${
+                obj?.newMsg ? "text-black font-bold" : "text-gray-400"
+              }`}
+            >
+              {userLogin?.email === obj?.senderEmail
+                ? "Bạn: "
+                : `${obj?.lastNameSender}: `}
+              {truncateString(obj?.lastMessages, 9)}{" "}
+              <p className="inline-block font-normal align-text-bottom">.</p>{" "}
+              <p className="inline-block font-normal">
+                {getDateTimeDifference(
+                  convertTimestampToDate(
+                    obj?.createdAt?.seconds,
+                    obj?.createdAt?.nanoseconds
+                  )
+                )}
               </p>
-            )}
+            </p>
           </div>
         </div>
       ))}

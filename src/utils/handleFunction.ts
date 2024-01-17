@@ -26,6 +26,19 @@ export const getDateTimeDifference = (utcTimeString: string): string => {
   }
 };
 
+export const convertTimestampToDate = (
+  seconds: number,
+  nanoseconds: number
+) => {
+  if (!seconds || !nanoseconds) {
+    return "N/A";
+  }
+
+  const date = new Date(seconds * 1000 + nanoseconds / 1000000);
+
+  return date?.toISOString();
+};
+
 export const formatDate = (inputDate: string | undefined) => {
   if (!inputDate) {
     return "N/A";
@@ -198,7 +211,7 @@ export const extractNumberAtIndex = (
 export const extractLastName = (fullName: string): string => {
   const nameArray: string[] = fullName.split(" ");
 
-  const lastName: string = nameArray[nameArray.length - 1];
+  const lastName: string = nameArray[0];
 
   return lastName;
 };
