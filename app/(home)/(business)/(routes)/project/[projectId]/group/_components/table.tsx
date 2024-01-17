@@ -19,6 +19,7 @@ import { useAppDispatch } from "@/src/redux/store";
 import { getAllMemberByGroupId } from "@/src/redux/features/groupSlice";
 import { AlertDialogConfirmChoose } from "@/components/alert-dialog/AlertDialogConfirmChoose";
 import { Hint } from "@/components/hint";
+import { StudentCardInfo } from "@/components/StudentCardInfo";
 
 interface TableProps {
   register_pitching_status: string;
@@ -81,11 +82,7 @@ const TableMemberInGroup: React.FC<TableProps> = ({
               <tbody key={index}>
                 <tr>
                   <td className={classes}>
-                    <Hint
-                      sideOffset={10}
-                      description={`Card thông tin detail thành viên`}
-                      side={"top"}
-                    >
+                    <StudentCardInfo sideOffset={10} side={"top"} dataStudent={member}>
                       <div className="flex items-center gap-3">
                         <Avatar
                           src={member?.user?.avatar_url || DefaultAvatarURL}
@@ -103,7 +100,7 @@ const TableMemberInGroup: React.FC<TableProps> = ({
                           </InfoText>
                         </div>
                       </div>
-                    </Hint>
+                    </StudentCardInfo>
                   </td>
 
                   <td className={classes}>
