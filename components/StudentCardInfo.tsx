@@ -12,6 +12,8 @@ interface StudentCardInfoProps {
   dataStudent?: any;
 }
 
+
+
 export const StudentCardInfo = ({
   children,
   side = "bottom",
@@ -27,30 +29,41 @@ export const StudentCardInfo = ({
           side={side}
           className="text-sm break-words bg-white"
         >
-          <div className="w-full h-screen bg-gray-100 px-10 pt-10">
-            <div className="relative mt-16 mb-32 max-w-sm mx-auto mt-24">
+          <div className="w-full bg-gray-100 px-10 pt-10 pb-2">
+            <div className="relative mt-16 max-w-sm mx-auto ">
               <div className="rounded overflow-hidden shadow-md bg-white">
                 <div className="absolute -mt-20 w-full flex justify-center">
                   <div className="h-32 w-32">
                     <img
-                      src="https://randomuser.me/api/portraits/women/49.jpg"
+                      src={dataStudent?.user?.avatar_url}
                       className="rounded-full object-cover h-full w-full shadow-md"
                     />
                   </div>
                 </div>
                 <div className="px-6 mt-16">
                   <h1 className="font-bold text-3xl text-center mb-1">
-                    Carole Steward
+                    {dataStudent?.user?.fullname}
                   </h1>
                   <p className="text-gray-800 text-sm text-center">
-                    Chief Executive Officer
+                    {dataStudent?.user?.email}
                   </p>
-                  <p className="text-center text-gray-600 text-base pt-3 font-normal">
-                    Carole Steward is a visionary CEO known for her exceptional
-                    leadership and strategic acumen. With a wealth of experience
-                    in the corporate world, she has a proven track record of
-                    driving innovation and achieving remarkable business growth.
-                  </p>
+                  <div className="flex text-center text-gray-600 text-base pt-3 font-normal justify-between">
+                    <p className="text-gray-800 text-sm text-center">
+                      Thành tích  
+                    </p>
+                    <p className="text-gray-800 text-sm text-center ml-5">
+                      Tốt nghiệp đại học
+                    </p>
+                  </div>
+                  <div className="flex text-center text-gray-600 text-base pt-3 font-normal justify-between">
+                    <p className="text-gray-800 text-sm text-center">
+                      Mô tả
+                    </p>
+                    <p className="text-gray-800 text-sm text-center ml-5">
+                    {dataStudent?.user?.description ? dataStudent?.user?.description : "Không có"}
+                    </p>
+                  </div>
+
                   <div className="w-full flex justify-center pt-5 pb-5">
                     <a href="#" className="mx-5">
                       <div aria-label="Github">
