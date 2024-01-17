@@ -320,15 +320,16 @@ export const ViewNavbar = ({
                     <BiDetail className="w-3 h-3 mr-1" /> Chi tiết dự án
                   </Button>
 
-                  {userLogin?.role_name === "Lecturer" && (
-                    <Button
-                      className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
-                      variant={"ghost"}
-                      onClick={handleDoneProject}
-                    >
-                      <Check className="w-3 h-3 mr-1" /> Hoàn thành dự án
-                    </Button>
-                  )}
+                  {userLogin?.role_name === "Lecturer" &&
+                    dataProject?.project_status === "Processing" && (
+                      <Button
+                        className="rounded-none w-full h-auto p-2 px-5 justify-start hover:bg-gray-200/100"
+                        variant={"ghost"}
+                        onClick={handleDoneProject}
+                      >
+                        <Check className="w-3 h-3 mr-1" /> Hoàn thành dự án
+                      </Button>
+                    )}
                 </PopoverContent>
               </Popover>
             </div>

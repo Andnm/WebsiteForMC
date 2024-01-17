@@ -62,6 +62,7 @@ const ProjectIdPage = () => {
       <ProgressLoading phaseData={phaseData} />
       {project?.project_status === "Public" ||
       project?.project_status === "Pending" ? (
+       
         <p className="text-white">Dự án chưa bắt đầu</p>
       ) : (
         <ListPhaseContainer
