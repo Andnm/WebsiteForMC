@@ -114,7 +114,7 @@ const TableMemberInGroup: React.FC<TableProps> = ({
           })}
         </table>
       </CardBody>
-      <div className="absolute bottom-3 right-3">
+      <div className="absolute bottom-3 right-3 z-10">
         {register_pitching_status !== "Selected" && (
           <AlertDialogConfirmChoose
             groupId={group?.group?.id}
