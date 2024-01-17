@@ -46,30 +46,50 @@ interface DialogProps {
   setDataProjects: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-const fieldString: { name: keyof ProjectType; label: string }[] = [
-  { name: "fullname", label: "Họ và tên người phụ trách" },
+const fieldString: {
+  name: keyof ProjectType;
+  label: string;
+  required?: boolean;
+}[] = [
+  { name: "fullname", label: "Họ và tên người phụ trách *", required: true },
   { name: "position", label: "Vị trí" },
-  { name: "email_responsible_person", label: "Email người phụ trách" },
-  { name: "phone_number", label: "Số điện thoại người phụ trách" },
-  { name: "name_project", label: "Tên dự án" },
+  {
+    name: "email_responsible_person",
+    label: "Email người phụ trách *",
+    required: true,
+  },
+  {
+    name: "phone_number",
+    label: "Số điện thoại người phụ trách *",
+    required: true,
+  },
+  { name: "name_project", label: "Tên dự án *", required: true },
   { name: "business_sector", label: "Lĩnh vực kinh doanh" },
-  { name: "specialized_field", label: "Lĩnh vực chuyên môn" },
-  { name: "business_type", label: "Hướng đi của dự án" },
-  { name: "business_model", label: "Mô hình của dự án" },
-  { name: "purpose", label: "Mục đích" },
-  { name: "description_project", label: "Mô tả dự án" },
+  { name: "specialized_field", label: "Lĩnh vực chuyên môn *", required: true },
+  { name: "business_type", label: "Hướng đi của dự án *", required: true },
+  { name: "business_model", label: "Mô hình của dự án *", required: true },
+  { name: "description_project", label: "Mô tả dự án *", required: true },
   { name: "request", label: "Yêu cầu" },
   { name: "note", label: "Ghi chú" },
   { name: "document_related_link", label: "Liên kết tài liệu" },
 ];
 
-const fieldDate: { name: any; label: string }[] = [
+const fieldDate: { name: any; label: string; required?: boolean }[] = [
   {
     name: "project_registration_expired_date",
-    label: "Ngày hết hạn đăng ký pitching",
+    label: "Ngày hết hạn đăng ký pitching *",
+    required: true,
   },
-  { name: "project_start_date", label: "Ngày dự kiến bắt đầu dự án" },
-  { name: "project_expected_end_date", label: "Ngày dự kiến kết thúc dự án" },
+  {
+    name: "project_start_date",
+    label: "Ngày dự kiến bắt đầu dự án *",
+    required: true,
+  },
+  {
+    name: "project_expected_end_date",
+    label: "Ngày dự kiến kết thúc dự án *",
+    required: true,
+  },
 ];
 
 export const AlertDialogCreateProject = ({
@@ -84,7 +104,6 @@ export const AlertDialogCreateProject = ({
     name_project: "",
     business_sector: "",
     specialized_field: "",
-    purpose: "",
     description_project: "",
     request: "",
     note: "",
@@ -248,6 +267,10 @@ export const AlertDialogCreateProject = ({
                 className="mt-1 p-2 border rounded-md w-full"
               />
             )}
+
+            {field.required && missingFields.includes(field.name) && (
+              <p className="text-red-500">Không để trống ô này</p>
+            )}
           </div>
         ))}
 
@@ -277,38 +300,45 @@ export const AlertDialogCreateProject = ({
               minDate={handleMinDate(field.name)}
               maxDate={handleMaxDate(field.name)}
             />
+
+            {field.required && missingFields.includes(field.name) && (
+              <p className="text-red-500">Không để trống ô này</p>
+            )}
           </div>
         ))}
       </>
     );
   };
 
-  const handleCreate = () => {
-    // const dataBody = {
-    //   ...formData,
-    //   ...formDate,
-    // };
-    // dispatch(createNewProject(dataBody as ProjectType)).then((result) => {
-    //   if (createNewProject.rejected.match(result)) {
-    //     //do something
-    //     console.log(result);
-    //     toast.error(`${result.payload}`);
-    //   } else if (createNewProject.fulfilled.match(result)) {
-    //     const dataBodyNoti = {
-    //       notification_type: NOTIFICATION_TYPE.CREATE_PROJECT,
-    //       information: "Có một dự án mới cần được duyệt",
-    //       sender_email: userLogin?.email,
-    //       receiver_email: "admin@gmail.com",
-    //     };
+  const [missingFields, setMissingFields] = React.useState<string[]>([]);
 
-    //     dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
-    //       console.log(resNoti);
-    //       toast.success("Tạo dự án thành công!");
-    //       setDataProjects((prevData) => [...prevData, result.payload]);
-    //       handleCancel();
-    //     });
-    //   }
-    // });
+  const handleCreate = () => {
+    const requiredFieldsString = fieldString.filter((field) => field.required);
+    const requiredFieldsDate = fieldDate.filter((field) => field.required);
+
+    // Check required fields in formData
+    const missingFormDataFields = requiredFieldsString
+      .filter((field) => !formData[field.name])
+      .map((field) => field.name);
+
+    // Check required fields in formDate
+    const missingFormDateFields = requiredFieldsDate
+      .filter((field) => !formDate[field.name])
+      .map((field) => field.name);
+
+    const allMissingFields = [
+      ...missingFormDataFields,
+      ...missingFormDateFields,
+    ];
+
+    if (allMissingFields.length > 0) {
+      // Display an error message for missing required fields
+      setMissingFields(allMissingFields);
+      return;
+    }
+
+    // Reset missingFields state if no missing fields
+    setMissingFields([]);
 
     handleUpload();
   };
@@ -325,6 +355,7 @@ export const AlertDialogCreateProject = ({
   const [uploadProgress, setUploadProgress] = React.useState<number | null>(
     null
   );
+  const [loadingProgress, setLoadingProgress] = React.useState();
 
   const handleUpload = async () => {
     if (file) {
@@ -384,6 +415,31 @@ export const AlertDialogCreateProject = ({
           });
         }
       );
+    } else {
+      const dataBody = {
+        ...formData,
+        ...formDate,
+      };
+
+      dispatch(createNewProject(dataBody as ProjectType)).then((result) => {
+        if (createNewProject.rejected.match(result)) {
+          toast.error(`${result.payload}`);
+        } else if (createNewProject.fulfilled.match(result)) {
+          const dataBodyNoti = {
+            notification_type: NOTIFICATION_TYPE.CREATE_PROJECT,
+            information: "Có một dự án mới cần được duyệt",
+            sender_email: userLogin?.email,
+            receiver_email: "admin@gmail.com",
+          };
+
+          dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
+            console.log(resNoti);
+            toast.success("Tạo dự án thành công!");
+            setDataProjects((prevData) => [...prevData, result.payload]);
+            handleCancel();
+          });
+        }
+      });
     }
   };
 
@@ -396,7 +452,6 @@ export const AlertDialogCreateProject = ({
       name_project: "",
       business_sector: "",
       specialized_field: "",
-      purpose: "",
       description_project: "",
       request: "",
       note: "",
@@ -413,6 +468,7 @@ export const AlertDialogCreateProject = ({
       project_expected_end_date: null,
     });
 
+    setMissingFields([]);
     dispatch(setNoError({ error: "" }));
     setOpen(false);
   };

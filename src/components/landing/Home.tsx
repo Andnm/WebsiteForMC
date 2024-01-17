@@ -16,17 +16,17 @@ const Home = () => {
                 <span className="text-gray-500 border-b-2 border-indigo-600 uppercase">
                   Thông tin
                 </span>
-                <h2 className="my-4 font-bold text-3xl  sm:text-4xl ">
+                <h2 className="my-4 font-bold text-3xl sm:text-4xl text-black">
                   Về <span className="text-indigo-600">kho dự án</span>
                 </h2>
-                <p className="text-white">
+                <p className="text-gray-700">
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                   Aliquid, commodi doloremque, fugiat illum magni minus nisi
                   nulla numquam obcaecati placeat quia, repellat tempore
                   voluptatum.
                 </p>
 
-                <button className="cursor-pointer mt-4 group flex gap-1.5 px-8 py-4 bg-black bg-opacity-80 text-[#f1f1f1] rounded-3xl hover:bg-opacity-70 transition font-semibold shadow-md">
+                <button className="cursor-pointer mt-4 group  flex gap-1.5 px-8 py-4 bg-black bg-opacity-80 text-[#f1f1f1] rounded-3xl hover:bg-opacity-70 transition font-semibold shadow-md">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

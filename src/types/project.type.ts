@@ -15,7 +15,7 @@ export interface ProjectType {
   name_project: string;
   business_sector: string;
   specialized_field: string;
-  purpose: string;
+  purpose?: string;
   description_project: string;
   request: string;
   note: string;
