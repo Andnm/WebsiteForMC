@@ -51,7 +51,7 @@ const TableMemberInGroup: React.FC<TableProps> = ({
 
   return (
     <>
-      <CardBody className="px-0">
+      <CardBody className="px-0 mb-8">
         <table
           className=" w-full min-w-max table-auto text-left bg-white"
           style={{ borderRadius: "7px" }}
