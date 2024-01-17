@@ -2,7 +2,7 @@ import React from "react";
 
 const ContactUs: React.FC = () => {
   return (
-    <div>
+    <div style={{ margin: "auto 0" }}>
       <div className="test" style={{ width: "1400px", color: "white" }}>
         <div className="max-w-screen-lg mx-auto p-5">
           <div className="grid grid-cols-1 md:grid-cols-12 border">

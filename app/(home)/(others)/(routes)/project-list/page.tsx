@@ -24,6 +24,12 @@ const ProjectList = () => {
   const dispatch = useAppDispatch();
 
   const { loadingProjectList } = useAppSelector((state) => state.project);
+  const [filterOption, setFilterOption] = React.useState<any>({
+    business_model: [],
+    business_type: [],
+    specialized_field: [],
+    searchValue: ""
+  });
 
   React.useEffect(() => {
     const container = containerRef.current;
@@ -81,6 +87,25 @@ const ProjectList = () => {
   const openDrawerAction = () => setOpenDrawer(true);
   const closeDrawerAction = () => setOpenDrawer(false);
 
+  const handleFilter = (array: any) => {
+    let fiteredArray = array
+    if (filterOption?.business_model && filterOption?.business_model?.length > 0) {
+      fiteredArray = fiteredArray?.filter((item: any) => filterOption?.business_model?.includes(item?.business_model?.toLowerCase()))
+    }
+    if (filterOption?.business_type && filterOption?.business_type?.length > 0) {
+      fiteredArray = fiteredArray?.filter((item: any) => filterOption?.business_type?.includes(item?.business_type?.toLowerCase()))
+    }
+    if (filterOption?.specialized_field && filterOption?.specialized_field?.length > 0) {
+      fiteredArray = fiteredArray?.filter((item: any) => filterOption?.specialized_field?.includes(item?.specialized_field?.toLowerCase()))
+    }
+    if (filterOption.searchValue) {
+      fiteredArray = fiteredArray.filter((item: any) =>
+        item.name_project.toLowerCase().includes(filterOption.searchValue.toLowerCase())
+      );
+    }
+    return fiteredArray
+  }
+
   return (
     <>
       <div className="my-1 flex gap-2 justify-end mr-10">
@@ -94,6 +119,8 @@ const ProjectList = () => {
             type="text"
             id="search"
             placeholder="Gõ thứ gì đó ..."
+            value={filterOption.searchValue}
+            onChange={(e) => setFilterOption((prevFilterOption: any) => ({ ...prevFilterOption, searchValue: e.target.value }))}
           />
         </div>
 
@@ -106,6 +133,8 @@ const ProjectList = () => {
           <DrawerFilter
             openDrawer={openDrawer}
             closeDrawerAction={closeDrawerAction}
+            filterOption={filterOption}
+            setFilterOption={setFilterOption}
           />
         )}
       </div>
@@ -163,7 +192,7 @@ const ProjectList = () => {
               </>
             ) : (
               Array.isArray(dataProjectList) &&
-              dataProjectList?.map((project, index) => (
+              handleFilter(dataProjectList)?.map((project: any, index: any) => (
                 <Link
                   href={`/project-list/detail/${project.id}`}
                   className="flex flex-row py-4 px-4 mb-4 mr-4 border-2 gap-2"

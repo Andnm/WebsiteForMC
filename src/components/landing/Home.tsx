@@ -2,7 +2,7 @@ import React from "react";
 
 const Home = () => {
   return (
-    <div className="home-page">
+    <div className="home-page" style={{ margin: "auto 0" }}>
       <div className="test" style={{ width: "1400px", color: "white" }}>
         <div className="container">
           <div className="sm:flex items-center max-w-screen-xl">
@@ -20,10 +20,10 @@ const Home = () => {
                   Về <span className="text-indigo-600">kho dự án</span>
                 </h2>
                 <p className="text-gray-700">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Aliquid, commodi doloremque, fugiat illum magni minus nisi
-                  nulla numquam obcaecati placeat quia, repellat tempore
-                  voluptatum.
+                  Kho dự án là nơi lưu trữ thông tin với những nhiệm vụ cụ thể, 
+                  thông tin bao gồm các chi tiết về mục tiêu, các công việc cần thực hiện, 
+                  và những nguồn lực đang được sử dụng. Đây là nơi quản lý và theo dõi tiến độ của dự án, 
+                  giúp đảm bảo rằng mọi công việc được thực hiện đúng hướng và đúng thời gian.
                 </p>
 
                 <button className="cursor-pointer mt-4 group  flex gap-1.5 px-8 py-4 bg-black bg-opacity-80 text-[#f1f1f1] rounded-3xl hover:bg-opacity-70 transition font-semibold shadow-md">
