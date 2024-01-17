@@ -1,5 +1,4 @@
 .general-header-container {
-  background-color: var(--black-color);
 
   .brand-name {
     color: var(--orange-color);
@@ -9,7 +8,7 @@
   }
 
   a {
-    color: var(--white-color);
+    color: var(--black-color);
     font-size: 16px;
   }
 
@@ -80,6 +79,7 @@
     -webkit-transition: all ease 0.3s;
     transition: all ease 0.3s;
     padding: 7px 10px;
+    border: 2px solid var(--orange-color);
   }
 
   .btn-login:hover {
@@ -90,14 +90,13 @@
     border: 2px solid var(--orange-color);
     -webkit-transition: all ease 0.3s;
     transition: all ease 0.3s;
-    padding: 5px 0px;
+    padding: 7px 0px;
     width: 101.73px;
   }
 
   .btn-signup:hover {
-    border: 2px solid var(--white-color);
-    background-color: var(--white-color);
-    color: var(--black-color);
+    border: 2px solid var(--orange-color);
+    background-color: var(--orange-color);
   }
 
   .nav-items {
@@ -122,7 +121,7 @@
 
   .nav-items {
     a {
-      color: black;
+      color: black !important;
     }
   }
 

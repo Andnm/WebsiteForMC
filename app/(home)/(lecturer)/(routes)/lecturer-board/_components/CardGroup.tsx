@@ -2,6 +2,7 @@ import { getAllMemberByGroupId } from "@/src/redux/features/groupSlice";
 import { useAppDispatch } from "@/src/redux/store";
 import {
   changeStatusFromEnToVn,
+  changeStatusPitchingFromEnToVn,
   formatDate,
   generateFallbackAvatar,
   getColorByProjectStatus,
@@ -63,7 +64,7 @@ const CardGroup = ({ group, lectureData }: CardGroupProps) => {
             )} px-3 py-1 rounded-xl text-sm text-center`}
             style={{width: '100px'}}
           >
-            {group?.register_pitching_status}
+            {changeStatusPitchingFromEnToVn(group?.register_pitching_status)}
           </div>
         </div>
         {Array.isArray(memberInGroup) &&
@@ -98,7 +99,7 @@ const CardGroup = ({ group, lectureData }: CardGroupProps) => {
         </h1>
         <div className="leading-relaxed mb-3 flex gap-3">
           <div className="flex gap-1 items-center">
-            <GraduationCap className="w-4 h-4" />2
+            <GraduationCap className="w-4 h-4" />{group?.group?.group_quantity}
           </div>
           <div
             style={{

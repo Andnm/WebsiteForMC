@@ -15,7 +15,10 @@ import {
   CardFooter,
   Avatar,
 } from "@material-tailwind/react";
-import { formatDate } from "@/src/utils/handleFunction";
+import {
+  formatDate,
+  getColorByProjectStatus,
+} from "@/src/utils/handleFunction";
 import CustomModal from "@/src/components/shared/CustomModal";
 import InfoText from "./InfoText";
 import StatusCell from "./StatusCell";
@@ -30,6 +33,11 @@ import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
 import Pagination from "@/src/components/shared/Pagination";
 import { createNewNotification } from "@/src/redux/features/notificationSlice";
 import { NOTIFICATION_TYPE } from "@/src/constants/notification";
+import { Download } from "lucide-react";
+import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+import vn from "date-fns/locale/vi";
+registerLocale("vi", vn);
+setDefaultLocale("vi");
 
 interface ProjectTableProps {
   totalObject: any;
@@ -64,10 +72,11 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
   const [selectedProject, setSelectedProject] = React.useState<any | null>(
     null
   );
+
   const bodyContent = (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {/* Business Information */}
-      <div className="flex items-center space-x-4 mb-8">
+      <div className="mb-8">
         <h3 className="text-lg font-semibold mb-2">Doanh nghiệp:</h3>
         <img
           src={selectedProject?.business?.avatar_url}
@@ -79,9 +88,6 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
             {selectedProject?.business?.fullname}
           </h2>
           <p className="text-gray-500">{selectedProject?.business?.email}</p>
-          <p className="text-gray-500">
-            Lĩnh vực kinh doanh: {selectedProject?.business_sector}
-          </p>
         </div>
       </div>
 
@@ -108,35 +114,56 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
         <p className="text-gray-600">
           Tên dự án: {selectedProject?.name_project}
         </p>
-        <p className="text-gray-600">
-          Trạng thái: {selectedProject?.project_status === "Pending" ? "Chờ phê duyệt" : selectedProject?.project_status  === "Public" ? "Công khai" : "Đang diễn ra"}
+        <p className="text-gray-600 flex gap-1">
+          Trạng thái:
+          <p
+            className={`py-1 px-2 font-bold uppercase text-xs ${getColorByProjectStatus(
+              selectedProject?.project_status
+            )}`}
+            style={{ borderRadius: "7px" }}
+          >
+            {selectedProject?.project_status === "Pending"
+              ? "Chờ phê duyệt"
+              : selectedProject?.project_status === "Public"
+              ? "Công khai"
+              : "Đang diễn ra"}
+          </p>
         </p>
         <p className="text-gray-600">
           Lĩnh vực chuyên môn: {selectedProject?.specialized_field}
         </p>
         <p className="text-gray-600">
-          Hướng đi dự án: {selectedProject?.business_type === "Project" ? "Triển khai dự án" : "Lên kế hoạch"}
+          Hướng đi dự án:{" "}
+          {selectedProject?.business_type === "Project"
+            ? "Triển khai dự án"
+            : "Lên kế hoạch"}
         </p>
-        <p className="text-gray-600">Mục đích: {selectedProject?.purpose}</p>
+
         <p className="text-gray-600">
-          Mô tả về dự án: {selectedProject?.description_project}
+          Mô tả về dự án:{" "}
+          {selectedProject?.description_project
+            ? selectedProject?.description_project
+            : "(Chưa cập nhập)"}
         </p>
-        <p className="text-gray-600">Các lưu ý khác: {selectedProject?.note}</p>
+        <p className="text-gray-600">
+          Các lưu ý khác:{" "}
+          {selectedProject?.note ? selectedProject?.note : "(Chưa cập nhập)"}
+        </p>
       </div>
 
       {/* Time Information */}
       <div className="mb-8">
         <h3 className="text-lg font-semibold mb-2">Thời gian</h3>
         <p className="text-gray-600">
-          Thời gian hết hạn đăng kí pitching:{" "}
+          Hạn đăng kí pitching:{" "}
           {formatDate(selectedProject?.project_registration_expired_date)}
         </p>
         <p className="text-gray-600">
-          Thời gian dự kiến bắt đầu làm:{" "}
+          Ngày dự kiến bắt đầu:{" "}
           {formatDate(selectedProject?.project_start_date)}
         </p>
         <p className="text-gray-600">
-          Thời gian dự kiến kết thúc:{" "}
+          Ngày dự kiến kết thúc:{" "}
           {formatDate(selectedProject?.project_expected_end_date)}
         </p>
       </div>
@@ -145,163 +172,301 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
       <div className="mb-8">
         <h3 className="text-lg font-semibold mb-2">Tài liệu đính kèm</h3>
         <p className="text-gray-600">
-          {selectedProject?.document_related_link}
+          {selectedProject?.document_related_link ? (
+            <Button
+              className="bg-blue-300 text-blue-900 hover:bg-blue-300 mt-2 rounded flex gap-1"
+              onClick={() =>
+                handleDownload(selectedProject?.document_related_link)
+              }
+            >
+              <Download className="w-4 h-4 mr-2" /> Bấm để tải xuống
+              {/* {group.document_url} */}
+            </Button>
+          ) : (
+            "(Chưa được cập nhập)"
+          )}
         </p>
       </div>
-    
     </div>
   );
 
   //quản lý thông tin update
   const [isEditMode, setIsEditMode] = React.useState(false);
+  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+
+  //up file
+  // Xử lý tệp tin tại đây
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      setSelectedFile(file);
+    }
+  };
+
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
   const bodyUpdate = (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div className="flex items-center space-x-4 mb-8">
-        <h3 className="text-lg font-semibold mb-2">Doanh nghiệp:</h3>
-        <img
-          src={selectedProject?.business?.avatar_url}
-          alt={selectedProject?.business?.fullname}
-          className="w-10 h-10 rounded-full"
-        />
-        <div>
-          <h2 className="text-xl font-semibold">
-            {selectedProject?.business?.fullname}
-          </h2>
-          <p className="text-gray-500">{selectedProject?.business?.email}</p>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold mb-2">Doanh nghiệp:</h3>
+          <img
+            src={selectedProject?.business?.avatar_url}
+            alt={selectedProject?.business?.fullname}
+            className="w-10 h-10 rounded-full"
+          />
+          <div>
+            <h2 className="text-xl font-semibold">
+              {selectedProject?.business?.fullname}
+            </h2>
+            <p className="text-gray-500">{selectedProject?.business?.email}</p>
+          </div>
+        </div>
+
+        {/* Responsible Person Information */}
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold mb-2">Người phụ trách</h3>
+          <label className="block">Họ và tên</label>
+          <input
+            type="text"
+            value={selectedProject?.responsible_person?.fullname}
+            onChange={(e) =>
+              setSelectedProject((prevSelectedProject: any) => ({
+                ...prevSelectedProject,
+                responsible_person: {
+                  ...prevSelectedProject.responsible_person,
+                  fullname: e.target.value,
+                },
+              }))
+            }
+            className="admin-project-input-field"
+          />
+
+          <label className="block">Chức vụ</label>
+          <input
+            type="text"
+            value={selectedProject?.responsible_person?.position}
+            onChange={(e) =>
+              setSelectedProject((prevSelectedProject: any) => ({
+                ...prevSelectedProject,
+                responsible_person: {
+                  ...prevSelectedProject.responsible_person,
+                  position: e.target.value,
+                },
+              }))
+            }
+            className="admin-project-input-field"
+          />
+
+          <label className="block">Email</label>
+          <input
+            type="text"
+            value={selectedProject?.responsible_person?.email}
+            onChange={(e) =>
+              setSelectedProject((prevSelectedProject: any) => ({
+                ...prevSelectedProject,
+                responsible_person: {
+                  ...prevSelectedProject.responsible_person,
+                  email: e.target.value,
+                },
+              }))
+            }
+            className="admin-project-input-field"
+          />
+
+          <label className="block">Số điện thoại</label>
+          <input
+            type="text"
+            value={selectedProject?.responsible_person?.phone_number}
+            onChange={(e) =>
+              setSelectedProject((prevSelectedProject: any) => ({
+                ...prevSelectedProject,
+                responsible_person: {
+                  ...prevSelectedProject.responsible_person,
+                  phone_number: e.target.value,
+                },
+              }))
+            }
+            className="admin-project-input-field"
+          />
+        </div>
+
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold mb-2">Thông tin dự án</h3>
+          {/*  */}
+          <label>Tên dự án:</label>
+          <input
+            type="text"
+            value={selectedProject?.name_project}
+            onChange={(e) =>
+              setSelectedProject({
+                ...selectedProject,
+                name_project: e.target.value,
+              })
+            }
+            className="admin-project-input-field"
+          />
+
+          {/*  */}
+          <label>Lĩnh vực chuyên môn:</label>
+          <select
+            value={selectedProject?.specialized_field}
+            onChange={(e) =>
+              setSelectedProject({
+                ...selectedProject,
+                specialized_field: e.target.value,
+              })
+            }
+            className="admin-project-input-field"
+            style={{ height: "42px" }}
+          >
+            <option value="" disabled>
+              -- Chọn --
+            </option>
+            <option value="Nông nghiệp">Nông nghiệp</option>
+            <option value="Thủ công nghiệp">Thủ công nghiệp</option>
+          </select>
+
+          {/*  */}
+          <label>Hướng đi dự án:</label>
+          <select
+            value={selectedProject?.business_type}
+            onChange={(e) =>
+              setSelectedProject({
+                ...selectedProject,
+                business_type: e.target.value,
+              })
+            }
+            className="admin-project-input-field"
+            style={{ height: "42px" }}
+          >
+            <option value="" disabled>
+              -- Chọn --
+            </option>
+            <option value="Plan">Lên kế hoạch</option>
+            <option value="Project">Triển khai dự án</option>
+          </select>
+
+          {/*  */}
+          <label>Mô tả về dự án:</label>
+          <textarea
+            value={selectedProject?.description_project}
+            onChange={(e) =>
+              setSelectedProject({
+                ...selectedProject,
+                description_project: e.target.value,
+              })
+            }
+            className="admin-project-input-field"
+          />
+
+          {/*  */}
+          <label>Các lưu ý khác:</label>
+          <textarea
+            value={selectedProject?.note}
+            onChange={(e) =>
+              setSelectedProject({
+                ...selectedProject,
+                note: e.target.value,
+              })
+            }
+            className="admin-project-input-field"
+          />
         </div>
       </div>
 
-      {/* Responsible Person Information */}
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-2">Người phụ trách</h3>
-        <label className="block mb-2">Họ và tên</label>
-        <input
-          type="text"
-          value={selectedProject?.responsible_person?.fullname}
-          onChange={(e) =>
-            setSelectedProject((prevSelectedProject: any) => ({
-              ...prevSelectedProject,
-              responsible_person: {
-                ...prevSelectedProject.responsible_person,
-                fullname: e.target.value,
-              },
-            }))
-          }
-          className="admin-project-input-field"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div>
+          <h3 className="text-lg font-semibold mb-2">Thời gian</h3>
 
-        <label className="block mb-2">Chức vụ</label>
-        <input
-          type="text"
-          value={selectedProject?.responsible_person?.position}
-          onChange={(e) =>
-            setSelectedProject((prevSelectedProject: any) => ({
-              ...prevSelectedProject,
-              responsible_person: {
-                ...prevSelectedProject.responsible_person,
-                position: e.target.value,
-              },
-            }))
-          }
-          className="admin-project-input-field"
-        />
+          <div className="flex items-center mb-1">
+            <label className="w-64">Hạn đăng kí pitching:</label>
+            <DatePicker
+              className="cursor-pointer border"
+              showIcon
+              selected={
+                new Date(selectedProject?.project_registration_expired_date)
+              }
+              dateFormat="dd/MM/yyyy"
+              onChange={(date) =>
+                setSelectedProject({
+                  ...selectedProject,
+                  project_registration_expired_date: date,
+                })
+              }
+              placeholderText=" "
+            />
+          </div>
 
-        <label className="block mb-2">Email</label>
-        <input
-          type="text"
-          value={selectedProject?.responsible_person?.email}
-          onChange={(e) =>
-            setSelectedProject((prevSelectedProject: any) => ({
-              ...prevSelectedProject,
-              responsible_person: {
-                ...prevSelectedProject.responsible_person,
-                email: e.target.value,
-              },
-            }))
-          }
-          className="admin-project-input-field"
-        />
+          <div className="flex items-center mb-1">
+            <label className="w-64">Ngày dự kiến bắt đầu:</label>
+            <DatePicker
+              className="cursor-pointer border "
+              showIcon
+              selected={new Date(selectedProject?.project_start_date)}
+              dateFormat="dd/MM/yyyy"
+              onChange={(date) =>
+                setSelectedProject({
+                  ...selectedProject,
+                  project_start_date: date,
+                })
+              }
+              placeholderText=" "
+            />
+          </div>
 
-        <label className="block mb-2">Số điện thoại</label>
-        <input
-          type="text"
-          value={selectedProject?.responsible_person?.phone_number}
-          onChange={(e) =>
-            setSelectedProject((prevSelectedProject: any) => ({
-              ...prevSelectedProject,
-              responsible_person: {
-                ...prevSelectedProject.responsible_person,
-                phone_number: e.target.value,
-              },
-            }))
-          }
-          className="admin-project-input-field"
-        />
+          <div className="flex items-center mb-1">
+            <label className="w-64">Ngày dự kiến kết thúc:</label>
+            <DatePicker
+              className="cursor-pointer border"
+              showIcon
+              selected={new Date(selectedProject?.project_expected_end_date)}
+              dateFormat="dd/MM/yyyy"
+              onChange={(date) =>
+                setSelectedProject({
+                  ...selectedProject,
+                  project_expected_end_date: date,
+                })
+              }
+              placeholderText=" "
+            />
+          </div>
+        </div>
+
+        <div>
+          {!selectedProject?.document_related_link ? (
+            <>
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold">Tài liệu đính kèm</h3>
+                <Button
+                  className="bg-blue-300 text-blue-900 hover:bg-blue-300 mt-2 rounded flex gap-1"
+                  onClick={handleButtonClick}
+                >
+                  <Download className="w-4 h-4 mr-2" /> Bấm để tải file lên
+                </Button>
+                <input
+                  type="file"
+                  id="fileInput"
+                  style={{ display: "none" }}
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                />
+                {selectedFile && <p className="mt-2">Tệp tin đã tải: {selectedFile.name}</p>}
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
-
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-2">Thông tin dự án</h3>
-        <label>Tên dự án:</label>
-        <input
-          type="text"
-          value={selectedProject?.name_project}
-          onChange={(e) =>
-            setSelectedProject({
-              ...selectedProject,
-              name_project: e.target.value,
-            })
-          }
-          className="admin-project-input-field"
-        />
-        
-      </div>
-
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-2">Thời gian</h3>
-        <input
-          type="text"
-          value={formatDate(selectedProject?.project_start_date)}
-          onChange={(e) =>
-            setSelectedProject({
-              ...selectedProject,
-              project_start_date: e.target.value,
-            })
-          }
-          className="admin-project-input-field"
-        />
-      </div>
-
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-2">Tài liệu đính kèm</h3>
-        <input
-          type="text"
-          value={selectedProject?.document_related_link}
-          onChange={(e) =>
-            setSelectedProject({
-              ...selectedProject,
-              document_related_link: e.target.value,
-            })
-          }
-          className="admin-project-input-field"
-        />
-      </div>
-
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-2">Thời gian</h3>
-        <input
-          type="text"
-          value={formatDate(selectedProject?.createdAt)}
-          onChange={(e) =>
-            setSelectedProject({
-              ...selectedProject,
-              project_start_date: e.target.value,
-            })
-          }
-          className="admin-project-input-field"
-        />
-      </div>
-    </div>
+    </>
   );
 
   const handleOpenModalDetails = (business: any) => {
@@ -325,6 +490,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 
   const handleClickRemoveProject = (business: any) => {
     // console.log("Remove project", business);
+    alert("Tính năng chưa hỗ trợ");
   };
 
   //handle function when open detail project
@@ -358,7 +524,6 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 
     dispatch(updateProjectByAdmin(dataResponse)).then((result: any) => {
       if (updateProjectByAdmin.fulfilled.match(result)) {
-
         const dataBodyNoti = {
           notification_type: NOTIFICATION_TYPE.UPDATE_PROJECT,
           information: `Dự án ${selectedProject?.name_project} đã được sửa đổi và phê duyệt`,
@@ -461,6 +626,18 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
     );
   }
 
+  //new
+
+  const handleDownload = (object: any) => {
+    const link = document.createElement("a");
+    link.href = object;
+    link.download = `${object}_introduction`;
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
       <CardBody className="px-0">
@@ -493,11 +670,13 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
                 icon: <BiDetail />,
                 onClick: () => handleOpenModalDetails(business),
               },
-              {
-                name: "Sửa thông tin",
-                icon: <CiEdit />,
-                onClick: () => handleClickOpenInfo(business),
-              },
+
+              //Tạm thời ẩn đi
+              // {
+              //   name: "Sửa thông tin",
+              //   icon: <CiEdit />,
+              //   onClick: () => handleClickOpenInfo(business),
+              // },
               {
                 name: "Xóa dự án",
                 icon: <MdOutlinePlaylistRemove />,
@@ -603,10 +782,12 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
             title={
               <div className="flex items-center gap-2">
                 {isEditMode ? "Sửa dự án" : "Thông tin dự án"}
-                <CiEdit
-                  className="cursor-pointer"
-                  onClick={handleChangeConfirmIntoUpdate}
-                />
+                {selectedProject?.project_status === "Pending" && (
+                  <CiEdit
+                    className="cursor-pointer"
+                    onClick={handleChangeConfirmIntoUpdate}
+                  />
+                )}
               </div>
             }
             body={body}

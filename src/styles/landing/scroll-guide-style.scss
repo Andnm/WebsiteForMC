@@ -5,17 +5,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--white-color);
+    color: var(--black-color);
     border-radius: 20px;
     transition: width 0.4s ease-out;
 
     svg {
-      fill: var(--white-color);
+      fill: var(--black-color);
     }
   }
 
   .arrow:hover {
-    border-color: var(--white-color);
+    border-color: var(--orange-color);
   }
 
   .arrow-box {

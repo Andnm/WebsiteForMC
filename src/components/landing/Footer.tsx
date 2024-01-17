@@ -6,7 +6,7 @@ const Footer = () => {
     <div>
       <div
         className="test grid grid-cols-2 mt-44"
-        style={{ width: "1000px", color: "white" }}
+        style={{ width: "1000px", color: "black" }}
       >
         <div>
           <div className="flex items-center justify-center mt-24 gap-x-5 ">
@@ -17,7 +17,7 @@ const Footer = () => {
               rel="noopener"
             >
               <svg
-                className="h-10 w-10 text-white"
+                className="h-10 w-10 text-black"
                 viewBox="0 0 48 48"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +35,7 @@ const Footer = () => {
               rel="noopener"
             >
               <svg
-                className="h-10 w-10 text-white"
+                className="h-10 w-10 text-black"
                 viewBox="0 0 48 40"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +53,7 @@ const Footer = () => {
               rel="noopener"
             >
               <svg
-                className="h-10 w-10 text-white"
+                className="h-10 w-10 text-black"
                 viewBox="0 0 48 48"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@ const Footer = () => {
               rel="noopener"
             >
               <svg
-                className="h-10 w-10 text-white"
+                className="h-10 w-10 text-black"
                 viewBox="0 0 48 48"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"

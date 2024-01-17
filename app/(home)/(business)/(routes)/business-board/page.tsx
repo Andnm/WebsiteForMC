@@ -8,6 +8,7 @@ import {
   getProjectById,
 } from "@/src/redux/features/projectSlice";
 import { socketInstance } from "@/src/utils/socket/socket-provider";
+import { useUserLogin } from "@/src/hook/useUserLogin";
 
 const BusinessBoard = () => {
   const [dataProjects, setDataProjects] = React.useState<any[]>([]);
@@ -17,12 +18,16 @@ const BusinessBoard = () => {
     (state) => state.project
   );
 
+  const [userLogin, setUserLogin] = useUserLogin()
+
   React.useEffect(() => {
     dispatch(getAllProjectByBusiness()).then((result: any) => {
       if (getAllProjectByBusiness.fulfilled.match(result)) {
-        // socketInstance.on("getProjectsOfBusiness", (data: any) => {
+        // socketInstance.on(`getProjectsOfBusiness`, (data: any) => {
+        //   setDataProjects(data)
         //   console.log(data)
         // })
+
         setDataProjects(result.payload);
         // console.log("project", result.payload)
       }else {

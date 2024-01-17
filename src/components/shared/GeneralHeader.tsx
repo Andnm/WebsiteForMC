@@ -100,7 +100,7 @@ const GeneralHeader = () => {
 
   return (
     <div
-      className={`general-header-container  ${
+      className={`general-header-container shadow-sm border-b-2 ${
         userData && "header-white shadow-sm border-b-2"
       }
       top-0 z-10 h-max max-w-full border-0 rounded-none px-4 py-2 lg:px-8 lg:py-3`}
@@ -175,7 +175,7 @@ const GeneralHeader = () => {
                     setRegisterModalOpen(true);
                   }}
                 >
-                  <span className="text-white hover:text-black">Đăng kí</span>
+                  <span className="text-black hover:text-white">Đăng kí</span>
                 </button>
 
                 {isRegisterModalOpen && (

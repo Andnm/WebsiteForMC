@@ -131,6 +131,19 @@ export const changeStatusFromEnToVn = (status: string): string => {
   }
 };
 
+export const changeStatusPitchingFromEnToVn = (status: string): string => {
+  switch (status?.toLowerCase()) {
+    case "pending":
+      return "Đang chờ phê duyệt";
+    case "rejected":
+      return "Đã bị từ chối";
+    case "selected":
+      return "Đã được chọn";
+    default:
+      return "Không xác định";
+  }
+}
+
 export const generateFileNameImage = () => {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
@@ -143,6 +156,7 @@ export const generateFileNameImage = () => {
   const fileName = `image_${hours}${minutes}${seconds}_${day}${month}${year}`;
   return fileName;
 };
+
 
 export const truncateString = (input: string, maxLength: number): string => {
   if (input.length > maxLength) {

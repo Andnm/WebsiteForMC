@@ -11,6 +11,7 @@ import { getAllProjectByEveryOne } from "@/src/redux/features/projectSlice";
 import { formatDate } from "@/src/utils/handleFunction";
 import { Skeleton } from "@/components/ui/skeleton";
 import toast from "react-hot-toast";
+import { socketInstance } from "@/src/utils/socket/socket-provider";
 
 //có 2 trang là ProjectList lận
 //trang này là show all project list ở ngoài landing page
@@ -44,15 +45,32 @@ const ProjectList = () => {
   React.useEffect(() => {
     dispatch(getAllProjectByEveryOne()).then((result) => {
       if (getAllProjectByEveryOne.fulfilled.match(result)) {
-        const filteredProjects = result.payload[1].filter((project: any) => {
-          const expirationDate = new Date(
-            project.project_registration_expired_date
-          );
-          const currentDate = new Date();
-          return expirationDate > currentDate;
-        });
+        // getProjects
+        // const filteredProjects = result.payload[1].filter((project: any) => {
+        //   const expirationDate = new Date(
+        //     project.project_registration_expired_date
+        //   );
+        //   const currentDate = new Date();
+        //   return expirationDate > currentDate;
+        // });
 
-        setDataProjectList(filteredProjects);
+        socketInstance.on("getProjects", (data: any) => {
+          const newListProjects = data?.projects
+            ?.filter((project: any) => {
+              const expirationDate = new Date(
+                project.project_registration_expired_date
+              );
+              const currentDate = new Date();
+              return expirationDate > currentDate;
+            })
+            ?.sort((a: any, b: any) => {
+              const dateA = new Date(a.project_registration_expired_date);
+              const dateB = new Date(b.project_registration_expired_date);
+              return dateA.getTime() - dateB.getTime();
+            });
+          setDataProjectList(newListProjects);
+
+        });
       } else {
         toast.error("Có lỗi xảy ra khi tải danh sách dự án!");
       }
@@ -95,6 +113,15 @@ const ProjectList = () => {
           <div className="flex flex-wrap flex-col ml-10">
             {loadingProjectList ? (
               <>
+                <div className="w-80 h-32 relative shrink-0 mb-4">
+                  <Skeleton className="h-full w-full absolute" />
+                </div>
+                <div className="w-80 h-32 relative shrink-0 mb-4">
+                  <Skeleton className="h-full w-full absolute" />
+                </div>
+                <div className="w-80 h-32 relative shrink-0 mb-4">
+                  <Skeleton className="h-full w-full absolute" />
+                </div>
                 <div className="w-80 h-32 relative shrink-0 mb-4">
                   <Skeleton className="h-full w-full absolute" />
                 </div>

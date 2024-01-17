@@ -2,7 +2,7 @@ import React from 'react'
 
 const ManageReport = () => {
   return (
-    <div>manage report</div>
+    <div>Chưa hỗ trợ</div>
   )
 }
 

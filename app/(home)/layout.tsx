@@ -29,7 +29,7 @@ const HomeLayout = (props: { children: React.ReactNode }) => {
   }, []);
 
   return appearScroll ? (
-    <div className="h-screen flex" style={{ backgroundColor: "#1d1d1d" }}>
+    <div className="h-screen flex">
       <div className="fixed top-0 w-full">
         <GeneralHeader />
       </div>
