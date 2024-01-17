@@ -17,7 +17,10 @@ import toast from "react-hot-toast";
 
 import "./style.scss";
 import { ProjectType } from "@/src/types/project.type";
-import { createNewProject } from "@/src/redux/features/projectSlice";
+import {
+  createNewProject,
+  setNoError,
+} from "@/src/redux/features/projectSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/store";
 import { addDays, addMonths, format } from "date-fns";
 import SpinnerLoading from "@/src/components/loading/SpinnerLoading";
@@ -29,6 +32,10 @@ import { IoHelpCircleOutline } from "react-icons/io5";
 import { createNewNotification } from "@/src/redux/features/notificationSlice";
 import { NOTIFICATION_TYPE } from "@/src/constants/notification";
 import { useUserLogin } from "@/src/hook/useUserLogin";
+
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { storage } from "@/src/utils/configFirebase";
+import { useDispatch } from "react-redux";
 
 registerLocale("vi", vn);
 setDefaultLocale("vi");
@@ -47,6 +54,8 @@ const fieldString: { name: keyof ProjectType; label: string }[] = [
   { name: "name_project", label: "Tên dự án" },
   { name: "business_sector", label: "Lĩnh vực kinh doanh" },
   { name: "specialized_field", label: "Lĩnh vực chuyên môn" },
+  { name: "business_type", label: "Hướng đi của dự án" },
+  { name: "business_model", label: "Mô hình của dự án" },
   { name: "purpose", label: "Mục đích" },
   { name: "description_project", label: "Mô tả dự án" },
   { name: "request", label: "Yêu cầu" },
@@ -57,7 +66,7 @@ const fieldString: { name: keyof ProjectType; label: string }[] = [
 const fieldDate: { name: any; label: string }[] = [
   {
     name: "project_registration_expired_date",
-    label: "Ngày hết hạn đăng ký dự án",
+    label: "Ngày hết hạn đăng ký pitching",
   },
   { name: "project_start_date", label: "Ngày dự kiến bắt đầu dự án" },
   { name: "project_expected_end_date", label: "Ngày dự kiến kết thúc dự án" },
@@ -83,8 +92,8 @@ export const AlertDialogCreateProject = ({
     project_registration_expired_date: "",
     project_start_date: "",
     project_expected_end_date: "",
-    business_type: "Plan",
-    business_model: "b2c"
+    business_type: "",
+    business_model: "",
   });
 
   const [formDate, setFormDate] = React.useState<any>({
@@ -103,7 +112,7 @@ export const AlertDialogCreateProject = ({
 
   const [open, setOpen] = React.useState(false);
 
-  const handleInputChange = (name: keyof ProjectType, value: string) => {
+  const handleInputChange = (name: keyof ProjectType, value: any) => {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -111,7 +120,7 @@ export const AlertDialogCreateProject = ({
   };
 
   const handleDateChange = (name: any, value: any) => {
-    console.log('selected date', value)
+    console.log("selected date", value);
     setFormDate((prevData: any) => ({
       ...prevData,
       [name]: value,
@@ -123,7 +132,7 @@ export const AlertDialogCreateProject = ({
 
     switch (name) {
       case "project_registration_expired_date":
-        return addDays(currentDate, 1);
+        return addDays(currentDate, 2);
       case "project_start_date":
         const projectRegistrationExpiredDate =
           formDate.project_registration_expired_date;
@@ -151,7 +160,7 @@ export const AlertDialogCreateProject = ({
   const getHintDescription = (fieldName: string) => {
     switch (fieldName) {
       case "project_registration_expired_date":
-        return "Ngày hết hạn đăng ký dự án phải lớn hơn ngày hiện tại 1 ngày.";
+        return "Ngày hết hạn đăng ký dự án phải lớn hơn ngày hiện tại 2 ngày.";
       case "project_start_date":
         return "Ngày dự kiến bắt đầu dự án phải lớn hơn ngày hết hạn đăng ký 7 ngày.";
       case "project_expected_end_date":
@@ -173,14 +182,72 @@ export const AlertDialogCreateProject = ({
               {field.label}
             </label>
 
-            <input
-              type={""}
-              id={field.name}
-              name={field.name}
-              value={formData[field.name] as string}
-              onChange={(e) => handleInputChange(field.name, e.target.value)}
-              className="mt-1 p-2 border rounded-md w-full"
-            />
+            {field.name === "business_type" ||
+            field.name === "business_model" ? (
+              <select
+                id={field.name}
+                name={field.name}
+                value={formData[field.name] as string}
+                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                className="mt-1 p-2 border rounded-md w-full"
+              >
+                <option value="" disabled>
+                  -- Chọn --
+                </option>
+                {field.name === "business_type" ? (
+                  <>
+                    <option value="Plan">Lên kế hoạch</option>
+                    <option value="Project">Triển khai dự án</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="B2B">B2B</option>
+                    <option value="B2C">B2C</option>
+                  </>
+                )}
+              </select>
+            ) : field.name === "specialized_field" ? (
+              <select
+                id={field.name}
+                name={field.name}
+                value={formData[field.name] as string}
+                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                className="mt-1 p-2 border rounded-md w-full"
+              >
+                <option value="" disabled>
+                  -- Chọn --
+                </option>
+                <option value="Nông nghiệp">Nông nghiệp</option>
+                <option value="Thủ công nghiệp">Thủ công nghiệp</option>
+              </select>
+            ) : field.name === "description_project" ? (
+              <textarea
+                id={field.name}
+                name={field.name}
+                value={formData[field.name] as string}
+                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                className="mt-1 p-2 border rounded-md w-full"
+              />
+            ) : field.name === "document_related_link" ? (
+              <div className="flex items-center">
+                <input
+                  type="file"
+                  id={field.name}
+                  name={field.name}
+                  onChange={handleFileChange}
+                  className="mt-1 p-2 border rounded-md w-full"
+                />
+              </div>
+            ) : (
+              <input
+                type={""}
+                id={field.name}
+                name={field.name}
+                value={formData[field.name] as string}
+                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                className="mt-1 p-2 border rounded-md w-full"
+              />
+            )}
           </div>
         ))}
 
@@ -217,32 +284,107 @@ export const AlertDialogCreateProject = ({
   };
 
   const handleCreate = () => {
-    const dataBody = {
-      ...formData,
-      ...formDate,
-    };
-    dispatch(createNewProject(dataBody as ProjectType)).then((result) => {
-      if (createNewProject.rejected.match(result)) {
-        //do something
-        console.log(result);
-        toast.error(`${result.payload}`);
-      } else if (createNewProject.fulfilled.match(result)) {
+    // const dataBody = {
+    //   ...formData,
+    //   ...formDate,
+    // };
+    // dispatch(createNewProject(dataBody as ProjectType)).then((result) => {
+    //   if (createNewProject.rejected.match(result)) {
+    //     //do something
+    //     console.log(result);
+    //     toast.error(`${result.payload}`);
+    //   } else if (createNewProject.fulfilled.match(result)) {
+    //     const dataBodyNoti = {
+    //       notification_type: NOTIFICATION_TYPE.CREATE_PROJECT,
+    //       information: "Có một dự án mới cần được duyệt",
+    //       sender_email: userLogin?.email,
+    //       receiver_email: "admin@gmail.com",
+    //     };
 
-        const dataBodyNoti = {
-          notification_type: NOTIFICATION_TYPE.CREATE_PROJECT,
-          information: "Có một dự án mới cần được duyệt",
-          sender_email: userLogin?.email,
-          receiver_email: "admin@gmail.com",
-        };
+    //     dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
+    //       console.log(resNoti);
+    //       toast.success("Tạo dự án thành công!");
+    //       setDataProjects((prevData) => [...prevData, result.payload]);
+    //       handleCancel();
+    //     });
+    //   }
+    // });
 
-        dispatch(createNewNotification(dataBodyNoti)).then((resNoti) => {
-          console.log(resNoti);
-          toast.success("Tạo dự án thành công!");
-          setDataProjects((prevData) => [...prevData, result.payload]);
-          handleCancel();
-        });
-      }
-    });
+    handleUpload();
+  };
+
+  const [file, setFile] = React.useState<File | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+    }
+  };
+
+  const [uploadProgress, setUploadProgress] = React.useState<number | null>(
+    null
+  );
+
+  const handleUpload = async () => {
+    if (file) {
+      const storageRef = ref(storage, `uploads/${file.name}`);
+
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(progress);
+        },
+        (error) => {
+          console.error("Lỗi khi tải tệp lên Firebase Storage", error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setFormData((prevData) => ({
+              ...prevData,
+              document_related_link: downloadURL,
+            }));
+
+            const dataBody = {
+              ...formData,
+              ...formDate,
+            };
+            dispatch(createNewProject(dataBody as ProjectType)).then(
+              (result) => {
+                if (createNewProject.rejected.match(result)) {
+                  //do something
+                  console.log(result);
+                  toast.error(`${result.payload}`);
+                } else if (createNewProject.fulfilled.match(result)) {
+                  const dataBodyNoti = {
+                    notification_type: NOTIFICATION_TYPE.CREATE_PROJECT,
+                    information: "Có một dự án mới cần được duyệt",
+                    sender_email: userLogin?.email,
+                    receiver_email: "admin@gmail.com",
+                  };
+
+                  dispatch(createNewNotification(dataBodyNoti)).then(
+                    (resNoti) => {
+                      console.log(resNoti);
+                      toast.success("Tạo dự án thành công!");
+                      setDataProjects((prevData) => [
+                        ...prevData,
+                        result.payload,
+                      ]);
+                      handleCancel();
+                    }
+                  );
+                }
+              }
+            );
+          });
+        }
+      );
+    }
   };
 
   const handleCancel = () => {
@@ -262,6 +404,8 @@ export const AlertDialogCreateProject = ({
       project_registration_expired_date: "",
       project_start_date: "",
       project_expected_end_date: "",
+      business_type: "",
+      business_model: "",
     });
     setFormDate({
       project_registration_expired_date: null,
@@ -269,13 +413,14 @@ export const AlertDialogCreateProject = ({
       project_expected_end_date: null,
     });
 
+    dispatch(setNoError({ error: "" }));
     setOpen(false);
   };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-      <AlertDialogContent className="opacity-100 max-w-6xl bg-white create-project ">
+      <AlertDialogContent className="opacity-100 max-w-6xl bg-white create-project">
         <AlertDialogHeader>
           <AlertDialogTitle>Tạo dự án</AlertDialogTitle>
         </AlertDialogHeader>

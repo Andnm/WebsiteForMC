@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction, PayloadAction } from "@reduxjs/toolkit";
 import http from "../utils/https";
 import { ProjectType } from "@/src/types/project.type";
 import { ErrorType } from "@/src/types/error.type";
@@ -39,7 +39,7 @@ export const createNewProject = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return thunkAPI.rejectWithValue(
         (error as ErrorType)?.response?.data?.message
       );
@@ -251,7 +251,10 @@ export const checkProjectCanDone = createAsyncThunk(
 
 export const changeStatusProjectByLecturer = createAsyncThunk(
   "listProject/changeStatusProjectByLecturer",
-  async ({ projectId, projectStatus, groupId }: ChangeStatusParams, thunkAPI) => {
+  async (
+    { projectId, projectStatus, groupId }: ChangeStatusParams,
+    thunkAPI
+  ) => {
     const token = getTokenFromSessionStorage();
     const configHeader = {
       headers: {
@@ -277,10 +280,19 @@ export const changeStatusProjectByLecturer = createAsyncThunk(
   }
 );
 
+interface SetNoErrorPayload {
+  error: string;
+}
+export const setNoError = createAction<SetNoErrorPayload>("project/setNoError");
+
 export const projectSlice = createSlice({
   name: "project",
   initialState,
-  reducers: {},
+  reducers: {
+    setNoError: (state, action: PayloadAction<SetNoErrorPayload>) => {
+      state.error = action.payload.error || "";
+    },
+  },
   extraReducers: (builder) => {
     //create New Project
     builder.addCase(createNewProject.pending, (state) => {
@@ -421,11 +433,14 @@ export const projectSlice = createSlice({
       state.loadingProject = true;
       state.error = "";
     });
-    builder.addCase(changeStatusProjectByLecturer.fulfilled, (state, action) => {
-      state.loadingProject = false;
-      // state.data = action.payload;
-      state.error = "";
-    });
+    builder.addCase(
+      changeStatusProjectByLecturer.fulfilled,
+      (state, action) => {
+        state.loadingProject = false;
+        // state.data = action.payload;
+        state.error = "";
+      }
+    );
     builder.addCase(changeStatusProjectByLecturer.rejected, (state, action) => {
       state.loadingProject = false;
       state.error = action.payload as string;

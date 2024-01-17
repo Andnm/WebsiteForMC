@@ -109,10 +109,13 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
           Tên dự án: {selectedProject?.name_project}
         </p>
         <p className="text-gray-600">
-          Trạng thái: {selectedProject?.project_status}
+          Trạng thái: {selectedProject?.project_status === "Pending" ? "Chờ phê duyệt" : selectedProject?.project_status  === "Public" ? "Công khai" : "Đang diễn ra"}
         </p>
         <p className="text-gray-600">
           Lĩnh vực chuyên môn: {selectedProject?.specialized_field}
+        </p>
+        <p className="text-gray-600">
+          Hướng đi dự án: {selectedProject?.business_type === "Project" ? "Triển khai dự án" : "Lên kế hoạch"}
         </p>
         <p className="text-gray-600">Mục đích: {selectedProject?.purpose}</p>
         <p className="text-gray-600">
@@ -125,11 +128,15 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
       <div className="mb-8">
         <h3 className="text-lg font-semibold mb-2">Thời gian</h3>
         <p className="text-gray-600">
-          Thời gian bắt đầu làm:{" "}
+          Thời gian hết hạn đăng kí pitching:{" "}
+          {formatDate(selectedProject?.project_registration_expired_date)}
+        </p>
+        <p className="text-gray-600">
+          Thời gian dự kiến bắt đầu làm:{" "}
           {formatDate(selectedProject?.project_start_date)}
         </p>
         <p className="text-gray-600">
-          Thời gian kết thúc:{" "}
+          Thời gian dự kiến kết thúc:{" "}
           {formatDate(selectedProject?.project_expected_end_date)}
         </p>
       </div>
@@ -141,14 +148,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
           {selectedProject?.document_related_link}
         </p>
       </div>
-
-      {/* Created Date Information */}
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-2">Ngày tạo</h3>
-        <p className="text-gray-600">
-          {formatDate(selectedProject?.createdAt)}
-        </p>
-      </div>
+    
     </div>
   );
 
@@ -254,7 +254,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
           }
           className="admin-project-input-field"
         />
-        ...các thông tin khác
+        
       </div>
 
       <div className="mb-8">
