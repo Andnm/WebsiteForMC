@@ -18,6 +18,7 @@ import { PiStudentLight } from "react-icons/pi";
 import { MdOutlineAgriculture } from "react-icons/md";
 import { MdOutlineHandyman } from "react-icons/md";
 import { getColorByProjectStatus } from "@/src/utils/handleFunction";
+import toast from "react-hot-toast";
 
 const getIcon = (key: string) => {
   switch (key.toLowerCase()) {
@@ -217,6 +218,15 @@ const Dashboard = () => {
                     <a
                       href="#"
                       className="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg p-2"
+                      onClick={() =>
+                        toast("Chưa hỗ trợ", {
+                          style: {
+                            borderRadius: "10px",
+                            background: "orange",
+                            color: "white",
+                          },
+                        })
+                      }
                     >
                       Xem tất cả
                     </a>
@@ -283,6 +293,15 @@ const Dashboard = () => {
                   <a
                     href="#"
                     className="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg inline-flex items-center p-2"
+                    onClick={() =>
+                      toast("Chưa hỗ trợ", {
+                        style: {
+                          borderRadius: "10px",
+                          background: "orange",
+                          color: "white",
+                        },
+                      })
+                    }
                   >
                     Xem tất cả
                   </a>
