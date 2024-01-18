@@ -20,16 +20,16 @@ const LecturerBoard = () => {
     dispatch(getAllGroupAreMembers()).then((result) => {
       if (getAllGroupAreMembers.fulfilled.match(result)) {
         setLectureData(result.payload);
-        console.log('lecture', result.payload)
+        // console.log('lecture', result.payload)
       }
     });
 
     dispatch(getAllRegisterPitchingByStudent()).then((result) => {
       if (getAllRegisterPitchingByStudent.fulfilled.match(result)) {
         setDataGroupList(result.payload);
-        console.log(result.payload);
+        // console.log(result.payload);
       } else {
-        console.log(result.payload);
+        // console.log(result.payload);
       }
     });
   }, []);

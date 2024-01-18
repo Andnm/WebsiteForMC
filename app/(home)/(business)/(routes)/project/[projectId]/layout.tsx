@@ -32,7 +32,7 @@ const ViewIdLayout = ({
   const pathName = usePathname();
   const dispatch = useAppDispatch();
 
-  React.useEffect(() => {
+  const fetchData = () => {
     dispatch(getProjectById(params.projectId)).then((result) => {
       if (getProjectById.fulfilled.match(result)) {
         setDataProject(result.payload);
@@ -42,7 +42,6 @@ const ViewIdLayout = ({
     dispatch(getAllRegisterPitchingByBusiness(params.projectId)).then(
       (result) => {
         if (getAllRegisterPitchingByBusiness.fulfilled.match(result)) {
-          // console.log('group', result.payload);
           const selectedGroup = result.payload.find(
             (item: any) => item.register_pitching_status === "Selected"
           );
@@ -50,10 +49,19 @@ const ViewIdLayout = ({
           if (selectedGroup) {
             setGroupId(selectedGroup.group.id);
           }
-        } else {
         }
       }
     );
+  };
+
+  React.useEffect(() => {
+    fetchData();
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 3000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (

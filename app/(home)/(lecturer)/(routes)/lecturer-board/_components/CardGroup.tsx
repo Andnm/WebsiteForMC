@@ -45,7 +45,7 @@ const CardGroup = ({ group, lectureData }: CardGroupProps) => {
     });
   }, []);
 
-  console.log(group)
+  // console.log(group)
   
   return (
     <div

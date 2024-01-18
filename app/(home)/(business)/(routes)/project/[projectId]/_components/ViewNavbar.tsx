@@ -111,11 +111,11 @@ export const ViewNavbar = ({
               toast.success(`Thay đổi trạng thái dự án thành công!`);
               setDataProject(res.payload);
             } else {
-              toast.error(`${res.payload}`);
+              toast.error(`Lỗi khi hoàn thành ${res.payload}`);
             }
           });
         } else {
-          toast.error(`${result.payload}`);
+          toast.error(`Chưa thể hoàn thành dự án ${result.payload}`);
           return;
         }
       }
@@ -241,37 +241,60 @@ export const ViewNavbar = ({
     }
   };
 
+  const handleCheckProjectCanDone = () => {
+    dispatch(checkProjectCanDone(extractNumberFromPath(pathName))).then(
+      (result) => {
+        if (checkProjectCanDone.fulfilled.match(result)) {
+          setCheckProjectCanDoneStatus(result.payload);
+        } else {
+          setCheckProjectCanDoneStatus(false);
+        }
+        console.log("can done", result.payload);
+      }
+    );
+  };
+
+  React.useEffect(() => {
+    // Gọi checkProjectCanDone ngay khi component được render
+    handleCheckProjectCanDone();
+
+    // Thiết lập interval để gọi checkProjectCanDone mỗi 3 giây
+    const intervalId = setInterval(() => {
+      handleCheckProjectCanDone();
+    }, 3000);
+
+    // Cleanup khi component bị unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
   React.useEffect(() => {
     dispatch(getSummaryReportByProjectId(extractNumberFromPath(pathName))).then(
       (result) => {
         if (getSummaryReportByProjectId.fulfilled.match(result)) {
-          socketInstance.on(`getSummaryReports-${extractNumberFromPath(pathName)}`, (data: any) => {
-            // console.log("ok socket");
-            setSummaryReport(data.summaryReport);
-            console.log('data report', data.summaryReport)
-          });
+          socketInstance.on(
+            `getSummaryReports-${extractNumberFromPath(pathName)}`,
+            (data: any) => {
+              // console.log("ok socket");
+              setSummaryReport(data.summaryReport);
+              // console.log('data report', data.summaryReport)
+            }
+          );
           // setSummaryReport(result.payload);
           // console.log(result.payload);
         } else {
           // toast.error("Lỗi khi lấy dữ liệu");
-          socketInstance.on(`getSummaryReports-${extractNumberFromPath(pathName)}`, (data: any) => {
-            // console.log("ok socket fail");
-            setSummaryReport(data.summaryReport);
-            console.log('fail', data.summaryReport)
-          });
+          socketInstance.on(
+            `getSummaryReports-${extractNumberFromPath(pathName)}`,
+            (data: any) => {
+              // console.log("ok socket fail");
+              setSummaryReport(data.summaryReport);
+              console.log("fail", data.summaryReport);
+            }
+          );
         }
       }
     );
   }, [summaryReport]);
-
-  React.useEffect(() => {
-    dispatch(checkProjectCanDone(extractNumberFromPath(pathName))).then(
-      (result) => {
-        setCheckProjectCanDoneStatus(result.payload);
-        console.log("result", result.payload);
-      }
-    );
-  }, []);
 
   return (
     <>
@@ -400,21 +423,29 @@ export const ViewNavbar = ({
                 <tbody>
                   <tr>
                     <td className="pl-5">
-                      {summaryReport?.isBusinessConfirmed ? (
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          Đã xác nhận
-                        </Typography>
-                      ) : userLogin?.role_name === "Business"  ? (
-                        <Button
-                          onClick={handleClickConfirmSummaryReport}
-                          className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
-                        >
-                          Xác nhận
-                        </Button>
+                      {summaryReport &&
+                      summaryReport.summary_report_url &&
+                      summaryReport?.isBusinessConfirmed !== undefined ? (
+                        <>
+                          {summaryReport?.isBusinessConfirmed ? (
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
+                              Đã xác nhận
+                            </Typography>
+                          ) : (
+                            userLogin?.role_name === "Business" && (
+                              <Button
+                                onClick={handleClickConfirmSummaryReport}
+                                className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
+                              >
+                                Xác nhận
+                              </Button>
+                            )
+                          )}
+                        </>
                       ) : (
                         <Typography
                           variant="small"
@@ -424,23 +455,34 @@ export const ViewNavbar = ({
                           Chưa xác nhận
                         </Typography>
                       )}
+
                     </td>
+                    
                     <td className={` pl-5 bg-blue-gray-50/50`}>
-                      {summaryReport?.isLecturerConfirmed ? (
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          Đã xác nhận
-                        </Typography>
-                      ) : userLogin?.role_name === "Lecturer"  ? (
-                        <Button
-                          onClick={handleClickConfirmSummaryReport}
-                          className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
-                        >
-                          Xác nhận
-                        </Button>
+
+                       {summaryReport &&
+                      summaryReport.summary_report_url &&
+                      summaryReport?.isLecturerConfirmed !== undefined ? (
+                        <>
+                          {summaryReport?.isLecturerConfirmed ? (
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
+                              Đã xác nhận
+                            </Typography>
+                          ) : (
+                            userLogin?.role_name === "Lecturer" && (
+                              <Button
+                                onClick={handleClickConfirmSummaryReport}
+                                className="font-normal transition text-white hover:text-red-600 border border-cyan-600 bg-cyan-600"
+                              >
+                                Xác nhận
+                              </Button>
+                            )
+                          )}
+                        </>
                       ) : (
                         <Typography
                           variant="small"
@@ -450,6 +492,8 @@ export const ViewNavbar = ({
                           Chưa xác nhận
                         </Typography>
                       )}
+
+                    
                     </td>
                     <td className="p-4">
                       {summaryReport?.summary_report_url &&
