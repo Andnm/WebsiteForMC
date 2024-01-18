@@ -16,19 +16,23 @@ const StudentBoard = () => {
     (state) => state.pitching
   );
 
-  React.useEffect(() => {
+  const fetchData = () => {
     dispatch(getAllRegisterPitchingByStudent()).then((result) => {
       if (getAllRegisterPitchingByStudent.fulfilled.match(result)) {
-        socketInstance.on(`getAllRegisterPitching-${userLogin?.email}`, (data) => {
-          console.log("data", data)
-          setDataPitching(data.registerPitchings);
-        });
-
-        // console.log("hai", result.payload);
-        // setDataPitching(result.payload);
+        setDataPitching(result.payload);
       }
     });
-  }, [userLogin]);
+  };
+
+  React.useEffect(() => {
+    fetchData();
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <div className="w-full">
