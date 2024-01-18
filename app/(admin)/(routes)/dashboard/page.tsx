@@ -96,7 +96,7 @@ const Dashboard = () => {
         <main>
           <div className="pt-6 px-4">
             <div className="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
-              <div className="shadow rounded-lg p-4 sm:p-6 xl:p-8  2xl:col-span-2">
+              <div className="shadow rounded-lg p-4 sm:p-6 xl:p-8 2xl:col-span-2">
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8">
                     <h2 className="text-2xl font-bold text-center">
@@ -287,6 +287,7 @@ const Dashboard = () => {
                     Xem tất cả
                   </a>
                 </div>
+
                 <div className="flow-root">
                   <ul role="list" className="divide-y divide-gray-200">
                     <li className="py-3 sm:py-4">
